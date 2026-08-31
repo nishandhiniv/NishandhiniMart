@@ -1,45 +1,114 @@
-const registrationForm = document.getElementById("registrationForm");
+const loginForm = document.getElementById("loginForm");
 
-registrationForm.addEventListener("submit", async function(event) {
+loginForm.addEventListener("submit", async function (event) {
 
     event.preventDefault();
 
-    const name = document.getElementById("name").value;
-    const username = document.getElementById("username").value;
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-    const role = document.getElementById("role").value;
+    const username =
+        document.getElementById("username").value;
 
-    const userData = {
-        name: name,
+    const password =
+        document.getElementById("password").value;
+
+    const loginData = {
         username: username,
-        email: email,
         password: password
     };
 
     try {
 
-        const response = await fetch("http://127.0.0.1:8080/api/register", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(userData)
-        });
+        const response = await fetch(
+            "http://127.0.0.1:8080/api/login",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify(loginData)
+            }
+        );
 
         const result = await response.json();
 
-        document.getElementById("message").textContent =
-            result.message;
-
-        console.log("Role:", role);
         console.log("Backend Response:", result);
 
-    } catch (error) {
+        document.getElementById("loginMessage").textContent =
+            result.message;
 
-        document.getElementById("message").textContent =
+        // -------------------------------
+        // LOGIN SUCCESS
+        // -------------------------------
+
+        if (result.success === true) {
+
+            // Save user information
+            localStorage.setItem(
+                "userId",
+                result.user.id
+            );
+
+            localStorage.setItem(
+                "username",
+                result.user.username
+            );
+
+            localStorage.setItem(
+                "role",
+                result.user.role
+            );
+
+            localStorage.setItem(
+                "name",
+                result.user.name
+            );
+
+            localStorage.setItem(
+                "email",
+                result.user.email
+            );
+
+
+            // -------------------------------
+            // ROLE BASED REDIRECT
+            // -------------------------------
+
+            if (result.user.role === "buyer") {
+
+                window.location.href =
+                    "buyer_dashboard.html";
+
+            }
+            else if (result.user.role === "seller") {
+
+                window.location.href =
+                    "seller_dashboard.html";
+
+            }
+            else if (result.user.role === "admin") {
+
+                window.location.href =
+                    "admin_dashboard.html";
+
+            }
+            else {
+
+                alert("Unknown user role!");
+
+            }
+        }
+
+    }
+    catch (error) {
+
+        document.getElementById("loginMessage").textContent =
             "Backend connection failed!";
 
-        console.error("Error:", error);
+        console.error(
+            "Login Error:",
+            error
+        );
     }
+
 });

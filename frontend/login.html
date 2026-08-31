@@ -12,14 +12,16 @@
 
 <body>
 
-    <div class="registration-container">
+    <div class="login-container">
 
         <h1>NishandhiniMart</h1>
-        <h2>User Login</h2>
+
+        <h2>Login</h2>
 
         <form id="loginForm">
 
             <label for="username">Username</label>
+
             <input
                 type="text"
                 id="username"
@@ -29,6 +31,7 @@
             >
 
             <label for="password">Password</label>
+
             <input
                 type="password"
                 id="password"
@@ -37,11 +40,18 @@
                 required
             >
 
-            <button type="submit">Login</button>
+            <button type="submit">
+                Login
+            </button>
 
         </form>
 
-        <p id="message"></p>
+        <p id="loginMessage"></p>
+
+        <p>
+            Don't have an account?
+            <a href="register.html">Register here</a>
+        </p>
 
     </div>
 

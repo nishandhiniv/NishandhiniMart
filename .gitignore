@@ -4,3 +4,5 @@ build/
 out/
 *.exe
 *.pdb
+
+database/database_backup.sql

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>NishandhiniMart - My Orders</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f5f6fa;
+            color: #222;
+        }
+
+        header {
+            background: white;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            color: #2874f0;
+        }
+
+        .logo span {
+            color: #ff9800;
+        }
+
+        .back-btn {
+            background: #2874f0;
+            color: white;
+            border: none;
+            padding: 11px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .back-btn:hover {
+            background: #1257c7;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .title {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+
+        .loading {
+            text-align: center;
+            font-size: 18px;
+            color: #2874f0;
+        }
+
+        .no-orders {
+            text-align: center;
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .order-card {
+            background: white;
+            margin-bottom: 20px;
+            padding: 22px;
+            border-radius: 10px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.10);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+
+        .order-id {
+            font-size: 19px;
+            font-weight: bold;
+        }
+
+        .status {
+            background: #fff3cd;
+            color: #856404;
+            padding: 7px 12px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .order-details {
+            line-height: 1.8;
+        }
+
+        .amount {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1a8f3c;
+        }
+
+        footer {
+            background: #172337;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 50px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<header>
+
+    <div class="logo">
+        Nishandhini<span>Mart</span>
+    </div>
+
+    <button class="back-btn"
+            onclick="goBack()">
+        ← Back to Shopping
+    </button>
+
+</header>
+
+
+<div class="container">
+
+    <h1 class="title">
+        📦 My Orders
+    </h1>
+
+    <div id="loading"
+         class="loading">
+        Loading your orders...
+    </div>
+
+    <div id="ordersContainer">
+    </div>
+
+    <div id="noOrders"
+         class="no-orders">
+
+        <h2>No Orders Found</h2>
+
+        <p>You haven't placed any orders yet.</p>
+
+    </div>
+
+</div>
+
+
+<footer>
+
+    <p>
+        © 2026 NishandhiniMart | Online Shopping Website
+    </p>
+
+</footer>
+
+
+<script>
+
+    // -----------------------------------------
+    // LOAD ORDERS
+    // -----------------------------------------
+
+    async function loadOrders() {
+
+        const userId =
+            localStorage.getItem("userId");
+
+        if (!userId) {
+
+            alert("Please login first.");
+
+            window.location.href =
+                "login.html";
+
+            return;
+        }
+
+        const loading =
+            document.getElementById("loading");
+
+        const container =
+            document.getElementById(
+                "ordersContainer"
+            );
+
+        const noOrders =
+            document.getElementById("noOrders");
+
+
+        try {
+
+            loading.style.display = "block";
+
+
+            const response =
+                await fetch(
+                    "http://127.0.0.1:8080/api/orders/"
+                    + userId
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Failed to fetch orders"
+                );
+
+            }
+
+
+            const orders =
+                await response.json();
+
+
+            console.log(
+                "Orders from Backend:",
+                orders
+            );
+
+
+            loading.style.display = "none";
+
+
+            if (!Array.isArray(orders) ||
+                orders.length === 0) {
+
+                noOrders.style.display =
+                    "block";
+
+                return;
+            }
+
+
+            container.innerHTML = "";
+
+
+            orders.forEach(order => {
+
+                const card =
+                    document.createElement("div");
+
+                card.className =
+                    "order-card";
+
+
+                card.innerHTML = `
+
+                    <div class="order-header">
+
+                        <div class="order-id">
+
+                            Order #${order.id}
+
+                        </div>
+
+                        <div class="status">
+
+                            ${order.status}
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="order-details">
+
+                        <p>
+                            <strong>User ID:</strong>
+                            ${order.user_id}
+                        </p>
+
+                        <p>
+                            <strong>Total Amount:</strong>
+                            <span class="amount">
+                                ₹${Number(
+                                    order.total_amount
+                                ).toLocaleString("en-IN")}
+                            </span>
+                        </p>
+
+                        <p>
+                            <strong>Order Date:</strong>
+                            ${order.created_at}
+                        </p>
+
+                    </div>
+
+                `;
+
+
+                container.appendChild(card);
+
+            });
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Orders API Error:",
+                error
+            );
+
+            loading.style.display = "none";
+
+            container.innerHTML = `
+
+                <div class="no-orders"
+                     style="display:block">
+
+                    <h2>
+                        Unable to load orders
+                    </h2>
+
+                    <p>
+                        Please make sure the
+                        backend server is running.
+                    </p>
+
+                </div>
+
+            `;
+
+        }
+
+    }
+
+
+    // -----------------------------------------
+    // BACK TO BUYER DASHBOARD
+    // -----------------------------------------
+
+    function goBack() {
+
+        window.location.href =
+            "buyer_dashboard.html";
+
+    }
+
+
+    // -----------------------------------------
+    // PAGE LOAD
+    // -----------------------------------------
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function() {
+
+            loadOrders();
+
+        }
+    );
+
+</script>
+
+</body>
+
+</html>

@@ -1,102 +1,168 @@
 ﻿#include <drogon/drogon.h>
+#include <iostream>
+
+using namespace drogon;
+using namespace drogon::orm;
 
 int main()
 {
-    // PostgreSQL connection
-    drogon::app().createDbClient(
-        "postgresql",
-        "127.0.0.1",
-        5432,
-        "postgres",
-        "postgres",
-        "vanitha123",
-        1
-    );
+    std::cout << "======================================" << std::endl;
+    std::cout << "       NishandhiniMart Backend        " << std::endl;
+    std::cout << "======================================" << std::endl;
 
-    // Existing Products API
-    drogon::app().registerHandler(
-        "/api/products",
-        [](const drogon::HttpRequestPtr&,
-           std::function<void(const drogon::HttpResponsePtr&)>&& callback)
+    // =================================================
+    // PostgreSQL DATABASE CONNECTION
+    // =================================================
+
+    try
+    {
+        std::cout << "Creating PostgreSQL client..." << std::endl;
+
+        app().createDbClient(
+            "postgresql",
+            "127.0.0.1",
+            5432,
+            "nishandhinimart",
+            "postgres",
+            "vanitha123",
+            1
+        );
+
+        std::cout << "PostgreSQL client created successfully."
+                  << std::endl;
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << "Database connection error: "
+                  << e.what() << std::endl;
+
+        return 1;
+    }
+
+    // =================================================
+    // TEST API
+    // GET /api/test
+    // =================================================
+
+    app().registerHandler(
+        "/api/test",
+        [](const HttpRequestPtr &req,
+           std::function<void(const HttpResponsePtr &)> &&callback)
         {
-            auto response = drogon::HttpResponse::newHttpResponse();
-            response->setContentTypeCode(drogon::CT_APPLICATION_JSON);
-            response->setBody(
-                R"({"message":"Products API is working!"})"
-            );
+            Json::Value json;
+
+            json["message"] =
+                "NishandhiniMart Backend is working!";
+
+            auto response =
+                HttpResponse::newHttpJsonResponse(json);
+
+            response->addHeader(
+                "Access-Control-Allow-Origin", "*");
+
+            response->addHeader(
+                "Access-Control-Allow-Methods",
+                "GET, POST, PUT, DELETE, OPTIONS");
+
+            response->addHeader(
+                "Access-Control-Allow-Headers",
+                "Content-Type");
+
             callback(response);
         });
 
-    // PostgreSQL test API
-    drogon::app().registerHandler(
+    // =================================================
+    // DATABASE TEST API
+    // GET /api/db-test
+    // =================================================
+
+    app().registerHandler(
         "/api/db-test",
-        [](const drogon::HttpRequestPtr&,
-           std::function<void(const drogon::HttpResponsePtr&)>&& callback)
+        [](const HttpRequestPtr &req,
+           std::function<void(const HttpResponsePtr &)> &&callback)
         {
-            auto dbClient = drogon::app().getDbClient();
+            auto dbClient = app().getDbClient();
 
             dbClient->execSqlAsync(
                 "SELECT 1",
-                [callback](const drogon::orm::Result&)
+
+                // SUCCESS
+                [callback](const Result &result)
                 {
+                    Json::Value json;
+
+                    json["message"] =
+                        "PostgreSQL connection successful!";
+
                     auto response =
-                        drogon::HttpResponse::newHttpResponse();
+                        HttpResponse::newHttpJsonResponse(json);
 
-                    response->setContentTypeCode(
-                        drogon::CT_APPLICATION_JSON);
-
-                    response->setBody(
-                        R"({"message":"PostgreSQL connection successful!"})");
+                    response->addHeader(
+                        "Access-Control-Allow-Origin", "*");
 
                     callback(response);
                 },
-                [callback](const drogon::orm::DrogonDbException& e)
+
+                // ERROR
+                [callback](const DrogonDbException &e)
                 {
+                    Json::Value json;
+
+                    json["message"] =
+                        "PostgreSQL connection failed";
+
+                    json["error"] =
+                        e.base().what();
+
                     auto response =
-                        drogon::HttpResponse::newHttpResponse();
+                        HttpResponse::newHttpJsonResponse(json);
 
                     response->setStatusCode(
-                        drogon::k500InternalServerError);
+                        k500InternalServerError);
 
-                    response->setBody(
-                        std::string("Database connection failed: ") +
-                        e.base().what());
+                    response->addHeader(
+                        "Access-Control-Allow-Origin", "*");
 
                     callback(response);
                 });
         });
 
-    // User Registration API
-    drogon::app().registerHandler(
+    // =================================================
+    // REGISTER API
+    // POST /api/register
+    // =================================================
+
+    app().registerHandler(
         "/api/register",
-        [](const drogon::HttpRequestPtr& req,
-           std::function<void(const drogon::HttpResponsePtr&)>&& callback)
+        [](const HttpRequestPtr &req,
+           std::function<void(const HttpResponsePtr &)> &&callback)
         {
+            Json::Value jsonResponse;
+
             auto json = req->getJsonObject();
 
-            if (!json ||
-                !json->isMember("name") ||
-                !json->isMember("username") ||
-                !json->isMember("email") ||
-                !json->isMember("password") ||
-                !json->isMember("role"))
+            // Check JSON
+            if (!json)
             {
+                jsonResponse["success"] = false;
+                jsonResponse["message"] =
+                    "Invalid JSON data";
+
                 auto response =
-                    drogon::HttpResponse::newHttpResponse();
+                    HttpResponse::newHttpJsonResponse(
+                        jsonResponse);
 
                 response->setStatusCode(
-                    drogon::k400BadRequest);
+                    k400BadRequest);
 
-                response->setContentTypeCode(
-                    drogon::CT_APPLICATION_JSON);
-
-                response->setBody(
-                    R"({"message":"All registration fields are required."})");
+                response->addHeader(
+                    "Access-Control-Allow-Origin", "*");
 
                 callback(response);
                 return;
             }
 
+            // Get values
             std::string name =
                 (*json)["name"].asString();
 
@@ -112,80 +178,799 @@ int main()
             std::string role =
                 (*json)["role"].asString();
 
-            if (role != "buyer" && role != "seller")
+            // Validate
+            if (name.empty() ||
+                username.empty() ||
+                email.empty() ||
+                password.empty() ||
+                role.empty())
             {
+                jsonResponse["success"] = false;
+                jsonResponse["message"] =
+                    "All fields are required";
+
                 auto response =
-                    drogon::HttpResponse::newHttpResponse();
+                    HttpResponse::newHttpJsonResponse(
+                        jsonResponse);
 
                 response->setStatusCode(
-                    drogon::k400BadRequest);
+                    k400BadRequest);
 
-                response->setContentTypeCode(
-                    drogon::CT_APPLICATION_JSON);
-
-                response->setBody(
-                    R"({"message":"Role must be buyer or seller."})");
+                response->addHeader(
+                    "Access-Control-Allow-Origin", "*");
 
                 callback(response);
                 return;
             }
 
-            auto dbClient = drogon::app().getDbClient();
+            // Only buyer / seller
+            if (role != "buyer" &&
+                role != "seller")
+            {
+                jsonResponse["success"] = false;
+                jsonResponse["message"] =
+                    "Only buyer and seller can register";
 
+                auto response =
+                    HttpResponse::newHttpJsonResponse(
+                        jsonResponse);
+
+                response->setStatusCode(
+                    k400BadRequest);
+
+                response->addHeader(
+                    "Access-Control-Allow-Origin", "*");
+
+                callback(response);
+                return;
+            }
+
+            auto dbClient =
+                app().getDbClient();
+
+            // Check username
             dbClient->execSqlAsync(
-                "INSERT INTO users "
-                "(name, username, email, password_hash, role) "
-                "VALUES ($1, $2, $3, $4, $5)",
-                
-                [callback](const drogon::orm::Result&)
+                "SELECT id FROM users WHERE username = ?",
+
+                [dbClient,
+                 name,
+                 username,
+                 email,
+                 password,
+                 role,
+                 callback](const Result &result)
                 {
+                    // Username exists
+                    if (result.size() > 0)
+                    {
+                        Json::Value jsonResponse;
+
+                        jsonResponse["success"] = false;
+                        jsonResponse["message"] =
+                            "Username already exists";
+
+                        auto response =
+                            HttpResponse::newHttpJsonResponse(
+                                jsonResponse);
+
+                        response->setStatusCode(
+                            k409Conflict);
+
+                        response->addHeader(
+                            "Access-Control-Allow-Origin",
+                            "*");
+
+                        callback(response);
+                        return;
+                    }
+
+                    // Insert user
+                    dbClient->execSqlAsync(
+                        "INSERT INTO users "
+                        "(name, username, email, password_hash, role) "
+                        "VALUES (?, ?, ?, ?, ?)",
+
+                        [callback](const Result &result)
+                        {
+                            Json::Value jsonResponse;
+
+                            jsonResponse["success"] = true;
+                            jsonResponse["message"] =
+                                "Registration successful";
+
+                            auto response =
+                                HttpResponse::newHttpJsonResponse(
+                                    jsonResponse);
+
+                            response->addHeader(
+                                "Access-Control-Allow-Origin",
+                                "*");
+
+                            callback(response);
+                        },
+
+                        // Insert error
+                        [callback](const DrogonDbException &e)
+                        {
+                            Json::Value jsonResponse;
+
+                            jsonResponse["success"] = false;
+                            jsonResponse["message"] =
+                                "Registration failed";
+
+                            jsonResponse["error"] =
+                                e.base().what();
+
+                            auto response =
+                                HttpResponse::newHttpJsonResponse(
+                                    jsonResponse);
+
+                            response->setStatusCode(
+                                k500InternalServerError);
+
+                            response->addHeader(
+                                "Access-Control-Allow-Origin",
+                                "*");
+
+                            callback(response);
+                        },
+
+                        name,
+                        username,
+                        email,
+                        password,
+                        role);
+                },
+
+                // SELECT error
+                [callback](const DrogonDbException &e)
+                {
+                    Json::Value jsonResponse;
+
+                    jsonResponse["success"] = false;
+                    jsonResponse["message"] =
+                        "Database error";
+
+                    jsonResponse["error"] =
+                        e.base().what();
+
                     auto response =
-                        drogon::HttpResponse::newHttpResponse();
+                        HttpResponse::newHttpJsonResponse(
+                            jsonResponse);
 
                     response->setStatusCode(
-                        drogon::k201Created);
+                        k500InternalServerError);
 
-                    response->setContentTypeCode(
-                        drogon::CT_APPLICATION_JSON);
-
-                    response->setBody(
-                        R"({"message":"User registered successfully!"})");
+                    response->addHeader(
+                        "Access-Control-Allow-Origin",
+                        "*");
 
                     callback(response);
                 },
 
-                [callback](const drogon::orm::DrogonDbException& e)
-                {
-                    auto response =
-                        drogon::HttpResponse::newHttpResponse();
-
-                    response->setStatusCode(
-                        drogon::k400BadRequest);
-
-                    response->setContentTypeCode(
-                        drogon::CT_APPLICATION_JSON);
-
-                    response->setBody(
-                        std::string(
-                            R"({"message":"Registration failed: )") +
-                        e.base().what() +
-                        R"("})");
-
-                    callback(response);
-                },
-
-                name,
-                username,
-                email,
-                password,
-                role
-            );
+                username);
         });
 
-    // Start server
-    drogon::app()
-        .addListener("127.0.0.1", 8080)
-        .run();
+    // =================================================
+    // LOGIN API
+    // POST /api/login
+    // =================================================
+
+    app().registerHandler(
+        "/api/login",
+        [](const HttpRequestPtr &req,
+           std::function<void(const HttpResponsePtr &)> &&callback)
+        {
+            Json::Value jsonResponse;
+
+            auto json =
+                req->getJsonObject();
+
+            if (!json)
+            {
+                jsonResponse["success"] = false;
+                jsonResponse["message"] =
+                    "Invalid JSON data";
+
+                auto response =
+                    HttpResponse::newHttpJsonResponse(
+                        jsonResponse);
+
+                response->setStatusCode(
+                    k400BadRequest);
+
+                response->addHeader(
+                    "Access-Control-Allow-Origin", "*");
+
+                callback(response);
+                return;
+            }
+
+            std::string username =
+                (*json)["username"].asString();
+
+            std::string password =
+                (*json)["password"].asString();
+
+            if (username.empty() ||
+                password.empty())
+            {
+                jsonResponse["success"] = false;
+                jsonResponse["message"] =
+                    "Username and password are required";
+
+                auto response =
+                    HttpResponse::newHttpJsonResponse(
+                        jsonResponse);
+
+                response->setStatusCode(
+                    k400BadRequest);
+
+                response->addHeader(
+                    "Access-Control-Allow-Origin", "*");
+
+                callback(response);
+                return;
+            }
+
+            auto dbClient =
+                app().getDbClient();
+
+            dbClient->execSqlAsync(
+                "SELECT id, name, username, email, role "
+                "FROM users "
+                "WHERE username = ? "
+                "AND password_hash = ?",
+
+                // SUCCESS
+                [callback](const Result &result)
+                {
+                    Json::Value jsonResponse;
+
+                    if (result.size() == 0)
+                    {
+                        jsonResponse["success"] = false;
+                        jsonResponse["message"] =
+                            "Invalid username or password";
+
+                        auto response =
+                            HttpResponse::newHttpJsonResponse(
+                                jsonResponse);
+
+                        response->setStatusCode(
+                            k401Unauthorized);
+
+                        response->addHeader(
+                            "Access-Control-Allow-Origin",
+                            "*");
+
+                        callback(response);
+                        return;
+                    }
+
+                    const auto &row =
+                        result[0];
+
+                    jsonResponse["success"] =
+                        true;
+
+                    jsonResponse["message"] =
+                        "Login successful";
+
+                    jsonResponse["user"]["id"] =
+                        row["id"].as<int>();
+
+                    jsonResponse["user"]["name"] =
+                        row["name"].as<std::string>();
+
+                    jsonResponse["user"]["username"] =
+                        row["username"].as<std::string>();
+
+                    jsonResponse["user"]["email"] =
+                        row["email"].as<std::string>();
+
+                    jsonResponse["user"]["role"] =
+                        row["role"].as<std::string>();
+
+                    auto response =
+                        HttpResponse::newHttpJsonResponse(
+                            jsonResponse);
+
+                    response->addHeader(
+                        "Access-Control-Allow-Origin",
+                        "*");
+
+                    callback(response);
+                },
+
+                // ERROR
+                [callback](const DrogonDbException &e)
+                {
+                    Json::Value jsonResponse;
+
+                    jsonResponse["success"] = false;
+                    jsonResponse["message"] =
+                        "Database error";
+
+                    jsonResponse["error"] =
+                        e.base().what();
+
+                    auto response =
+                        HttpResponse::newHttpJsonResponse(
+                            jsonResponse);
+
+                    response->setStatusCode(
+                        k500InternalServerError);
+
+                    response->addHeader(
+                        "Access-Control-Allow-Origin",
+                        "*");
+
+                    callback(response);
+                },
+
+                username,
+                password);
+        });
+
+    // =================================================
+    // PRODUCTS API
+    // GET /api/products
+    // =================================================
+
+    app().registerHandler(
+        "/api/products",
+        [](const HttpRequestPtr &req,
+           std::function<void(const HttpResponsePtr &)> &&callback)
+        {
+            auto dbClient =
+                app().getDbClient();
+
+            dbClient->execSqlAsync(
+                "SELECT id, product_name, description, "
+                "price, image, category "
+                "FROM products "
+                "ORDER BY id",
+
+                // SUCCESS
+                [callback](const Result &result)
+                {
+                    Json::Value products(
+                        Json::arrayValue);
+
+                    for (const auto &row : result)
+                    {
+                        Json::Value product;
+
+                        product["id"] =
+                            row["id"].as<int>();
+
+                        product["product_name"] =
+                            row["product_name"]
+                                .as<std::string>();
+
+                        product["description"] =
+                            row["description"]
+                                .as<std::string>();
+
+                        product["price"] =
+                            row["price"].as<double>();
+
+                        product["image"] =
+                            row["image"]
+                                .as<std::string>();
+
+                        product["category"] =
+                            row["category"]
+                                .as<std::string>();
+
+                        products.append(product);
+                    }
+
+                    auto response =
+                        HttpResponse::newHttpJsonResponse(
+                            products);
+
+                    response->addHeader(
+                        "Access-Control-Allow-Origin",
+                        "*");
+
+                    callback(response);
+                },
+
+                // ERROR
+                [callback](const DrogonDbException &e)
+                {
+                    Json::Value jsonResponse;
+
+                    jsonResponse["success"] =
+                        false;
+
+                    jsonResponse["message"] =
+                        "Failed to fetch products";
+
+                    jsonResponse["error"] =
+                        e.base().what();
+
+                    auto response =
+                        HttpResponse::newHttpJsonResponse(
+                            jsonResponse);
+
+                    response->setStatusCode(
+                        k500InternalServerError);
+
+                    response->addHeader(
+                        "Access-Control-Allow-Origin",
+                        "*");
+
+                    callback(response);
+                });
+        });
+
+    // =================================================
+    // CREATE ORDER API
+    // POST /api/orders
+    // =================================================
+
+    app().registerHandler(
+        "/api/orders",
+        [](const HttpRequestPtr &req,
+           std::function<void(const HttpResponsePtr &)> &&callback)
+        {
+            Json::Value responseJson;
+
+            auto json =
+                req->getJsonObject();
+
+            if (!json)
+            {
+                responseJson["success"] = false;
+                responseJson["message"] =
+                    "Invalid JSON data";
+
+                auto response =
+                    HttpResponse::newHttpJsonResponse(
+                        responseJson);
+
+                response->setStatusCode(
+                    k400BadRequest);
+
+                response->addHeader(
+                    "Access-Control-Allow-Origin",
+                    "*");
+
+                callback(response);
+                return;
+            }
+
+            int userId =
+                (*json)["user_id"].asInt();
+
+            double totalAmount =
+                (*json)["total_amount"].asDouble();
+
+            if (userId <= 0 ||
+                totalAmount <= 0)
+            {
+                responseJson["success"] = false;
+                responseJson["message"] =
+                    "Invalid user ID or total amount";
+
+                auto response =
+                    HttpResponse::newHttpJsonResponse(
+                        responseJson);
+
+                response->setStatusCode(
+                    k400BadRequest);
+
+                response->addHeader(
+                    "Access-Control-Allow-Origin",
+                    "*");
+
+                callback(response);
+                return;
+            }
+
+            auto dbClient =
+                app().getDbClient();
+
+            dbClient->execSqlAsync(
+                "INSERT INTO orders "
+                "(user_id, total_amount, status) "
+                "VALUES ($1, $2, 'Pending') "
+                "RETURNING id",
+
+                // SUCCESS
+                [callback](const Result &result)
+                {
+                    Json::Value jsonResponse;
+
+                    if (result.empty())
+                    {
+                        jsonResponse["success"] =
+                            false;
+
+                        jsonResponse["message"] =
+                            "Order creation failed";
+
+                        auto response =
+                            HttpResponse::newHttpJsonResponse(
+                                jsonResponse);
+
+                        response->setStatusCode(
+                            k500InternalServerError);
+
+                        callback(response);
+                        return;
+                    }
+
+                    int orderId =
+                        result[0]["id"].as<int>();
+
+                    jsonResponse["success"] =
+                        true;
+
+                    jsonResponse["message"] =
+                        "Order created successfully";
+
+                    jsonResponse["order_id"] =
+                        orderId;
+
+                    auto response =
+                        HttpResponse::newHttpJsonResponse(
+                            jsonResponse);
+
+                    response->addHeader(
+                        "Access-Control-Allow-Origin",
+                        "*");
+
+                    callback(response);
+                },
+
+                // ERROR
+                [callback](const DrogonDbException &e)
+                {
+                    Json::Value jsonResponse;
+
+                    jsonResponse["success"] =
+                        false;
+
+                    jsonResponse["message"] =
+                        "Database error";
+
+                    jsonResponse["error"] =
+                        e.base().what();
+
+                    auto response =
+                        HttpResponse::newHttpJsonResponse(
+                            jsonResponse);
+
+                    response->setStatusCode(
+                        k500InternalServerError);
+
+                    response->addHeader(
+                        "Access-Control-Allow-Origin",
+                        "*");
+
+                    callback(response);
+                },
+
+                userId,
+                totalAmount);
+        });
+
+    // =================================================
+    // CREATE ORDER ITEM API
+    // POST /api/order-items
+    // =================================================
+
+    app().registerHandler(
+        "/api/order-items",
+        [](const HttpRequestPtr &req,
+           std::function<void(const HttpResponsePtr &)> &&callback)
+        {
+            Json::Value responseJson;
+
+            // -----------------------------------------
+            // Get JSON
+            // -----------------------------------------
+
+            auto json =
+                req->getJsonObject();
+
+            if (!json)
+            {
+                responseJson["success"] = false;
+                responseJson["message"] =
+                    "Invalid JSON data";
+
+                auto response =
+                    HttpResponse::newHttpJsonResponse(
+                        responseJson);
+
+                response->setStatusCode(
+                    k400BadRequest);
+
+                response->addHeader(
+                    "Access-Control-Allow-Origin",
+                    "*");
+
+                callback(response);
+                return;
+            }
+
+            // -----------------------------------------
+            // Get values
+            // -----------------------------------------
+
+            int orderId =
+                (*json)["order_id"].asInt();
+
+            int productId =
+                (*json)["product_id"].asInt();
+
+            int quantity =
+                (*json)["quantity"].asInt();
+
+            double price =
+                (*json)["price"].asDouble();
+
+            // -----------------------------------------
+            // Validate
+            // -----------------------------------------
+
+            if (orderId <= 0 ||
+                productId <= 0 ||
+                quantity <= 0 ||
+                price <= 0)
+            {
+                responseJson["success"] = false;
+
+                responseJson["message"] =
+                    "Invalid order ID, product ID, "
+                    "quantity or price";
+
+                auto response =
+                    HttpResponse::newHttpJsonResponse(
+                        responseJson);
+
+                response->setStatusCode(
+                    k400BadRequest);
+
+                response->addHeader(
+                    "Access-Control-Allow-Origin",
+                    "*");
+
+                callback(response);
+                return;
+            }
+
+            // -----------------------------------------
+            // Database client
+            // -----------------------------------------
+
+            auto dbClient =
+                app().getDbClient();
+
+            // -----------------------------------------
+            // INSERT ORDER ITEM
+            // -----------------------------------------
+
+            dbClient->execSqlAsync(
+                "INSERT INTO order_items "
+                "(order_id, product_id, quantity, price) "
+                "VALUES ($1, $2, $3, $4) "
+                "RETURNING id",
+
+                // -------------------------------------
+                // SUCCESS
+                // -------------------------------------
+
+                [callback](const Result &result)
+                {
+                    Json::Value jsonResponse;
+
+                    if (result.empty())
+                    {
+                        jsonResponse["success"] =
+                            false;
+
+                        jsonResponse["message"] =
+                            "Order item creation failed";
+
+                        auto response =
+                            HttpResponse::newHttpJsonResponse(
+                                jsonResponse);
+
+                        response->setStatusCode(
+                            k500InternalServerError);
+
+                        response->addHeader(
+                            "Access-Control-Allow-Origin",
+                            "*");
+
+                        callback(response);
+                        return;
+                    }
+
+                    int itemId =
+                        result[0]["id"].as<int>();
+
+                    jsonResponse["success"] =
+                        true;
+
+                    jsonResponse["message"] =
+                        "Order item added successfully";
+
+                    jsonResponse["item_id"] =
+                        itemId;
+
+                    auto response =
+                        HttpResponse::newHttpJsonResponse(
+                            jsonResponse);
+
+                    response->addHeader(
+                        "Access-Control-Allow-Origin",
+                        "*");
+
+                    callback(response);
+                },
+
+                // -------------------------------------
+                // ERROR
+                // -------------------------------------
+
+                [callback](const DrogonDbException &e)
+                {
+                    Json::Value jsonResponse;
+
+                    jsonResponse["success"] =
+                        false;
+
+                    jsonResponse["message"] =
+                        "Database error";
+
+                    jsonResponse["error"] =
+                        e.base().what();
+
+                    auto response =
+                        HttpResponse::newHttpJsonResponse(
+                            jsonResponse);
+
+                    response->setStatusCode(
+                        k500InternalServerError);
+
+                    response->addHeader(
+                        "Access-Control-Allow-Origin",
+                        "*");
+
+                    callback(response);
+                },
+
+                orderId,
+                productId,
+                quantity,
+                price);
+        });
+
+    // =================================================
+    // SERVER CONFIGURATION
+    // =================================================
+
+    app().addListener(
+        "127.0.0.1",
+        8080);
+
+    std::cout << "Server starting..." << std::endl;
+
+    std::cout << "URL: http://127.0.0.1:8080"
+              << std::endl;
+
+    // =================================================
+    // START DROGON
+    // =================================================
+
+    app().run();
 
     return 0;
 }
