@@ -29,9 +29,23 @@ find_package(PostgreSQL REQUIRED)
 
 # Backend executable
 add_executable(NishandhiniMart
-    backend/main.cpp
-)
+    backend/test_main.cpp
 
+    backend/Controllers/AuthController.cpp
+    backend/Controllers/ProductController.cpp
+    backend/Controllers/OrderController.cpp
+    backend/Controllers/AdminController.cpp
+    backend/Controllers/CartController.cpp
+    backend/Controllers/ReviewController.cpp
+
+    backend/Services/AuthService.cpp
+    backend/Services/ProductService.cpp
+    backend/Services/OrderService.cpp
+
+    backend/database/Database.cpp
+
+    backend/Routes/routes.cpp
+)
 # Link libraries
 target_link_libraries(NishandhiniMart PRIVATE
     Drogon::Drogon

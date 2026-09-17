@@ -230,7 +230,7 @@ int main()
 
             // Check username
             dbClient->execSqlAsync(
-                "SELECT id FROM users WHERE username = ?",
+                "SELECT id FROM users WHERE username = $1",
 
                 [dbClient,
                  name,
@@ -268,7 +268,7 @@ int main()
                     dbClient->execSqlAsync(
                         "INSERT INTO users "
                         "(name, username, email, password_hash, role) "
-                        "VALUES (?, ?, ?, ?, ?)",
+                        "VALUES ($1, $2, $3, $4, $5)",
 
                         [callback](const Result &result)
                         {
@@ -419,7 +419,7 @@ int main()
             dbClient->execSqlAsync(
                 "SELECT id, name, username, email, role "
                 "FROM users "
-                "WHERE username = 1$ AND password_hash = 2$",
+                "WHERE username = $1 AND password_hash = $2",
 
                 // SUCCESS
                 [callback](const Result &result)
@@ -527,7 +527,7 @@ int main()
 
             dbClient->execSqlAsync(
                 "SELECT id, product_name, description, "
-                "price, image, category "
+                "price, image, category, seller_id "
                 "FROM products "
                 "ORDER BY id",
 
@@ -562,7 +562,9 @@ int main()
                         product["category"] =
                             row["category"]
                                 .as<std::string>();
-
+ 
+                        product["seller_id"] =
+                            row["seller_id"].as<int>();
                         products.append(product);
                     }
 
@@ -757,7 +759,409 @@ int main()
                 userId,
                 totalAmount);
         });
+         // =================================================
+    // ADD PRODUCT API
+    // POST /api/products
+    // =================================================
 
+    app().registerHandler(
+        "/api/products",
+        [](const HttpRequestPtr &req,
+           std::function<void(const HttpResponsePtr &)> &&callback)
+        {
+            Json::Value responseJson;
+
+            auto json = req->getJsonObject();
+
+            if (!json)
+            {
+                responseJson["success"] = false;
+                responseJson["message"] = "Invalid JSON data";
+
+                auto response =
+                    HttpResponse::newHttpJsonResponse(responseJson);
+
+                response->setStatusCode(k400BadRequest);
+                response->addHeader(
+                    "Access-Control-Allow-Origin", "*");
+
+                callback(response);
+                return;
+            }
+
+            std::string productName =
+                (*json)["product_name"].asString();
+
+            std::string description =
+                (*json)["description"].asString();
+
+            double price =
+                (*json)["price"].asDouble();
+
+            std::string image =
+                (*json)["image"].asString();
+
+            std::string category =
+                (*json)["category"].asString();
+
+            int sellerId =
+                (*json)["seller_id"].asInt();
+
+            if (productName.empty() ||
+                price <= 0 ||
+                sellerId <= 0)
+            {
+                responseJson["success"] = false;
+                responseJson["message"] =
+                    "Product name, valid price and seller_id are required";
+
+                auto response =
+                    HttpResponse::newHttpJsonResponse(responseJson);
+
+                response->setStatusCode(k400BadRequest);
+                response->addHeader(
+                    "Access-Control-Allow-Origin", "*");
+
+                callback(response);
+                return;
+            }
+
+            auto dbClient =
+                app().getDbClient();
+
+            dbClient->execSqlAsync(
+                "INSERT INTO products "
+                "(product_name, description, price, image, category, seller_id) "
+                "VALUES ($1, $2, $3, $4, $5, $6) "
+                "RETURNING id",
+
+                // SUCCESS
+                [callback](const Result &result)
+                {
+                    Json::Value jsonResponse;
+
+                    jsonResponse["success"] = true;
+                    jsonResponse["message"] =
+                        "Product added successfully!";
+
+                    if (!result.empty())
+                    {
+                        jsonResponse["id"] =
+                            result[0]["id"].as<int>();
+                    }
+
+                    auto response =
+                        HttpResponse::newHttpJsonResponse(
+                            jsonResponse);
+
+                    response->addHeader(
+                        "Access-Control-Allow-Origin",
+                        "*");
+
+                    callback(response);
+                },
+
+                // ERROR
+                [callback](const DrogonDbException &e)
+                {
+                    Json::Value jsonResponse;
+
+                    jsonResponse["success"] = false;
+                    jsonResponse["message"] =
+                        "Failed to add product";
+
+                    jsonResponse["error"] =
+                        e.base().what();
+
+                    auto response =
+                        HttpResponse::newHttpJsonResponse(
+                            jsonResponse);
+
+                    response->setStatusCode(
+                        k500InternalServerError);
+
+                    response->addHeader(
+                        "Access-Control-Allow-Origin",
+                        "*");
+
+                    callback(response);
+                },
+
+                productName,
+                description,
+                price,
+                image,
+                category,
+                sellerId
+            );
+        },
+        {Post});
+
+    // =================================================
+    // EDIT PRODUCT API
+    // PUT /api/products/{id}
+    // =================================================
+
+    app().registerHandler(
+        "/api/products/{id}",
+        [](const HttpRequestPtr &req,
+           std::function<void(const HttpResponsePtr &)> &&callback,
+           int productId)
+        {
+            Json::Value responseJson;
+
+            auto json = req->getJsonObject();
+
+            if (!json)
+            {
+                responseJson["success"] = false;
+                responseJson["message"] = "Invalid JSON data";
+
+                auto response =
+                    HttpResponse::newHttpJsonResponse(responseJson);
+
+                response->setStatusCode(k400BadRequest);
+                response->addHeader(
+                    "Access-Control-Allow-Origin", "*");
+
+                callback(response);
+                return;
+            }
+
+            std::string productName =
+                (*json)["product_name"].asString();
+
+            std::string description =
+                (*json)["description"].asString();
+
+            double price =
+                (*json)["price"].asDouble();
+
+            std::string image =
+                (*json)["image"].asString();
+
+            std::string category =
+                (*json)["category"].asString();
+
+            int sellerId =
+                (*json)["seller_id"].asInt();
+
+            if (productId <= 0 ||
+                productName.empty() ||
+                price <= 0 ||
+                sellerId <= 0)
+            {
+                responseJson["success"] = false;
+                responseJson["message"] =
+                    "Invalid product ID, product name, price or seller ID";
+
+                auto response =
+                    HttpResponse::newHttpJsonResponse(responseJson);
+
+                response->setStatusCode(k400BadRequest);
+                response->addHeader(
+                    "Access-Control-Allow-Origin", "*");
+
+                callback(response);
+                return;
+            }
+
+            auto dbClient =
+                app().getDbClient();
+
+            dbClient->execSqlAsync(
+                "UPDATE products "
+                "SET product_name = $1, "
+                "description = $2, "
+                "price = $3, "
+                "image = $4, "
+                "category = $5 "
+                "WHERE id = $6 AND seller_id = $7",
+
+                [callback](const Result &result)
+                {
+                    Json::Value jsonResponse;
+
+                    jsonResponse["success"] = true;
+                    jsonResponse["message"] =
+                        "Product updated successfully!";
+
+                    auto response =
+                        HttpResponse::newHttpJsonResponse(
+                            jsonResponse);
+
+                    response->addHeader(
+                        "Access-Control-Allow-Origin",
+                        "*");
+
+                    callback(response);
+                },
+
+                [callback](const DrogonDbException &e)
+                {
+                    Json::Value jsonResponse;
+
+                    jsonResponse["success"] = false;
+                    jsonResponse["message"] =
+                        "Failed to update product";
+
+                    jsonResponse["error"] =
+                        e.base().what();
+
+                    auto response =
+                        HttpResponse::newHttpJsonResponse(
+                            jsonResponse);
+
+                    response->setStatusCode(
+                        k500InternalServerError);
+
+                    response->addHeader(
+                        "Access-Control-Allow-Origin",
+                        "*");
+
+                    callback(response);
+                },
+
+                productName,
+                description,
+                price,
+                image,
+                category,
+                productId,
+                sellerId
+            );
+        },
+        {Put});
+            // =================================================
+    // DELETE PRODUCT API
+    // DELETE /api/products/{id}
+    // =================================================
+
+    app().registerHandler(
+        "/api/products/{id}",
+        [](const HttpRequestPtr &req,
+           std::function<void(const HttpResponsePtr &)> &&callback,
+           int productId)
+        {
+            Json::Value responseJson;
+
+            int sellerId = 0;
+
+            auto json = req->getJsonObject();
+
+            if (!json)
+            {
+                responseJson["success"] = false;
+                responseJson["message"] = "Invalid JSON data";
+
+                auto response =
+                    HttpResponse::newHttpJsonResponse(responseJson);
+
+                response->setStatusCode(k400BadRequest);
+                response->addHeader(
+                    "Access-Control-Allow-Origin", "*");
+
+                callback(response);
+                return;
+            }
+
+            sellerId = (*json)["seller_id"].asInt();
+
+            if (productId <= 0 || sellerId <= 0)
+            {
+                responseJson["success"] = false;
+                responseJson["message"] =
+                    "Valid product ID and seller ID are required";
+
+                auto response =
+                    HttpResponse::newHttpJsonResponse(responseJson);
+
+                response->setStatusCode(k400BadRequest);
+                response->addHeader(
+                    "Access-Control-Allow-Origin", "*");
+
+                callback(response);
+                return;
+            }
+
+            auto dbClient =
+                app().getDbClient();
+
+            dbClient->execSqlAsync(
+                "DELETE FROM products "
+                "WHERE id = $1 AND seller_id = $2 "
+                "RETURNING id",
+
+                [callback](const Result &result)
+                {
+                    Json::Value jsonResponse;
+
+                    if (result.empty())
+                    {
+                        jsonResponse["success"] = false;
+                        jsonResponse["message"] =
+                            "Product not found or you are not the owner";
+
+                        auto response =
+                            HttpResponse::newHttpJsonResponse(
+                                jsonResponse);
+
+                        response->setStatusCode(
+                            k404NotFound);
+
+                        response->addHeader(
+                            "Access-Control-Allow-Origin", "*");
+
+                        callback(response);
+                        return;
+                    }
+
+                    jsonResponse["success"] = true;
+                    jsonResponse["message"] =
+                        "Product deleted successfully!";
+
+                    jsonResponse["id"] =
+                        result[0]["id"].as<int>();
+
+                    auto response =
+                        HttpResponse::newHttpJsonResponse(
+                            jsonResponse);
+
+                    response->addHeader(
+                        "Access-Control-Allow-Origin", "*");
+
+                    callback(response);
+                },
+
+                [callback](const DrogonDbException &e)
+                {
+                    Json::Value jsonResponse;
+
+                    jsonResponse["success"] = false;
+                    jsonResponse["message"] =
+                        "Failed to delete product";
+
+                    jsonResponse["error"] =
+                        e.base().what();
+
+                    auto response =
+                        HttpResponse::newHttpJsonResponse(
+                            jsonResponse);
+
+                    response->setStatusCode(
+                        k500InternalServerError);
+
+                    response->addHeader(
+                        "Access-Control-Allow-Origin", "*");
+
+                    callback(response);
+                },
+
+                productId,
+                sellerId
+            );
+        },
+        {Delete});
     // =================================================
     // CREATE ORDER ITEM API
     // POST /api/order-items
@@ -1031,6 +1435,384 @@ app().registerHandler(
 
             userId);
     });
+// =================================================
+// ADMIN CREATE SELLER API
+// POST /api/admin/sellers
+// =================================================
+
+app().registerHandler(
+    "/api/admin/sellers",
+    [](const HttpRequestPtr &req,
+       std::function<void(const HttpResponsePtr &)> &&callback)
+    {
+        Json::Value jsonResponse;
+
+        auto json = req->getJsonObject();
+
+        // Check JSON
+        if (!json)
+        {
+            jsonResponse["success"] = false;
+            jsonResponse["message"] =
+                "Invalid JSON data";
+
+            auto response =
+                HttpResponse::newHttpJsonResponse(
+                    jsonResponse);
+
+            response->setStatusCode(
+                k400BadRequest);
+
+            response->addHeader(
+                "Access-Control-Allow-Origin", "*");
+
+            callback(response);
+            return;
+        }
+
+        // Get seller details
+        std::string name =
+            (*json)["name"].asString();
+
+        std::string username =
+            (*json)["username"].asString();
+
+        std::string email =
+            (*json)["email"].asString();
+
+        std::string password =
+            (*json)["password"].asString();
+
+        // Validate
+        if (name.empty() ||
+            username.empty() ||
+            email.empty() ||
+            password.empty())
+        {
+            jsonResponse["success"] = false;
+            jsonResponse["message"] =
+                "All seller fields are required";
+
+            auto response =
+                HttpResponse::newHttpJsonResponse(
+                    jsonResponse);
+
+            response->setStatusCode(
+                k400BadRequest);
+
+            response->addHeader(
+                "Access-Control-Allow-Origin", "*");
+
+            callback(response);
+            return;
+        }
+
+        auto dbClient =
+            app().getDbClient();
+
+        // Check username
+        dbClient->execSqlAsync(
+            "SELECT id FROM users "
+            "WHERE username = $1",
+
+            [dbClient,
+             name,
+             username,
+             email,
+             password,
+             callback](const Result &result)
+            {
+                // Username already exists
+                if (!result.empty())
+                {
+                    Json::Value jsonResponse;
+
+                    jsonResponse["success"] = false;
+                    jsonResponse["message"] =
+                        "Username already exists";
+
+                    auto response =
+                        HttpResponse::newHttpJsonResponse(
+                            jsonResponse);
+
+                    response->setStatusCode(
+                        k409Conflict);
+
+                    response->addHeader(
+                        "Access-Control-Allow-Origin", "*");
+
+                    callback(response);
+                    return;
+                }
+
+                // Create seller
+                dbClient->execSqlAsync(
+                    "INSERT INTO users "
+                    "(name, username, email, password_hash, role) "
+                    "VALUES ($1, $2, $3, $4, 'seller') "
+                    "RETURNING id",
+
+                    [callback](const Result &result)
+                    {
+                        Json::Value jsonResponse;
+
+                        if (result.empty())
+                        {
+                            jsonResponse["success"] = false;
+                            jsonResponse["message"] =
+                                "Seller creation failed";
+
+                            auto response =
+                                HttpResponse::newHttpJsonResponse(
+                                    jsonResponse);
+
+                            response->setStatusCode(
+                                k500InternalServerError);
+
+                            response->addHeader(
+                                "Access-Control-Allow-Origin", "*");
+
+                            callback(response);
+                            return;
+                        }
+
+                        int sellerId =
+                            result[0]["id"].as<int>();
+
+                        jsonResponse["success"] = true;
+                        jsonResponse["message"] =
+                            "Seller created successfully";
+
+                        jsonResponse["seller_id"] =
+                            sellerId;
+
+                        auto response =
+                            HttpResponse::newHttpJsonResponse(
+                                jsonResponse);
+
+                        response->addHeader(
+                            "Access-Control-Allow-Origin", "*");
+
+                        callback(response);
+                    },
+
+                    [callback](const DrogonDbException &e)
+                    {
+                        Json::Value jsonResponse;
+
+                        jsonResponse["success"] = false;
+                        jsonResponse["message"] =
+                            "Seller creation failed";
+
+                        jsonResponse["error"] =
+                            e.base().what();
+
+                        auto response =
+                            HttpResponse::newHttpJsonResponse(
+                                jsonResponse);
+
+                        response->setStatusCode(
+                            k500InternalServerError);
+
+                        response->addHeader(
+                            "Access-Control-Allow-Origin", "*");
+
+                        callback(response);
+                    },
+
+                    name,
+                    username,
+                    email,
+                    password);
+            },
+
+            [callback](const DrogonDbException &e)
+            {
+                Json::Value jsonResponse;
+
+                jsonResponse["success"] = false;
+                jsonResponse["message"] =
+                    "Database error";
+
+                jsonResponse["error"] =
+                    e.base().what();
+
+                auto response =
+                    HttpResponse::newHttpJsonResponse(
+                        jsonResponse);
+
+                response->setStatusCode(
+                    k500InternalServerError);
+
+                response->addHeader(
+                    "Access-Control-Allow-Origin", "*");
+
+                callback(response);
+            },
+
+            username);
+    });
+    // =================================================
+// SELLER ORDERS API
+// GET /api/seller/orders?seller_id=30
+// =================================================
+
+app().registerHandler(
+    "/api/seller/orders",
+    [](const HttpRequestPtr &req,
+       std::function<void(const HttpResponsePtr &)> &&callback)
+    {
+        Json::Value responseJson;
+
+        auto sellerIdParam =
+            req->getParameter("seller_id");
+
+        if (sellerIdParam.empty())
+        {
+            responseJson["success"] = false;
+            responseJson["message"] =
+                "seller_id is required";
+
+            auto response =
+                HttpResponse::newHttpJsonResponse(
+                    responseJson);
+
+            response->setStatusCode(
+                k400BadRequest);
+
+            response->addHeader(
+                "Access-Control-Allow-Origin",
+                "*");
+
+            callback(response);
+            return;
+        }
+
+        int sellerId =
+            std::stoi(sellerIdParam);
+
+        if (sellerId <= 0)
+        {
+            responseJson["success"] = false;
+            responseJson["message"] =
+                "Invalid seller_id";
+
+            auto response =
+                HttpResponse::newHttpJsonResponse(
+                    responseJson);
+
+            response->setStatusCode(
+                k400BadRequest);
+
+            response->addHeader(
+                "Access-Control-Allow-Origin",
+                "*");
+
+            callback(response);
+            return;
+        }
+
+        auto dbClient =
+            app().getDbClient();
+
+        dbClient->execSqlAsync(
+            "SELECT "
+            "o.id AS order_id, "
+            "o.user_id, "
+            "o.total_amount, "
+            "o.status, "
+            "oi.product_id, "
+            "oi.quantity, "
+            "oi.price, "
+            "p.product_name "
+            "FROM orders o "
+            "JOIN order_items oi "
+            "ON o.id = oi.order_id "
+            "JOIN products p "
+            "ON oi.product_id = p.id "
+            "WHERE p.seller_id = $1 "
+            "ORDER BY o.id DESC",
+
+            // SUCCESS
+            [callback](const Result &result)
+            {
+                Json::Value orders(
+                    Json::arrayValue);
+
+                for (const auto &row : result)
+                {
+                    Json::Value order;
+
+                    order["order_id"] =
+                        row["order_id"].as<int>();
+
+                    order["user_id"] =
+                        row["user_id"].as<int>();
+
+                    order["total_amount"] =
+                        row["total_amount"].as<double>();
+
+                    order["status"] =
+                        row["status"].as<std::string>();
+
+                    order["product_id"] =
+                        row["product_id"].as<int>();
+
+                    order["product_name"] =
+                        row["product_name"]
+                            .as<std::string>();
+
+                    order["quantity"] =
+                        row["quantity"].as<int>();
+
+                    order["price"] =
+                        row["price"].as<double>();
+
+                    orders.append(order);
+                }
+
+                auto response =
+                    HttpResponse::newHttpJsonResponse(
+                        orders);
+
+                response->addHeader(
+                    "Access-Control-Allow-Origin",
+                    "*");
+
+                callback(response);
+            },
+
+            // ERROR
+            [callback](const DrogonDbException &e)
+            {
+                Json::Value jsonResponse;
+
+                jsonResponse["success"] = false;
+
+                jsonResponse["message"] =
+                    "Failed to fetch seller orders";
+
+                jsonResponse["error"] =
+                    e.base().what();
+
+                auto response =
+                    HttpResponse::newHttpJsonResponse(
+                        jsonResponse);
+
+                response->setStatusCode(
+                    k500InternalServerError);
+
+                response->addHeader(
+                    "Access-Control-Allow-Origin",
+                    "*");
+
+                callback(response);
+            },
+
+            sellerId);
+    },
+    {Get});
+
     // =================================================
     // SERVER CONFIGURATION
     // =================================================
