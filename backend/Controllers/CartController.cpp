@@ -20,8 +20,7 @@ void addToCart(
         result["success"] = false;
         result["message"] = "Invalid JSON data";
 
-        auto response = HttpResponse::newHttpJsonResponse(result);
-        callback(response);
+        callback(HttpResponse::newHttpJsonResponse(result));
         return;
     }
 
@@ -35,44 +34,125 @@ void addToCart(
         result["success"] = false;
         result["message"] = "Invalid cart details";
 
-        auto response = HttpResponse::newHttpJsonResponse(result);
-        callback(response);
+        callback(HttpResponse::newHttpJsonResponse(result));
         return;
     }
 
     auto dbClient = getDatabaseClient();
 
+    // First check product stock and existing cart quantity
     dbClient->execSqlAsync(
-        "INSERT INTO cart (user_id, product_id, quantity) "
-        "VALUES ($1, $2, $3) "
-        "ON CONFLICT (user_id, product_id) "
-        "DO UPDATE SET quantity = cart.quantity + EXCLUDED.quantity",
-        [callback](const Result &result)
+        "SELECT p.quantity AS stock_quantity, "
+        "COALESCE(c.quantity, 0) AS cart_quantity "
+        "FROM products p "
+        "LEFT JOIN cart c "
+        "ON c.product_id = p.id AND c.user_id = $1 "
+        "WHERE p.id = $2",
+
+        [callback, userId, productId, quantity](
+            const Result &result)
         {
-            Json::Value responseJson;
-            responseJson["success"] = true;
-            responseJson["message"] = "Product added to cart";
+            if (result.empty())
+            {
+                Json::Value responseJson;
+                responseJson["success"] = false;
+                responseJson["message"] = "Product not found";
 
-            auto response =
-                HttpResponse::newHttpJsonResponse(responseJson);
+                callback(
+                    HttpResponse::newHttpJsonResponse(responseJson));
+                return;
+            }
 
-            callback(response);
+            int stockQuantity =
+                result[0]["stock_quantity"].as<int>();
+
+            int existingCartQuantity =
+                result[0]["cart_quantity"].as<int>();
+
+            int finalCartQuantity =
+                existingCartQuantity + quantity;
+
+            if (stockQuantity <= 0)
+            {
+                Json::Value responseJson;
+                responseJson["success"] = false;
+                responseJson["message"] = "Product is out of stock";
+
+                callback(
+                    HttpResponse::newHttpJsonResponse(responseJson));
+                return;
+            }
+
+            if (finalCartQuantity > stockQuantity)
+            {
+                Json::Value responseJson;
+                responseJson["success"] = false;
+                responseJson["message"] =
+                    "Requested quantity exceeds available stock";
+
+                callback(
+                    HttpResponse::newHttpJsonResponse(responseJson));
+                return;
+            }
+
+            auto dbClient = getDatabaseClient();
+
+            // Add quantity to cart only after stock validation
+            dbClient->execSqlAsync(
+                "INSERT INTO cart "
+                "(user_id, product_id, quantity) "
+                "VALUES ($1, $2, $3) "
+                "ON CONFLICT (user_id, product_id) "
+                "DO UPDATE SET quantity = cart.quantity + EXCLUDED.quantity",
+
+                [callback](const Result &result)
+                {
+                    Json::Value responseJson;
+                    responseJson["success"] = true;
+                    responseJson["message"] =
+                        "Product added to cart";
+
+                    callback(
+                        HttpResponse::newHttpJsonResponse(responseJson));
+                },
+
+                [callback](const DrogonDbException &error)
+                {
+                    Json::Value responseJson;
+                    responseJson["success"] = false;
+                    responseJson["message"] =
+                        error.base().what();
+
+                    auto response =
+                        HttpResponse::newHttpJsonResponse(responseJson);
+
+                    response->setStatusCode(k500InternalServerError);
+                    callback(response);
+                },
+
+                userId,
+                productId,
+                quantity);
         },
+
         [callback](const DrogonDbException &error)
         {
             Json::Value responseJson;
             responseJson["success"] = false;
-            responseJson["message"] = error.base().what();
+            responseJson["message"] =
+                error.base().what();
 
             auto response =
                 HttpResponse::newHttpJsonResponse(responseJson);
 
+            response->setStatusCode(k500InternalServerError);
             callback(response);
         },
+
         userId,
-        productId,
-        quantity);
+        productId);
 }
+
 
 // =========================================================
 // GET CART
@@ -90,10 +170,8 @@ void getCart(
         responseJson["success"] = false;
         responseJson["message"] = "User ID is required";
 
-        auto response =
-            HttpResponse::newHttpJsonResponse(responseJson);
-
-        callback(response);
+        callback(
+            HttpResponse::newHttpJsonResponse(responseJson));
         return;
     }
 
@@ -102,11 +180,13 @@ void getCart(
     dbClient->execSqlAsync(
         "SELECT c.id, c.product_id, p.product_name, "
         "p.price, p.image, c.quantity, "
+        "p.quantity AS stock_quantity, "
         "(p.price * c.quantity) AS subtotal "
         "FROM cart c "
         "JOIN products p ON c.product_id = p.id "
         "WHERE c.user_id = $1 "
         "ORDER BY c.id DESC",
+
         [callback](const Result &result)
         {
             Json::Value items(Json::arrayValue);
@@ -115,14 +195,29 @@ void getCart(
             {
                 Json::Value item;
 
-                item["id"] = row["id"].as<int>();
-                item["product_id"] = row["product_id"].as<int>();
+                item["id"] =
+                    row["id"].as<int>();
+
+                item["product_id"] =
+                    row["product_id"].as<int>();
+
                 item["product_name"] =
                     row["product_name"].as<std::string>();
-                item["price"] = row["price"].as<double>();
-                item["image"] = row["image"].as<std::string>();
-                item["quantity"] = row["quantity"].as<int>();
-                item["subtotal"] = row["subtotal"].as<double>();
+
+                item["price"] =
+                    row["price"].as<double>();
+
+                item["image"] =
+                    row["image"].as<std::string>();
+
+                item["quantity"] =
+                    row["quantity"].as<int>();
+
+                item["stock_quantity"] =
+                    row["stock_quantity"].as<int>();
+
+                item["subtotal"] =
+                    row["subtotal"].as<double>();
 
                 items.append(item);
             }
@@ -131,24 +226,27 @@ void getCart(
             responseJson["success"] = true;
             responseJson["cart"] = items;
 
-            auto response =
-                HttpResponse::newHttpJsonResponse(responseJson);
-
-            callback(response);
+            callback(
+                HttpResponse::newHttpJsonResponse(responseJson));
         },
+
         [callback](const DrogonDbException &error)
         {
             Json::Value responseJson;
             responseJson["success"] = false;
-            responseJson["message"] = error.base().what();
+            responseJson["message"] =
+                error.base().what();
 
             auto response =
                 HttpResponse::newHttpJsonResponse(responseJson);
 
+            response->setStatusCode(k500InternalServerError);
             callback(response);
         },
+
         userId);
 }
+
 
 // =========================================================
 // REMOVE FROM CART
@@ -164,28 +262,29 @@ void removeFromCart(
     {
         Json::Value responseJson;
         responseJson["success"] = false;
-        responseJson["message"] = "Invalid JSON data";
+        responseJson["message"] =
+            "Invalid JSON data";
 
-        auto response =
-            HttpResponse::newHttpJsonResponse(responseJson);
-
-        callback(response);
+        callback(
+            HttpResponse::newHttpJsonResponse(responseJson));
         return;
     }
 
-    int userId = (*json)["user_id"].asInt();
-    int productId = (*json)["product_id"].asInt();
+    int userId =
+        (*json)["user_id"].asInt();
+
+    int productId =
+        (*json)["product_id"].asInt();
 
     if (userId <= 0 || productId <= 0)
     {
         Json::Value responseJson;
         responseJson["success"] = false;
-        responseJson["message"] = "Invalid user or product ID";
+        responseJson["message"] =
+            "Invalid user or product ID";
 
-        auto response =
-            HttpResponse::newHttpJsonResponse(responseJson);
-
-        callback(response);
+        callback(
+            HttpResponse::newHttpJsonResponse(responseJson));
         return;
     }
 
@@ -194,28 +293,32 @@ void removeFromCart(
     dbClient->execSqlAsync(
         "DELETE FROM cart "
         "WHERE user_id = $1 AND product_id = $2",
+
         [callback](const Result &result)
         {
             Json::Value responseJson;
             responseJson["success"] = true;
-            responseJson["message"] = "Product removed from cart";
+            responseJson["message"] =
+                "Product removed from cart";
 
-            auto response =
-                HttpResponse::newHttpJsonResponse(responseJson);
-
-            callback(response);
+            callback(
+                HttpResponse::newHttpJsonResponse(responseJson));
         },
+
         [callback](const DrogonDbException &error)
         {
             Json::Value responseJson;
             responseJson["success"] = false;
-            responseJson["message"] = error.base().what();
+            responseJson["message"] =
+                error.base().what();
 
             auto response =
                 HttpResponse::newHttpJsonResponse(responseJson);
 
+            response->setStatusCode(k500InternalServerError);
             callback(response);
         },
+
         userId,
         productId);
 }

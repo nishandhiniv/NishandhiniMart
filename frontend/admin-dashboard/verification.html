@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Seller Verification - NishandhiniMart</title>
+
+    <!-- Google Font -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+    <!-- Admin CSS -->
+    <link
+        rel="stylesheet"
+        href="css/admin-dashboard.css"
+    >
+<style>
+    /* Seller Verification - sidebar logo fix only */
+    .admin-sidebar .sidebar-logo {
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
+        overflow: visible;
+    }
+
+    .admin-sidebar .logo-icon {
+        flex-shrink: 0;
+    }
+
+    .admin-sidebar .logo-text {
+        flex: 1;
+        min-width: 0;
+        overflow: visible;
+        white-space: nowrap;
+    }
+
+    .admin-sidebar .logo-title,
+    .admin-sidebar .logo-subtitle {
+        white-space: nowrap;
+        display: block;
+    }
+</style>
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     ADMIN SIDEBAR
+========================================================= -->
+
+<aside class="admin-sidebar">
+
+    <!-- Logo -->
+
+    <div class="sidebar-brand">
+
+        <div class="sidebar-logo">
+            <i class="fas fa-store"></i>
+        </div>
+
+        <div class="sidebar-brand-text">
+            <h2>NishandhiniMart</h2>
+            <span>Admin Panel</span>
+        </div>
+
+    </div>
+
+
+    <!-- Navigation -->
+
+    <nav class="sidebar-nav">
+
+        <a
+            href="dashboard.html"
+            class="sidebar-link"
+        >
+            <i class="fas fa-home"></i>
+            <span>Dashboard</span>
+        </a>
+
+
+        <a
+            href="users.html"
+            class="sidebar-link"
+        >
+            <i class="fas fa-users"></i>
+            <span>Users</span>
+        </a>
+
+
+        <a
+            href="orders.html"
+            class="sidebar-link"
+        >
+            <i class="fas fa-shopping-cart"></i>
+            <span>Orders</span>
+        </a>
+
+
+        <a
+            href="products.html"
+            class="sidebar-link"
+        >
+            <i class="fas fa-box"></i>
+            <span>Products</span>
+        </a>
+
+
+        <a
+            href="inventory.html"
+            class="sidebar-link"
+        >
+            <i class="fas fa-warehouse"></i>
+            <span>Inventory</span>
+        </a>
+
+
+        <a
+            href="verification.html"
+            class="sidebar-link active"
+        >
+            <i class="fas fa-shield-halved"></i>
+            <span>Seller Verification</span>
+        </a>
+
+
+        <a
+            href="settings.html"
+            class="sidebar-link"
+        >
+            <i class="fas fa-gear"></i>
+            <span>Settings</span>
+        </a>
+
+    </nav>
+
+
+    <!-- Logout -->
+
+    <div class="sidebar-bottom">
+
+        <button
+            class="logout-btn"
+            onclick="logout()"
+        >
+            <i class="fas fa-right-from-bracket"></i>
+            <span>Logout</span>
+        </button>
+
+    </div>
+
+</aside>
+
+
+<!-- =========================================================
+     MAIN CONTENT
+========================================================= -->
+
+<main class="admin-main">
+
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="main-header">
+
+        <div class="header-left">
+
+            <div>
+
+                <h1>Seller Verification</h1>
+
+                <p>
+                    Review and manage seller verification details
+                </p>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =====================================================
+         PAGE CONTENT
+    ====================================================== -->
+
+    <div class="dashboard-container">
+
+
+        <!-- =================================================
+             PAGE INTRO
+        ================================================== -->
+
+        <section class="page-heading">
+
+            <div class="page-heading-content">
+
+                <span class="section-label">
+                    SELLER VERIFICATION
+                </span>
+
+                <h2>
+                    Seller Verification
+                </h2>
+
+                <p>
+                    Review seller business information
+                    and verification status.
+                </p>
+
+            </div>
+
+
+            <button
+                class="refresh-btn"
+                onclick="loadSellerVerification()"
+            >
+
+                <i class="fas fa-rotate-right"></i>
+
+                Refresh
+
+            </button>
+
+        </section>
+
+
+
+        <!-- =================================================
+             SUMMARY CARDS
+        ================================================== -->
+
+        <section class="metrics-grid">
+
+
+            <!-- Total Sellers -->
+
+            <div class="metric-card">
+
+                <div class="metric-icon purple">
+                    <i class="fas fa-store"></i>
+                </div>
+
+                <div class="metric-content">
+
+                    <span class="metric-label">
+                        Total Sellers
+                    </span>
+
+                    <strong
+                        id="totalVerificationSellers"
+                    >
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Pending -->
+
+            <div class="metric-card">
+
+                <div class="metric-icon orange">
+                    <i class="fas fa-clock"></i>
+                </div>
+
+                <div class="metric-content">
+
+                    <span class="metric-label">
+                        Pending
+                    </span>
+
+                    <strong
+                        id="pendingVerification"
+                    >
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Approved -->
+
+            <div class="metric-card">
+
+                <div class="metric-icon green">
+                    <i class="fas fa-circle-check"></i>
+                </div>
+
+                <div class="metric-content">
+
+                    <span class="metric-label">
+                        Approved
+                    </span>
+
+                    <strong
+                        id="approvedVerification"
+                    >
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Rejected -->
+
+            <div class="metric-card">
+
+                <div class="metric-icon red">
+                    <i class="fas fa-circle-xmark"></i>
+                </div>
+
+                <div class="metric-content">
+
+                    <span class="metric-label">
+                        Rejected
+                    </span>
+
+                    <strong
+                        id="rejectedVerification"
+                    >
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             VERIFICATION TABLE
+        ================================================== -->
+
+        <section class="dashboard-section">
+
+
+            <div class="table-card">
+
+
+                <!-- Table Header -->
+
+                <div class="table-card-header">
+
+                    <div>
+
+                        <span class="section-label">
+                             SELLER DOCUMENTS
+                        </span>
+
+                        <h3>
+                             Seller Verification Details
+                        </h3>
+
+                        <p>
+                             Check seller business information
+                            and verification status.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Toolbar -->
+
+                <div class="table-toolbar">
+
+
+                    <!-- Search -->
+
+                    <div class="search-box">
+
+                        <i class="fas fa-search"></i>
+
+                        <input
+                            type="text"
+                            id="verificationSearch"
+                            placeholder="Search seller or store..."
+                        >
+
+                    </div>
+
+
+
+                    <!-- Status Filter -->
+
+                    <div class="filter-box">
+
+                        <select
+                            id="verificationStatusFilter"
+                        >
+
+                            <option value="all">
+                                All Status
+                            </option>
+
+                            <option value="pending">
+                                Pending Verification
+                            </option>
+
+                            <option value="approved">
+                                Approved
+                            </option>
+
+                            <option value="rejected">
+                                Rejected
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Table -->
+
+                <div class="table-responsive">
+
+                    <table class="admin-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Seller</th>
+
+                                <th>Store</th>
+
+                                <th>GST</th>
+
+                                <th>Business License</th>
+
+                                <th>Verification Status</th>
+
+                                <th>Action</th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody
+                            id="verificationTableBody"
+                        >
+
+                            <tr>
+
+                                <td colspan="6">
+
+                                    <div class="loading-box">
+
+                                        <div class="spinner"></div>
+
+                                        <p>
+                                            Loading seller verification...
+                                        </p>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+    </div>
+
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer class="admin-footer">
+
+        <div>
+
+            <strong>
+                NishandhiniMart
+            </strong>
+
+            <span>
+                Admin Management System
+            </span>
+
+        </div>
+
+
+        <div>
+
+            © 2026 NishandhiniMart. All rights reserved.
+
+        </div>
+
+    </footer>
+
+
+</main>
+
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script src="js/verification.js"></script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Settings - NishandhiniMart Admin</title>
+
+    <link rel="stylesheet" href="css/admin-dashboard.css">
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+</head>
+
+<body>
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside class="admin-sidebar">
+
+        <div class="sidebar-brand">
+
+            <div class="brand-logo">
+                <i class="fas fa-store"></i>
+            </div>
+
+            <div class="brand-text">
+                <h2>NishandhiniMart</h2>
+                <span>Admin Panel</span>
+            </div>
+
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+            <!-- Dashboard -->
+            <a href="dashboard.html" class="sidebar-link">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+
+
+            <!-- Users -->
+            <a href="users.html" class="sidebar-link">
+                <i class="fas fa-users"></i>
+                <span>Users</span>
+            </a>
+
+
+            <!-- Orders -->
+            <a href="orders.html" class="sidebar-link">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Orders</span>
+            </a>
+
+
+            <!-- Products -->
+            <a href="products.html" class="sidebar-link">
+                <i class="fas fa-box"></i>
+                <span>Products</span>
+            </a>
+
+
+            <!-- Inventory -->
+            <a href="inventory.html" class="sidebar-link">
+                <i class="fas fa-warehouse"></i>
+                <span>Inventory</span>
+            </a>
+
+
+            <!-- Seller Verification -->
+            <a href="verification.html" class="sidebar-link">
+                <i class="fas fa-shield-halved"></i>
+                <span>Seller Verification</span>
+            </a>
+
+
+            <!-- Settings -->
+            <a href="settings.html" class="sidebar-link active">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+
+
+            <!-- Logout -->
+            <a href="#" class="sidebar-link logout-link" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main class="admin-main">
+
+
+        <!-- HEADER -->
+
+        <header class="main-header">
+
+            <div class="header-left">
+
+                <div>
+                    <h1>Settings</h1>
+
+                    <p>
+                        Manage your NishandhiniMart admin settings
+                    </p>
+                </div>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- =================================================
+             PAGE CONTENT
+        ================================================== -->
+
+        <section class="dashboard-container">
+
+
+            <!-- PAGE INTRO -->
+
+            <div class="page-heading">
+
+                <div>
+
+                    <span class="page-eyebrow">
+                        ADMIN SETTINGS
+                    </span>
+
+                    <h2>
+                        Settings
+                    </h2>
+
+                    <p>
+                        Manage account preferences and administration settings
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 SETTINGS GRID
+            ================================================== -->
+
+            <div class="settings-grid">
+
+
+                <!-- ADMIN ACCOUNT -->
+
+                <div class="settings-card">
+
+                    <div class="settings-card-header">
+
+                        <div class="settings-icon account-icon">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+
+                        <div>
+                            <h3>Admin Account</h3>
+
+                            <p>
+                                Current administrator account information
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="settings-info-list">
+
+                        <div class="settings-info-row">
+
+                            <span class="info-label">
+                                Username
+                            </span>
+
+                            <span
+                                class="info-value"
+                                id="adminUsername"
+                            >
+                                Admin
+                            </span>
+
+                        </div>
+
+
+                        <div class="settings-info-row">
+
+                            <span class="info-label">
+                                Email
+                            </span>
+
+                            <span
+                                class="info-value"
+                                id="adminEmail"
+                            >
+                                admin@nishandhinimart.com
+                            </span>
+
+                        </div>
+
+
+                        <div class="settings-info-row">
+
+                            <span class="info-label">
+                                Role
+                            </span>
+
+                            <span class="admin-role-badge">
+                                Administrator
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- PLATFORM -->
+
+                <div class="settings-card">
+
+                    <div class="settings-card-header">
+
+                        <div class="settings-icon platform-icon">
+                            <i class="fas fa-store"></i>
+                        </div>
+
+                        <div>
+                            <h3>Platform Information</h3>
+
+                            <p>
+                                NishandhiniMart platform details
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="settings-info-list">
+
+                        <div class="settings-info-row">
+
+                            <span class="info-label">
+                                Platform
+                            </span>
+
+                            <span class="info-value">
+                                NishandhiniMart
+                            </span>
+
+                        </div>
+
+
+                        <div class="settings-info-row">
+
+                            <span class="info-label">
+                                Account Type
+                            </span>
+
+                            <span class="info-value">
+                                Admin
+                            </span>
+
+                        </div>
+
+
+                        <div class="settings-info-row">
+
+                            <span class="info-label">
+                                System Status
+                            </span>
+
+                            <span class="system-status">
+                                <span class="status-dot"></span>
+                                Active
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- SECURITY -->
+
+                <div class="settings-card">
+
+                    <div class="settings-card-header">
+
+                        <div class="settings-icon security-icon">
+                            <i class="fas fa-lock"></i>
+                        </div>
+
+                        <div>
+                            <h3>Security</h3>
+
+                            <p>
+                                Keep your administrator account secure
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="security-content">
+
+                        <div class="security-item">
+
+                            <div class="security-item-icon">
+                                <i class="fas fa-shield-halved"></i>
+                            </div>
+
+                            <div>
+
+                                <strong>
+                                    Administrator Access
+                                </strong>
+
+                                <p>
+                                    You are currently logged in as an administrator.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="security-item">
+
+                            <div class="security-item-icon">
+                                <i class="fas fa-server"></i>
+                            </div>
+
+                            <div>
+
+                                <strong>
+                                    Backend Connection
+                                </strong>
+
+                                <p>
+                                    Connected to NishandhiniMart backend.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- SESSION -->
+
+                <div class="settings-card">
+
+                    <div class="settings-card-header">
+
+                        <div class="settings-icon session-icon">
+                            <i class="fas fa-right-from-bracket"></i>
+                        </div>
+
+                        <div>
+                            <h3>Session</h3>
+
+                            <p>
+                                Manage your current administrator session
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="session-content">
+
+                        <div class="session-status">
+
+                            <div class="session-status-icon">
+                                <i class="fas fa-circle-check"></i>
+                            </div>
+
+                            <div>
+
+                                <strong>
+                                    Session Active
+                                </strong>
+
+                                <p>
+                                    Your administrator session is currently active.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <button
+                            class="settings-logout-btn"
+                            onclick="logout()"
+                        >
+                            <i class="fas fa-sign-out-alt"></i>
+                            Logout
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 SYSTEM NOTE
+            ================================================== -->
+
+            <div class="settings-note">
+
+                <div class="settings-note-icon">
+                    <i class="fas fa-circle-info"></i>
+                </div>
+
+                <div>
+
+                    <h4>Administrator Settings</h4>
+
+                    <p>
+                        These settings are for managing your administrator
+                        account and NishandhiniMart platform information.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             FOOTER
+        ================================================== -->
+
+        <footer class="admin-footer">
+
+            <div>
+                <strong>NishandhiniMart</strong>
+                <span>Admin Panel</span>
+            </div>
+
+            <p>
+                © 2026 NishandhiniMart. All rights reserved.
+            </p>
+
+        </footer>
+
+    </main>
+
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <script src="js/settings.js"></script>
+
+</body>
+</html>

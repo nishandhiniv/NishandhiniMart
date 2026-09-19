@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Products | NishandhiniMart</title>
+
+    <link rel="stylesheet" href="css/seller-dashboard.css">
+</head>
+
+<body>
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="main-header">
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                N
+            </div>
+
+            <div>
+                <h2>NishandhiniMart</h2>
+                <span>Seller Management Panel</span>
+            </div>
+
+        </div>
+
+
+        <div class="header-actions">
+
+            <button
+                type="button"
+                class="notification-btn"
+                title="Notifications"
+            >
+                🔔
+                <span class="notification-dot"></span>
+            </button>
+
+
+            <div class="profile-menu">
+
+                <button
+                    type="button"
+                    class="profile-menu-btn"
+                    onclick="toggleProfileMenu()"
+                >
+
+                    <span
+                        class="top-profile-avatar"
+                        id="topProfileAvatar"
+                    >
+                        S
+                    </span>
+
+                    <span
+                        class="top-profile-name"
+                        id="topProfileName"
+                    >
+                        Seller
+                    </span>
+
+                    <span class="profile-arrow">
+                        ▾
+                    </span>
+
+                </button>
+
+
+                <div
+                    class="profile-dropdown"
+                    id="profileDropdown"
+                >
+
+                    <button
+                        type="button"
+                        onclick="openSellerProfile()"
+                    >
+                        👤 My Profile
+                    </button>
+
+                    <button
+                        type="button"
+                        onclick="logout()"
+                    >
+                        🚪 Logout
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         DASHBOARD LAYOUT
+    ====================================================== -->
+
+    <div class="dashboard-layout">
+
+
+        <!-- =================================================
+             SIDEBAR
+        ================================================== -->
+
+        <aside class="sidebar">
+
+            <div class="sidebar-title">
+                Seller Menu
+            </div>
+
+
+            <nav class="sidebar-nav">
+
+                <a
+                    href="dashboard.html"
+                    class="sidebar-link"
+                >
+                    <span class="sidebar-icon">🏠</span>
+                    <span>Dashboard</span>
+                </a>
+
+
+                <a
+                    href="my-products.html"
+                    class="sidebar-link active"
+                >
+                    <span class="sidebar-icon">📦</span>
+                    <span>My Products</span>
+                </a>
+
+
+                <a
+                    href="add-product.html"
+                    class="sidebar-link"
+                >
+                    <span class="sidebar-icon">➕</span>
+                    <span>Add Product</span>
+                </a>
+
+
+                <a
+                    href="orders.html"
+                    class="sidebar-link"
+                >
+                    <span class="sidebar-icon">🛒</span>
+                    <span>Orders</span>
+                </a>
+
+
+                <a
+                    href="sales.html"
+                    class="sidebar-link"
+                >
+                    <span class="sidebar-icon">📈</span>
+                    <span>Sales</span>
+                </a>
+
+
+                <a
+                    href="settings.html"
+                    class="sidebar-link"
+                >
+                    <span class="sidebar-icon">⚙️</span>
+                    <span>Settings</span>
+                </a>
+
+            </nav>
+
+
+            <div class="sidebar-divider"></div>
+
+
+            <nav class="sidebar-nav">
+
+                <a
+                    href="seller-profile.html"
+                    class="sidebar-link"
+                >
+                    <span class="sidebar-icon">👤</span>
+                    <span>My Profile</span>
+                </a>
+
+            </nav>
+
+        </aside>
+
+
+        <!-- =================================================
+             MAIN CONTENT
+        ================================================== -->
+
+        <main class="dashboard-main">
+
+
+            <!-- =================================================
+                 PAGE HEADING
+            ================================================== -->
+
+            <div class="page-heading">
+
+                <div class="page-heading-left">
+
+                    <span class="page-label">
+                        YOUR INVENTORY
+                    </span>
+
+                    <h1>
+                        My Products
+                    </h1>
+
+                    <p>
+                        Manage your products, stock and listings
+                        from one place.
+                    </p>
+
+                </div>
+
+
+                <a
+                    href="add-product.html"
+                    class="primary-btn"
+                >
+                    + Add Product
+                </a>
+
+            </div>
+
+
+            <!-- =================================================
+                 PRODUCT SUMMARY
+            ================================================== -->
+
+            <section class="stats-grid">
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon purple-icon">
+                        📦
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Total Products
+                        </span>
+
+                        <h3 id="productCount">
+                            0
+                        </h3>
+
+                        <small>
+                            Listed products
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon blue-icon">
+                        📊
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Total Stock
+                        </span>
+
+                        <h3 id="totalAddedStock">
+                            0
+                        </h3>
+
+                        <small>
+                            Quantity added
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon pink-icon">
+                        🛒
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Products Sold
+                        </span>
+
+                        <h3 id="totalSold">
+                            0
+                        </h3>
+
+                        <small>
+                            Based on orders
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon green-icon">
+                        📦
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Remaining Stock
+                        </span>
+
+                        <h3 id="totalRemainingStock">
+                            0
+                        </h3>
+
+                        <small>
+                            Available now
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 LOW STOCK ALERT
+            ================================================== -->
+
+            <section
+                id="lowStockAlert"
+                class="dashboard-card"
+                style="display:none;"
+            >
+
+                <div class="card-header">
+
+                    <div>
+
+                        <h2>
+                            ⚠️ Low Stock Alert
+                        </h2>
+
+                        <p>
+                            Some products have low available stock.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div id="lowStockList">
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 TOOLBAR
+            ================================================== -->
+
+            <section class="dashboard-card">
+
+                <div class="products-toolbar">
+
+                    <!-- Search -->
+
+                    <div class="search-box">
+
+                        <span class="search-icon">
+                            🔍
+                        </span>
+
+                        <input
+                            type="text"
+                            id="productSearch"
+                            placeholder="Search your products..."
+                            autocomplete="off"
+                        >
+
+                    </div>
+
+
+                    <!-- Category -->
+
+                    <select
+                        id="categoryFilter"
+                        class="filter-select"
+                    >
+
+                        <option value="all">
+                            All Categories
+                        </option>
+
+                    </select>
+
+
+                    <!-- Stock -->
+
+                    <select
+                        id="stockFilter"
+                        class="filter-select"
+                    >
+
+                        <option value="all">
+                            All Stock
+                        </option>
+
+                        <option value="available">
+                            Available
+                        </option>
+
+                        <option value="low">
+                            Low Stock
+                        </option>
+
+                        <option value="out">
+                            Out of Stock
+                        </option>
+
+                    </select>
+
+
+                    <!-- Refresh -->
+
+                    <button
+                        type="button"
+                        class="secondary-btn"
+                        id="refreshProductsBtn"
+                    >
+                        ↻ Refresh
+                    </button>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 PRODUCTS
+            ================================================== -->
+
+            <section class="dashboard-card">
+
+                <div class="card-header">
+
+                    <div>
+
+                        <h2>
+                            Product Inventory
+                        </h2>
+
+                        <p id="productResultText">
+                            Loading your products...
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Loading -->
+
+                <div
+                    id="productsLoading"
+                    class="loading-box"
+                >
+
+                    <div class="spinner"></div>
+
+                    <p>
+                        Loading your products...
+                    </p>
+
+                </div>
+
+
+                <!-- Product Grid -->
+
+                <div
+                    id="productsGrid"
+                    class="products-grid"
+                    style="display:none;"
+                >
+
+                </div>
+
+
+                <!-- Empty -->
+
+                <div
+                    id="productsEmpty"
+                    class="empty-box"
+                    style="display:none;"
+                >
+
+                    <div class="empty-icon">
+                        📦
+                    </div>
+
+                    <h3>
+                        No Products Found
+                    </h3>
+
+                    <p>
+                        You haven't added any products yet.
+                    </p>
+
+                    <br>
+
+                    <a
+                        href="add-product.html"
+                        class="primary-btn"
+                    >
+                        + Add Your First Product
+                    </a>
+
+                </div>
+
+
+                <!-- No Search Result -->
+
+                <div
+                    id="noSearchResult"
+                    class="empty-box"
+                    style="display:none;"
+                >
+
+                    <div class="empty-icon">
+                        🔍
+                    </div>
+
+                    <h3>
+                        No Matching Products
+                    </h3>
+
+                    <p>
+                        Try changing your search or filter.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+        </main>
+
+    </div>
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer class="dashboard-footer">
+
+        <div class="footer-brand">
+
+            <div class="brand-icon">
+                N
+            </div>
+
+            <strong>
+                NishandhiniMart
+            </strong>
+
+        </div>
+
+        <p>
+            © 2026 NishandhiniMart. All rights reserved.
+        </p>
+
+        <span>
+            Empowering Sellers Digitally.
+        </span>
+
+    </footer>
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <!-- Existing seller functions -->
+    
+    <!-- My Products JavaScript -->
+    <script src="js/my-products.js"></script>
+
+</body>
+
+</html>

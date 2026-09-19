@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Add Product | NishandhiniMart</title>
+
+    <link
+        rel="stylesheet"
+        href="css/seller-dashboard.css"
+    >
+</head>
+
+<body>
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="main-header">
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                N
+            </div>
+
+            <div>
+                <h2>NishandhiniMart</h2>
+                <span>Seller Management Panel</span>
+            </div>
+
+        </div>
+
+
+        <div class="header-actions">
+
+            <button
+                type="button"
+                class="notification-btn"
+                title="Notifications"
+            >
+                🔔
+                <span class="notification-dot"></span>
+            </button>
+
+
+            <div class="profile-menu">
+
+                <button
+                    type="button"
+                    class="profile-menu-btn"
+                    onclick="toggleProfileMenu()"
+                >
+
+                    <span
+                        class="top-profile-avatar"
+                        id="topProfileAvatar"
+                    >
+                        S
+                    </span>
+
+                    <span
+                        class="top-profile-name"
+                        id="topProfileName"
+                    >
+                        Seller
+                    </span>
+
+                    <span class="profile-arrow">
+                        ▾
+                    </span>
+
+                </button>
+
+
+                <div
+                    class="profile-dropdown"
+                    id="profileDropdown"
+                >
+
+                    <button
+                        type="button"
+                        onclick="openSellerProfile()"
+                    >
+                        👤 My Profile
+                    </button>
+
+                    <button
+                        type="button"
+                        onclick="logout()"
+                    >
+                        🚪 Logout
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         DASHBOARD LAYOUT
+    ====================================================== -->
+
+    <div class="dashboard-layout">
+
+
+        <!-- =================================================
+             SIDEBAR
+        ================================================== -->
+
+        <aside class="sidebar">
+
+            <div class="sidebar-title">
+                Seller Menu
+            </div>
+
+
+            <nav class="sidebar-nav">
+
+                <a
+                    href="dashboard.html"
+                    class="sidebar-link"
+                >
+                    <span class="sidebar-icon">🏠</span>
+                    <span>Dashboard</span>
+                </a>
+
+
+                <a
+                    href="my-products.html"
+                    class="sidebar-link"
+                >
+                    <span class="sidebar-icon">📦</span>
+                    <span>My Products</span>
+                </a>
+
+
+                <a
+                    href="add-product.html"
+                    class="sidebar-link active"
+                >
+                    <span class="sidebar-icon">➕</span>
+                    <span>Add Product</span>
+                </a>
+
+
+                <a
+                    href="orders.html"
+                    class="sidebar-link"
+                >
+                    <span class="sidebar-icon">🛒</span>
+                    <span>Orders</span>
+                </a>
+
+
+                <a
+                    href="sales.html"
+                    class="sidebar-link"
+                >
+                    <span class="sidebar-icon">📈</span>
+                    <span>Sales</span>
+                </a>
+
+
+                <a
+                    href="settings.html"
+                    class="sidebar-link"
+                >
+                    <span class="sidebar-icon">⚙️</span>
+                    <span>Settings</span>
+                </a>
+
+            </nav>
+
+
+            <div class="sidebar-divider"></div>
+
+
+            <nav class="sidebar-nav">
+
+                <a
+                    href="seller-profile.html"
+                    class="sidebar-link"
+                >
+                    <span class="sidebar-icon">👤</span>
+                    <span>My Profile</span>
+                </a>
+
+            </nav>
+
+        </aside>
+
+
+        <!-- =================================================
+             MAIN CONTENT
+        ================================================== -->
+
+        <main class="dashboard-main">
+
+
+            <!-- PAGE HEADING -->
+
+            <div class="page-heading">
+
+                <div class="page-heading-left">
+
+                    <span class="page-label">
+                        PRODUCT MANAGEMENT
+                    </span>
+
+                    <h1 id="pageTitle">
+                        Add New Product
+                    </h1>
+
+                    <p>
+                        Add your product details and publish
+                        it to NishandhiniMart.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 ADD PRODUCT FORM
+            ================================================== -->
+
+            <section class="seller-form-section">
+
+                <form
+                    id="productForm"
+                    class="product-form"
+                >
+
+
+                    <!-- =========================================
+                         BASIC PRODUCT INFORMATION
+                    ========================================== -->
+
+                    <div class="section-heading">
+
+                        <div>
+
+                            <span class="section-label">
+                                BASIC INFORMATION
+                            </span>
+
+                            <h2>
+                                Product Details
+                            </h2>
+
+                            <p>
+                                Enter the basic information
+                                about your product.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- PRODUCT NAME + BRAND -->
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+
+                            <label for="productName">
+                                Product Name *
+                            </label>
+
+                            <input
+                                type="text"
+                                id="productName"
+                                name="product_name"
+                                placeholder="Example: Wireless Bluetooth Headphones"
+                                maxlength="150"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="productBrand">
+                                Brand
+                            </label>
+
+                            <input
+                                type="text"
+                                id="productBrand"
+                                name="brand"
+                                placeholder="Example: Sony, Samsung, Nike"
+                                maxlength="100"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- CATEGORY + PRICE -->
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+
+                            <label for="productCategory">
+                                Category *
+                            </label>
+
+                            <select
+                                id="productCategory"
+                                name="category"
+                                required
+                            >
+
+                                <option value="">
+                                    Select Category
+                                </option>
+
+                                <option value="Electronics">
+                                    Electronics
+                                </option>
+
+                                <option value="Fashion">
+                                    Fashion
+                                </option>
+
+                                <option value="Beauty">
+                                    Beauty
+                                </option>
+
+                                <option value="Home">
+                                    Home & Living
+                                </option>
+
+                                <option value="Grocery">
+                                    Grocery
+                                </option>
+
+                                <option value="Books">
+                                    Books
+                                </option>
+
+                                <option value="Sports">
+                                    Sports
+                                </option>
+
+                                <option value="Toys">
+                                    Toys
+                                </option>
+
+                                <option value="Accessories">
+                                    Accessories
+                                </option>
+
+                                <option value="Other">
+                                    Other
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="productPrice">
+                                Price (₹) *
+                            </label>
+
+                            <input
+                                type="number"
+                                id="productPrice"
+                                name="price"
+                                placeholder="Example: 1499"
+                                min="1"
+                                step="0.01"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- QUANTITY -->
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+
+                            <label for="productQuantity">
+                                Available Quantity *
+                            </label>
+
+                            <input
+                                type="number"
+                                id="productQuantity"
+                                name="quantity"
+                                placeholder="Example: 50"
+                                min="1"
+                                step="1"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>
+                                Seller
+                            </label>
+
+                            <input
+                                type="text"
+                                id="sellerDisplayName"
+                                value="Logged-in Seller"
+                                readonly
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- DESCRIPTION -->
+
+                    <div class="form-group full-width">
+
+                        <label for="productDescription">
+                            Product Description *
+                        </label>
+
+                        <textarea
+                            id="productDescription"
+                            name="description"
+                            rows="6"
+                            maxlength="2000"
+                            placeholder="Describe your product, features, usage and important details..."
+                            required
+                        ></textarea>
+
+                        <small
+                            style="
+                                color:#9997aa;
+                                font-size:10px;
+                            "
+                        >
+                            Maximum 2000 characters.
+                        </small>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         PRODUCT IMAGES
+                    ================================================== -->
+
+                    <div class="form-group full-width">
+
+                        <label>
+                            Product Images
+                        </label>
+
+
+                        <div
+                            class="image-upload-area"
+                            id="imageUploadArea"
+                        >
+
+                            <div class="image-upload-icon">
+                                🖼️
+                            </div>
+
+                            <h3>
+                                Add Product Images
+                            </h3>
+
+                            <p>
+                                Select up to 4 images
+                                for your product.
+                            </p>
+
+
+                            <input
+                                type="file"
+                                id="productImages"
+                                name="product_images"
+                                accept="image/*"
+                                multiple
+                                style="
+                                    margin-top:15px;
+                                    width:100%;
+                                "
+                            >
+
+                        </div>
+
+
+                        <!-- IMAGE PREVIEW -->
+
+                        <div
+                            id="imagePreviewContainer"
+                            style="
+                                display:grid;
+                                grid-template-columns:
+                                    repeat(4,minmax(0,1fr));
+                                gap:12px;
+                                margin-top:15px;
+                            "
+                        >
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         OPTIONAL ADDITIONAL DETAILS
+                    ================================================== -->
+
+                    <div class="additional-details">
+
+                        <div class="additional-details-header">
+
+                            <div>
+
+                                <h3>
+                                    Additional Details — Optional
+                                </h3>
+
+                                <p
+                                    style="
+                                        color:#9997aa;
+                                        font-size:10px;
+                                        margin-top:4px;
+                                    "
+                                >
+                                    Add extra information specific
+                                    to your product.
+                                </p>
+
+                            </div>
+
+
+                            <button
+                                type="button"
+                                class="add-detail-btn"
+                                id="addDetailBtn"
+                            >
+                                + Add Additional Detail
+                            </button>
+
+                        </div>
+
+
+                        <div id="additionalDetailsContainer">
+
+                            <!-- Additional rows appear here -->
+
+                        </div>
+
+
+                        <p
+                            id="detailsHint"
+                            style="
+                                color:#aaa8b8;
+                                font-size:10px;
+                                padding:5px 0;
+                            "
+                        >
+                            Example: Material → Cotton,
+                            Size → XL, Color → Blue,
+                            RAM → 16 GB, Storage → 512 GB
+                        </p>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         FORM ACTIONS
+                    ================================================== -->
+
+                    <div
+                        style="
+                            display:flex;
+                            align-items:center;
+                            gap:12px;
+                            flex-wrap:wrap;
+                            padding-top:5px;
+                        "
+                    >
+
+                        <button
+                            type="submit"
+                            class="primary-action-btn"
+                            id="publishProductBtn"
+                        >
+                            + Publish Product
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="secondary-btn"
+                            id="clearProductBtn"
+                        >
+                            Clear Form
+                        </button>
+
+
+                        <a
+                            href="my-products.html"
+                            class="secondary-btn"
+                        >
+                            Cancel
+                        </a>
+
+                    </div>
+
+
+                    <!-- MESSAGE -->
+
+                    <div
+                        id="productMessage"
+                        style="
+                            display:none;
+                            padding:13px 15px;
+                            border-radius:10px;
+                            font-size:12px;
+                            font-weight:600;
+                        "
+                    >
+                    </div>
+
+                </form>
+
+            </section>
+
+
+            <!-- =================================================
+                 PRODUCT TIPS
+            ================================================== -->
+
+            <section class="dashboard-card">
+
+                <div class="card-header">
+
+                    <div>
+
+                        <h2>
+                            💡 Product Listing Tips
+                        </h2>
+
+                        <p>
+                            Keep your product information
+                            clear and useful for buyers.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="quick-actions"
+                    style="
+                        grid-template-columns:
+                            repeat(3,minmax(0,1fr));
+                    "
+                >
+
+                    <div class="quick-action">
+
+                        <span class="quick-action-icon">
+                            📸
+                        </span>
+
+                        <span>
+                            Use clear product images
+                        </span>
+
+                    </div>
+
+
+                    <div class="quick-action">
+
+                        <span class="quick-action-icon">
+                            ✍️
+                        </span>
+
+                        <span>
+                            Write a clear description
+                        </span>
+
+                    </div>
+
+
+                    <div class="quick-action">
+
+                        <span class="quick-action-icon">
+                            📦
+                        </span>
+
+                        <span>
+                            Keep stock quantity updated
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+        </main>
+
+    </div>
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer class="dashboard-footer">
+
+        <div class="footer-brand">
+
+            <div class="brand-icon">
+                N
+            </div>
+
+            <strong>
+                NishandhiniMart
+            </strong>
+
+        </div>
+
+
+        <p>
+            © 2026 NishandhiniMart. All rights reserved.
+        </p>
+
+
+        <span>
+            Empowering Sellers Digitally.
+        </span>
+
+    </footer>
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+    <script src="js/add-product.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Seller Profile - NishandhiniMart</title>
+
+    <link rel="stylesheet" href="css/seller-dashboard.css">
+
+    <style>
+        /* =====================================================
+           SELLER PROFILE PAGE
+        ===================================================== */
+
+        .profile-page {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .profile-top-card {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+            margin-bottom: 24px;
+            padding: 28px;
+            background: linear-gradient(
+                135deg,
+                #6256d9,
+                #7b61df
+            );
+            border-radius: 18px;
+            color: white;
+            box-shadow: 0 12px 30px rgba(99, 87, 210, 0.18);
+        }
+
+        .profile-avatar-large {
+            width: 82px;
+            height: 82px;
+            min-width: 82px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.18);
+            border: 3px solid rgba(255,255,255,0.55);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 30px;
+            font-weight: 800;
+        }
+
+        .profile-top-info h2 {
+            margin: 0 0 6px;
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        .profile-top-info p {
+            margin: 0 0 12px;
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .profile-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+
+            padding: 6px 12px;
+            border-radius: 20px;
+
+            background: rgba(255,255,255,0.16);
+            border: 1px solid rgba(255,255,255,0.25);
+
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .profile-status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #86efac;
+        }
+
+        .profile-section {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 22px;
+
+            box-shadow: 0 7px 25px rgba(38, 32, 75, 0.06);
+            border: 1px solid #eeeef5;
+        }
+
+        .profile-section-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 20px;
+
+            margin-bottom: 20px;
+        }
+
+        .profile-section-title {
+            margin: 0;
+            color: #302b4c;
+            font-size: 19px;
+            font-weight: 800;
+        }
+
+        .profile-section-description {
+            margin: 6px 0 0;
+            color: #9693a8;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 15px;
+        }
+
+        .profile-info-box {
+            padding: 16px 17px;
+
+            background: #f8f8fc;
+            border: 1px solid #ededf5;
+            border-radius: 12px;
+        }
+
+        .profile-info-box.full-width {
+            grid-column: span 2;
+        }
+
+        .profile-info-label {
+            display: block;
+            margin-bottom: 7px;
+
+            color: #9290a5;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.9px;
+            text-transform: uppercase;
+        }
+
+        .profile-info-value {
+            color: #302b4c;
+            font-size: 14px;
+            font-weight: 700;
+            word-break: break-word;
+        }
+
+        .profile-info-value.muted {
+            color: #aaa8b8;
+            font-weight: 600;
+        }
+
+        .profile-badge {
+            display: inline-flex;
+            align-items: center;
+
+            padding: 5px 10px;
+            border-radius: 20px;
+
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        .profile-badge.active {
+            color: #15803d;
+            background: #dcfce7;
+        }
+
+        .profile-badge.pending {
+            color: #a16207;
+            background: #fef3c7;
+        }
+
+        .payment-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 15px;
+        }
+
+        .payment-box {
+            padding: 20px;
+
+            border-radius: 14px;
+            background: #fafaff;
+            border: 1px solid #ecebf5;
+        }
+
+        .payment-label {
+            display: block;
+            color: #9290a5;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+
+            margin-bottom: 9px;
+        }
+
+        .payment-value {
+            margin: 0;
+
+            color: #302b4c;
+            font-size: 23px;
+            font-weight: 800;
+        }
+
+        .payment-note {
+            margin-top: 6px;
+            color: #aaa8b8;
+            font-size: 11px;
+        }
+
+        .profile-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .profile-action-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+
+            padding: 11px 17px;
+
+            border: none;
+            border-radius: 9px;
+
+            font-size: 12px;
+            font-weight: 800;
+
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .profile-action-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .profile-action-primary {
+            color: white;
+            background: linear-gradient(
+                135deg,
+                #6256d9,
+                #7b61df
+            );
+        }
+
+        .profile-action-secondary {
+            color: #6256d9;
+            background: #eeebff;
+        }
+
+        .profile-action-light {
+            color: #555268;
+            background: #f1f1f5;
+        }
+
+        .profile-action-danger {
+            color: #b42318;
+            background: #fee4e2;
+        }
+
+        .profile-note {
+            margin-top: 17px;
+            padding: 12px 14px;
+
+            border-radius: 10px;
+            background: #f8f7ff;
+            border-left: 3px solid #7567dc;
+
+            color: #77748a;
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 850px) {
+
+            .profile-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-info-box.full-width {
+                grid-column: span 1;
+            }
+
+            .payment-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 650px) {
+
+            .profile-top-card {
+                padding: 20px;
+                gap: 15px;
+            }
+
+            .profile-avatar-large {
+                width: 65px;
+                height: 65px;
+                min-width: 65px;
+                font-size: 24px;
+            }
+
+            .profile-top-info h2 {
+                font-size: 19px;
+            }
+
+            .profile-section {
+                padding: 18px;
+            }
+
+            .profile-section-header {
+                display: block;
+            }
+
+            .profile-actions {
+                flex-direction: column;
+            }
+
+            .profile-action-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- =========================================================
+     HEADER
+========================================================= -->
+
+<header class="main-header">
+
+    <div class="brand">
+
+        <div class="brand-icon">
+            N
+        </div>
+
+        <div>
+            <h2>NishandhiniMart</h2>
+            <span>Seller Management Panel</span>
+        </div>
+
+    </div>
+
+
+    <div class="header-right">
+
+        <button
+            class="notification-btn"
+            title="Notifications"
+            onclick="showNotificationMessage()"
+        >
+            🔔
+            <span class="notification-dot"></span>
+        </button>
+
+
+        <div class="profile-menu">
+
+            <button
+                class="profile-menu-btn"
+                onclick="toggleProfileMenu()"
+            >
+
+                <span
+                    class="top-profile-avatar"
+                    id="topProfileAvatar"
+                >
+                    S
+                </span>
+
+                <span
+                    class="top-profile-name"
+                    id="topProfileName"
+                >
+                    Seller
+                </span>
+
+                <span class="profile-arrow">
+                    ▾
+                </span>
+
+            </button>
+
+
+            <div
+                class="profile-dropdown"
+                id="profileDropdown"
+            >
+
+                <button onclick="openSellerProfile()">
+                    👤 My Profile
+                </button>
+
+                <button onclick="goSettings()">
+                    ⚙ Settings
+                </button>
+
+                <button onclick="logout()">
+                    🚪 Logout
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<!-- =========================================================
+     LAYOUT
+========================================================= -->
+
+<div class="dashboard-layout">
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside class="sidebar">
+
+        <nav class="sidebar-nav">
+
+            <a
+                href="dashboard.html"
+                class="sidebar-link"
+            >
+                <span>▦</span>
+                <span>Dashboard</span>
+            </a>
+
+
+            <a
+                href="my-products.html"
+                class="sidebar-link"
+            >
+                <span>▣</span>
+                <span>My Products</span>
+            </a>
+
+
+            <a
+                href="add-product.html"
+                class="sidebar-link"
+            >
+                <span>＋</span>
+                <span>Add Product</span>
+            </a>
+
+
+            <a
+                href="orders.html"
+                class="sidebar-link"
+            >
+                <span>◫</span>
+                <span>Orders</span>
+            </a>
+
+
+            <a
+                href="sales.html"
+                class="sidebar-link"
+            >
+                <span>◈</span>
+                <span>Sales</span>
+            </a>
+
+
+            <a
+                href="settings.html"
+                class="sidebar-link"
+            >
+                <span>⚙</span>
+                <span>Settings</span>
+            </a>
+
+
+            <a
+                href="seller-profile.html"
+                class="sidebar-link active"
+            >
+                <span>👤</span>
+                <span>My Profile</span>
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main class="dashboard-main">
+
+        <div class="profile-page">
+
+
+            <!-- PAGE HEADING -->
+
+            <div class="page-heading">
+
+                <div class="page-heading-left">
+
+                    <span class="page-label">
+                        ACCOUNT
+                    </span>
+
+                    <h1>
+                        My Profile
+                    </h1>
+
+                    <p>
+                        View and manage your seller account information.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 PROFILE TOP
+            ================================================== -->
+
+            <section class="profile-top-card">
+
+                <div
+                    class="profile-avatar-large"
+                    id="profileAvatar"
+                >
+                    S
+                </div>
+
+
+                <div class="profile-top-info">
+
+                    <h2 id="profileUsername">
+                        Seller
+                    </h2>
+
+                    <p id="profileStoreName">
+                        Store Name
+                    </p>
+
+                    <span class="profile-status">
+
+                        <span class="profile-status-dot"></span>
+
+                        <span id="profileStatus">
+                            Active Seller
+                        </span>
+
+                    </span>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 PERSONAL INFORMATION
+            ================================================== -->
+
+            <section class="profile-section">
+
+                <div class="profile-section-header">
+
+                    <div>
+
+                        <h2 class="profile-section-title">
+                            Personal Information
+                        </h2>
+
+                        <p class="profile-section-description">
+                            Your basic seller account details.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="profile-grid">
+
+                    <div class="profile-info-box">
+
+                        <span class="profile-info-label">
+                            Username
+                        </span>
+
+                        <div
+                            class="profile-info-value"
+                            id="usernameValue"
+                        >
+                            Not available
+                        </div>
+
+                    </div>
+
+
+                    <div class="profile-info-box">
+
+                        <span class="profile-info-label">
+                            Email ID
+                        </span>
+
+                        <div
+                            class="profile-info-value"
+                            id="emailValue"
+                        >
+                            Not available
+                        </div>
+
+                    </div>
+
+
+                    <div class="profile-info-box">
+
+                        <span class="profile-info-label">
+                            Phone Number
+                        </span>
+
+                        <div
+                            class="profile-info-value"
+                            id="phoneValue"
+                        >
+                            Not available
+                        </div>
+
+                    </div>
+
+
+                    <div class="profile-info-box">
+
+                        <span class="profile-info-label">
+                            Account Status
+                        </span>
+
+                        <div id="statusValue">
+                            <span class="profile-badge active">
+                                Active
+                            </span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="profile-info-box full-width">
+
+                        <span class="profile-info-label">
+                            Address
+                        </span>
+
+                        <div
+                            class="profile-info-value"
+                            id="addressValue"
+                        >
+                            Not available
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 STORE INFORMATION
+            ================================================== -->
+
+            <section class="profile-section">
+
+                <div class="profile-section-header">
+
+                    <div>
+
+                        <h2 class="profile-section-title">
+                            Store Information
+                        </h2>
+
+                        <p class="profile-section-description">
+                            Information about your seller store.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="profile-grid">
+
+                    <div class="profile-info-box">
+
+                        <span class="profile-info-label">
+                            Store Name
+                        </span>
+
+                        <div
+                            class="profile-info-value"
+                            id="storeNameValue"
+                        >
+                            Not available
+                        </div>
+
+                    </div>
+
+
+                    <div class="profile-info-box">
+
+                        <span class="profile-info-label">
+                            Store Status
+                        </span>
+
+                        <div>
+                            <span class="profile-badge active">
+                                Active
+                            </span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+<!-- =================================================
+     VERIFICATION
+================================================== -->
+
+<section class="profile-section">
+
+    <div class="profile-section-header">
+
+        <div>
+
+            <h2 class="profile-section-title">
+                Verification Information
+            </h2>
+
+            <p class="profile-section-description">
+                Business verification details.
+            </p>
+
+        </div>
+
+        <button
+            type="button"
+            class="verification-edit-btn"
+            onclick="toggleVerificationEdit()"
+        >
+            ✎ Edit
+        </button>
+
+    </div>
+
+
+    <!-- VIEW MODE -->
+
+    <div id="verificationView">
+
+        <div class="profile-grid">
+
+            <div class="profile-info-box">
+
+                <span class="profile-info-label">
+                    GST / Tax Number
+                </span>
+
+                <div
+                    class="profile-info-value muted"
+                    id="gstValue"
+                >
+                    Not submitted
+                </div>
+
+            </div>
+
+
+            <div class="profile-info-box">
+
+                <span class="profile-info-label">
+                    Business License
+                </span>
+
+                <div
+                    class="profile-info-value muted"
+                    id="licenseValue"
+                >
+                    Not submitted
+                </div>
+
+            </div>
+
+
+            <div class="profile-info-box full-width">
+
+                <span class="profile-info-label">
+                    Verification Status
+                </span>
+
+                <div id="verificationValue">
+
+                    <span class="profile-badge pending">
+                        Pending Verification
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- EDIT MODE -->
+
+    <div
+        id="verificationEdit"
+        style="display: none;"
+    >
+
+        <div class="profile-grid">
+
+            <div class="profile-info-box">
+
+                <label
+                    class="profile-info-label"
+                    for="gstNumber"
+                >
+                    GST / Tax Number
+                </label>
+
+                <input
+                    type="text"
+                    id="gstNumber"
+                    placeholder="Enter GST / Tax Number"
+                    maxlength="30"
+                >
+
+            </div>
+
+
+            <div class="profile-info-box">
+
+                <label
+                    class="profile-info-label"
+                    for="businessLicense"
+                >
+                    Business License
+                </label>
+
+                <input
+                    type="text"
+                    id="businessLicense"
+                    placeholder="Enter Business License Number"
+                    maxlength="100"
+                >
+
+            </div>
+
+
+            <div class="profile-info-box full-width">
+
+                <span class="profile-info-label">
+                    Verification Status
+                </span>
+
+                <div>
+
+                    <span class="profile-badge pending">
+                        Pending Verification
+                    </span>
+
+                    <p class="verification-note">
+                        Verification status can only be changed by the admin.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="verification-actions">
+
+            <button
+                type="button"
+                class="verification-cancel-btn"
+                onclick="cancelVerificationEdit()"
+            >
+                Cancel
+            </button>
+
+            <button
+                type="button"
+                class="verification-save-btn"
+                onclick="saveVerification()"
+            >
+                Save
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+            <!-- =================================================
+                 PAYMENT INFORMATION
+            ================================================== -->
+
+            <section class="profile-section">
+
+                <div class="profile-section-header">
+
+                    <div>
+
+                        <h2 class="profile-section-title">
+                            Payment Information
+                        </h2>
+
+                        <p class="profile-section-description">
+                            Seller payment and payout summary.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="payment-grid">
+
+                    <div class="payment-box">
+
+                        <span class="payment-label">
+                            Total Payment Received
+                        </span>
+
+                        <h3
+                            class="payment-value"
+                            id="totalPayment"
+                        >
+                            ₹0.00
+                        </h3>
+
+                        <p class="payment-note">
+                            Based on available seller sales data
+                        </p>
+
+                    </div>
+
+
+                    <div class="payment-box">
+
+                        <span class="payment-label">
+                            Pending Payment
+                        </span>
+
+                        <h3
+                            class="payment-value"
+                            id="pendingPayment"
+                        >
+                            ₹0.00
+                        </h3>
+
+                        <p class="payment-note">
+                            Payment awaiting processing
+                        </p>
+
+                    </div>
+
+
+                    <div class="payment-box">
+
+                        <span class="payment-label">
+                            Available Payout
+                        </span>
+
+                        <h3
+                            class="payment-value"
+                            id="availablePayout"
+                        >
+                            ₹0.00
+                        </h3>
+
+                        <p class="payment-note">
+                            Currently available for payout
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="profile-note">
+
+                    Payment values currently use the seller
+                    information available in the application.
+                    Detailed payout processing can be connected
+                    to the payment system later.
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 ACCOUNT ACTIONS
+            ================================================== -->
+
+            <section class="profile-section">
+
+                <div class="profile-section-header">
+
+                    <div>
+
+                        <h2 class="profile-section-title">
+                            Account Actions
+                        </h2>
+
+                        <p class="profile-section-description">
+                            Manage your seller account.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="profile-actions">
+
+                    <button
+                        class="profile-action-btn profile-action-primary"
+                        onclick="editProfile()"
+                    >
+                        ✎ Edit Profile
+                    </button>
+
+
+                    <button
+                        class="profile-action-btn profile-action-secondary"
+                        onclick="goSettings()"
+                    >
+                        🔐 Change Password
+                    </button>
+
+
+                    <button
+                        class="profile-action-btn profile-action-light"
+                        onclick="goDashboard()"
+                    >
+                        ← Back to Dashboard
+                    </button>
+
+
+                    <button
+                        class="profile-action-btn profile-action-danger"
+                        onclick="logout()"
+                    >
+                        🚪 Logout
+                    </button>
+
+                </div>
+
+            </section>
+
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
+
+<footer class="dashboard-footer">
+
+    <p>
+        © 2026 NishandhiniMart. All rights reserved.
+    </p>
+
+</footer>
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script src="js/seller-profile.js"></script>
+
+</body>
+</html>

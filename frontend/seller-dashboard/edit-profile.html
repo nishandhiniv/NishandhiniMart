@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NishandhiniMart - Edit Profile</title>
+
+    <link rel="stylesheet" href="css/seller-dashboard.css">
+
+    <style>
+        /* =====================================================
+           EDIT PROFILE PAGE
+           ===================================================== */
+
+        .edit-profile-wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .edit-profile-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 30px rgba(44, 36, 92, 0.06);
+        }
+
+        .profile-form-header {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding-bottom: 24px;
+            margin-bottom: 26px;
+            border-bottom: 1px solid #eeeeF5;
+        }
+
+        .edit-avatar {
+            width: 68px;
+            height: 68px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: linear-gradient(
+                135deg,
+                #7667df,
+                #9b72ee
+            );
+
+            color: #ffffff;
+            font-size: 25px;
+            font-weight: 800;
+
+            box-shadow:
+                0 8px 20px rgba(118, 103, 223, 0.25);
+        }
+
+        .profile-form-header h2 {
+            margin: 0 0 5px;
+            color: #302b4c;
+            font-size: 21px;
+            font-weight: 800;
+        }
+
+        .profile-form-header p {
+            margin: 0;
+            color: #9491a7;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .form-section {
+            margin-bottom: 28px;
+        }
+
+        .form-section-title {
+            margin-bottom: 18px;
+        }
+
+        .form-section-title span {
+            display: block;
+            color: #7769dc;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .form-section-title h3 {
+            margin: 0;
+            color: #302b4c;
+            font-size: 17px;
+            font-weight: 800;
+        }
+
+        .form-section-title p {
+            margin: 5px 0 0;
+            color: #9290a5;
+            font-size: 12px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            color: #49455f;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            box-sizing: border-box;
+
+            border: 1px solid #e6e4ef;
+            border-radius: 11px;
+
+            background: #fbfbfe;
+            color: #302b4c;
+
+            font-family: inherit;
+            font-size: 13px;
+
+            padding: 12px 14px;
+
+            outline: none;
+
+            transition:
+                border-color 0.2s ease,
+                box-shadow 0.2s ease,
+                background 0.2s ease;
+        }
+
+        .form-group input {
+            height: 46px;
+        }
+
+        .form-group textarea {
+            min-height: 105px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: #7769dc;
+            background: #ffffff;
+
+            box-shadow:
+                0 0 0 3px rgba(119, 105, 220, 0.10);
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: #aaa7b8;
+        }
+
+        .field-note {
+            margin-top: 6px;
+            color: #9a97aa;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .readonly-field {
+            background: #f4f3f8 !important;
+            color: #858197 !important;
+            cursor: not-allowed;
+        }
+
+        .account-info-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            background: #f7f6fc;
+            border: 1px solid #eceaf5;
+
+            border-radius: 12px;
+            padding: 14px 16px;
+
+            margin-top: 5px;
+        }
+
+        .account-info-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #e9e6ff;
+            color: #7061d5;
+
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        .account-info-text strong {
+            display: block;
+            color: #49455f;
+            font-size: 12px;
+            margin-bottom: 2px;
+        }
+
+        .account-info-text span {
+            color: #9996a8;
+            font-size: 11px;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 12px;
+
+            padding-top: 24px;
+            margin-top: 8px;
+
+            border-top: 1px solid #eeeeF5;
+        }
+
+        .cancel-btn,
+        .save-profile-btn {
+            border: none;
+            border-radius: 11px;
+
+            height: 44px;
+            padding: 0 22px;
+
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 800;
+
+            cursor: pointer;
+
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease,
+                opacity 0.2s ease;
+        }
+
+        .cancel-btn {
+            background: #f1f0f6;
+            color: #625e73;
+        }
+
+        .cancel-btn:hover {
+            background: #e9e7f0;
+        }
+
+        .save-profile-btn {
+            color: #ffffff;
+
+            background: linear-gradient(
+                135deg,
+                #7566dc,
+                #956ce8
+            );
+
+            box-shadow:
+                0 7px 18px rgba(117, 102, 220, 0.24);
+        }
+
+        .save-profile-btn:hover {
+            transform: translateY(-1px);
+
+            box-shadow:
+                0 10px 22px rgba(117, 102, 220, 0.30);
+        }
+
+        .save-profile-btn:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .message-box {
+            display: none;
+
+            padding: 12px 15px;
+            border-radius: 10px;
+
+            margin-bottom: 20px;
+
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1.5;
+        }
+
+        .message-box.success {
+            display: block;
+            background: #edf9f1;
+            border: 1px solid #ccebd5;
+            color: #287742;
+        }
+
+        .message-box.error {
+            display: block;
+            background: #fff1f1;
+            border: 1px solid #f1cccc;
+            color: #b43b3b;
+        }
+
+        .required {
+            color: #d95d72;
+        }
+
+        @media (max-width: 900px) {
+            .edit-profile-wrapper {
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 700px) {
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full-width {
+                grid-column: auto;
+            }
+
+            .edit-profile-card {
+                padding: 22px;
+            }
+
+            .profile-form-header {
+                align-items: flex-start;
+            }
+
+            .form-actions {
+                flex-direction: column-reverse;
+            }
+
+            .cancel-btn,
+            .save-profile-btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+
+            .edit-profile-card {
+                padding: 18px;
+                border-radius: 15px;
+            }
+
+            .edit-avatar {
+                width: 55px;
+                height: 55px;
+                border-radius: 15px;
+                font-size: 20px;
+            }
+
+            .profile-form-header h2 {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- =========================================================
+     HEADER
+     ========================================================= -->
+
+<header class="main-header">
+
+    <div class="brand">
+        <div class="brand-icon">N</div>
+
+        <div>
+            <h2>NishandhiniMart</h2>
+            <span>Seller Management Panel</span>
+        </div>
+    </div>
+
+
+    <div class="header-right">
+
+        <!-- Notification -->
+
+        <button
+            class="notification-btn"
+            type="button"
+            aria-label="Notifications"
+        >
+            🔔
+            <span class="notification-dot"></span>
+        </button>
+
+
+        <!-- Profile -->
+
+        <div class="profile-menu">
+
+            <button
+                class="profile-menu-btn"
+                type="button"
+                onclick="toggleProfileMenu()"
+            >
+
+                <div
+                    class="top-profile-avatar"
+                    id="topProfileAvatar"
+                >
+                    S
+                </div>
+
+                <span
+                    class="top-profile-name"
+                    id="topProfileName"
+                >
+                    Seller
+                </span>
+
+                <span class="profile-arrow">⌄</span>
+
+            </button>
+
+
+            <div
+                class="profile-dropdown"
+                id="profileDropdown"
+            >
+
+                <button
+                    type="button"
+                    onclick="openSellerProfile()"
+                >
+                    👤 My Profile
+                </button>
+
+                <button
+                    type="button"
+                    onclick="goDashboard()"
+                >
+                    🏠 Dashboard
+                </button>
+
+                <div class="profile-dropdown-divider"></div>
+
+                <button
+                    type="button"
+                    class="logout-dropdown"
+                    onclick="logout()"
+                >
+                    🚪 Logout
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<!-- =========================================================
+     DASHBOARD LAYOUT
+     ========================================================= -->
+
+<div class="dashboard-layout">
+
+
+    <!-- =====================================================
+         SIDEBAR
+         ===================================================== -->
+
+    <aside class="sidebar">
+
+        <nav class="sidebar-nav">
+
+            <a
+                href="dashboard.html"
+                class="sidebar-link"
+            >
+                <span>▦</span>
+                <span>Dashboard</span>
+            </a>
+
+
+            <a
+                href="my-products.html"
+                class="sidebar-link"
+            >
+                <span>▣</span>
+                <span>My Products</span>
+            </a>
+
+
+            <a
+                href="add-product.html"
+                class="sidebar-link"
+            >
+                <span>＋</span>
+                <span>Add Product</span>
+            </a>
+
+
+            <a
+                href="orders.html"
+                class="sidebar-link"
+            >
+                <span>🛒</span>
+                <span>Orders</span>
+            </a>
+
+
+            <a
+                href="sales.html"
+                class="sidebar-link"
+            >
+                <span>◈</span>
+                <span>Sales</span>
+            </a>
+
+
+            <a
+                href="settings.html"
+                class="sidebar-link"
+            >
+                <span>⚙</span>
+                <span>Settings</span>
+            </a>
+
+
+            <a
+                href="seller-profile.html"
+                class="sidebar-link active"
+            >
+                <span>👤</span>
+                <span>My Profile</span>
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+         ===================================================== -->
+
+    <main class="dashboard-main">
+
+        <div class="page-heading">
+
+            <div class="page-heading-left">
+
+                <span class="page-label">
+                    ACCOUNT
+                </span>
+
+                <h1>
+                    Edit Profile
+                </h1>
+
+            </div>
+
+        </div>
+
+
+        <div class="edit-profile-wrapper">
+
+            <div class="edit-profile-card">
+
+
+                <!-- Profile Header -->
+
+                <div class="profile-form-header">
+
+                    <div
+                        class="edit-avatar"
+                        id="editAvatar"
+                    >
+                        S
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Update Your Profile
+                        </h2>
+
+                        <p>
+                            Keep your seller account information
+                            up to date.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Message -->
+
+                <div
+                    id="messageBox"
+                    class="message-box"
+                ></div>
+
+
+                <!-- =================================================
+                     PERSONAL INFORMATION
+                     ================================================= -->
+
+                <section class="form-section">
+
+                    <div class="form-section-title">
+
+                        <span>
+                            PERSONAL INFORMATION
+                        </span>
+
+                        <h3>
+                            Basic Details
+                        </h3>
+
+                        <p>
+                            Update the information associated
+                            with your seller account.
+                        </p>
+
+                    </div>
+
+
+                    <div class="form-grid">
+
+
+                        <!-- Username -->
+
+                        <div class="form-group">
+
+                            <label for="username">
+                                Username
+                                <span class="required">*</span>
+                            </label>
+
+                            <input
+                                type="text"
+                                id="username"
+                                placeholder="Enter username"
+                                autocomplete="username"
+                            >
+
+                        </div>
+
+
+                        <!-- Email -->
+
+                        <div class="form-group">
+
+                            <label for="email">
+                                Email Address
+                                <span class="required">*</span>
+                            </label>
+
+                            <input
+                                type="email"
+                                id="email"
+                                placeholder="Enter email address"
+                                autocomplete="email"
+                            >
+
+                        </div>
+
+
+                        <!-- Phone -->
+
+                        <div class="form-group">
+
+                            <label for="phone">
+                                Phone Number
+                                <span class="required">*</span>
+                            </label>
+
+                            <input
+                                type="tel"
+                                id="phone"
+                                placeholder="Enter phone number"
+                                autocomplete="tel"
+                            >
+
+                        </div>
+
+
+                        <!-- Account Role -->
+
+                        <div class="form-group">
+
+                            <label for="accountRole">
+                                Account Type
+                            </label>
+
+                            <input
+                                type="text"
+                                id="accountRole"
+                                class="readonly-field"
+                                value="Seller"
+                                readonly
+                            >
+
+                            <span class="field-note">
+                                Account type cannot be changed here.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================================
+                     STORE INFORMATION
+                     ================================================= -->
+
+                <section class="form-section">
+
+                    <div class="form-section-title">
+
+                        <span>
+                            STORE INFORMATION
+                        </span>
+
+                        <h3>
+                            Business Details
+                        </h3>
+
+                        <p>
+                            Update your store and business information.
+                        </p>
+
+                    </div>
+
+
+                    <div class="form-grid">
+
+
+                        <!-- Store Name -->
+
+                        <div class="form-group full-width">
+
+                            <label for="storeName">
+                                Store Name
+                                <span class="required">*</span>
+                            </label>
+
+                            <input
+                                type="text"
+                                id="storeName"
+                                placeholder="Enter store name"
+                            >
+
+                        </div>
+
+
+                        <!-- Address -->
+
+                        <div class="form-group full-width">
+
+                            <label for="address">
+                                Business Address
+                                <span class="required">*</span>
+                            </label>
+
+                            <textarea
+                                id="address"
+                                placeholder="Enter your business address"
+                            ></textarea>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================================
+                     ACCOUNT INFORMATION
+                     ================================================= -->
+
+                <section class="form-section">
+
+                    <div class="form-section-title">
+
+                        <span>
+                            ACCOUNT
+                        </span>
+
+                        <h3>
+                            Account Information
+                        </h3>
+
+                    </div>
+
+
+                    <div class="account-info-box">
+
+                        <div class="account-info-icon">
+                            ✓
+                        </div>
+
+                        <div class="account-info-text">
+
+                            <strong>
+                                Seller Account
+                            </strong>
+
+                            <span>
+                                Your account role and verification
+                                status are managed separately.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================================
+                     ACTIONS
+                     ================================================= -->
+
+                <div class="form-actions">
+
+                    <button
+                        type="button"
+                        class="cancel-btn"
+                        onclick="cancelEdit()"
+                    >
+                        Cancel
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="save-profile-btn"
+                        id="saveProfileBtn"
+                        onclick="saveProfile()"
+                    >
+                        Save Changes
+                    </button>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<!-- =========================================================
+     FOOTER
+     ========================================================= -->
+
+<footer class="dashboard-footer">
+
+    <p>
+        © 2026 NishandhiniMart. All rights reserved.
+    </p>
+
+</footer>
+
+
+<!-- =========================================================
+     JAVASCRIPT
+     ========================================================= -->
+
+<script>
+
+    // =========================================================
+    // LOGIN CHECK
+    // =========================================================
+
+    const userId =
+        parseInt(
+            localStorage.getItem("userId") || "0"
+        );
+
+    const userRole =
+        localStorage.getItem("userRole") || "";
+
+    if (!userId || userRole !== "seller") {
+
+        alert("Please login as seller.");
+
+        window.location.href = "../login.html";
+    }
+
+
+    // =========================================================
+    // LOAD CURRENT PROFILE
+    // =========================================================
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function ()
+        {
+            loadProfile();
+            setupProfileMenu();
+        }
+    );
+
+
+    function loadProfile()
+    {
+        const username =
+            localStorage.getItem("username") || "";
+
+        const name =
+            localStorage.getItem("userName") ||
+            username ||
+            "Seller";
+
+        const email =
+            localStorage.getItem("userEmail") || "";
+
+        const storeName =
+            localStorage.getItem("store_name") || "";
+
+        const phone =
+            localStorage.getItem("phone") || "";
+
+        const address =
+            localStorage.getItem("address") || "";
+
+
+        document.getElementById("username").value =
+            username;
+
+        document.getElementById("email").value =
+            email;
+
+        document.getElementById("storeName").value =
+            storeName;
+
+        document.getElementById("phone").value =
+            phone;
+
+        document.getElementById("address").value =
+            address;
+
+
+        document.getElementById("topProfileName")
+            .textContent = name;
+
+
+        const firstLetter =
+            name.charAt(0).toUpperCase() || "S";
+
+
+        document.getElementById("topProfileAvatar")
+            .textContent = firstLetter;
+
+
+        document.getElementById("editAvatar")
+            .textContent = firstLetter;
+    }
+
+
+    // =========================================================
+    // SAVE PROFILE
+    // =========================================================
+
+    async function saveProfile()
+    {
+        const username =
+            document.getElementById("username")
+                .value.trim();
+
+        const email =
+            document.getElementById("email")
+                .value.trim();
+
+        const storeName =
+            document.getElementById("storeName")
+                .value.trim();
+
+        const phone =
+            document.getElementById("phone")
+                .value.trim();
+
+        const address =
+            document.getElementById("address")
+                .value.trim();
+
+
+        // -----------------------------------------------------
+        // Validation
+        // -----------------------------------------------------
+
+        if (
+            !username ||
+            !email ||
+            !storeName ||
+            !phone ||
+            !address
+        )
+        {
+            showMessage(
+                "Please fill all profile fields.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        if (!email.includes("@"))
+        {
+            showMessage(
+                "Please enter a valid email address.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        const saveButton =
+            document.getElementById("saveProfileBtn");
+
+
+        saveButton.disabled = true;
+
+        saveButton.textContent =
+            "Saving...";
+
+
+        try
+        {
+            const response =
+                await fetch(
+                    "http://127.0.0.1:8090/api/update-seller-profile",
+                    {
+                        method: "POST",
+
+                        headers:
+                        {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify(
+                            {
+                                user_id: userId,
+                                username: username,
+                                email: email,
+                                store_name: storeName,
+                                phone: phone,
+                                address: address
+                            })
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            console.log(
+                "Update Profile Response:",
+                data
+            );
+
+
+            if (!response.ok || !data.success)
+            {
+                throw new Error(
+                    data.message ||
+                    "Profile update failed"
+                );
+            }
+
+
+            // -------------------------------------------------
+            // Update localStorage
+            // -------------------------------------------------
+
+            localStorage.setItem(
+                "username",
+                username
+            );
+
+            localStorage.setItem(
+                "userName",
+                username
+            );
+
+            localStorage.setItem(
+                "userEmail",
+                email
+            );
+
+            localStorage.setItem(
+                "store_name",
+                storeName
+            );
+
+            localStorage.setItem(
+                "phone",
+                phone
+            );
+
+            localStorage.setItem(
+                "address",
+                address
+            );
+
+
+            showMessage(
+                "Profile updated successfully!",
+                "success"
+            );
+
+
+            saveButton.textContent =
+                "Saved ✓";
+
+
+            // -------------------------------------------------
+            // Go back to profile after short delay
+            // -------------------------------------------------
+
+            setTimeout(
+                function ()
+                {
+                    window.location.href =
+                        "seller-profile.html";
+                },
+                1000
+            );
+        }
+        catch (error)
+        {
+            console.error(
+                "Profile Update Error:",
+                error
+            );
+
+
+            showMessage(
+                error.message ||
+                "Unable to update profile. Please try again.",
+                "error"
+            );
+
+
+            saveButton.disabled = false;
+
+            saveButton.textContent =
+                "Save Changes";
+        }
+    }
+
+
+    // =========================================================
+    // MESSAGE
+    // =========================================================
+
+    function showMessage(
+        message,
+        type
+    )
+    {
+        const box =
+            document.getElementById("messageBox");
+
+
+        box.textContent =
+            message;
+
+
+        box.className =
+            "message-box " + type;
+
+
+        box.scrollIntoView(
+            {
+                behavior: "smooth",
+                block: "nearest"
+            }
+        );
+    }
+
+
+    // =========================================================
+    // CANCEL
+    // =========================================================
+
+    function cancelEdit()
+    {
+        window.location.href =
+            "seller-profile.html";
+    }
+
+
+    // =========================================================
+    // PROFILE DROPDOWN
+    // =========================================================
+
+    function toggleProfileMenu()
+    {
+        const dropdown =
+            document.getElementById(
+                "profileDropdown"
+            );
+
+
+        if (!dropdown)
+            return;
+
+
+        dropdown.classList.toggle(
+            "show"
+        );
+    }
+
+
+    function setupProfileMenu()
+    {
+        document.addEventListener(
+            "click",
+            function (event)
+            {
+                const profileMenu =
+                    document.querySelector(
+                        ".profile-menu"
+                    );
+
+                const dropdown =
+                    document.getElementById(
+                        "profileDropdown"
+                    );
+
+
+                if (
+                    !profileMenu ||
+                    !dropdown
+                )
+                {
+                    return;
+                }
+
+
+                if (
+                    !profileMenu.contains(
+                        event.target
+                    )
+                )
+                {
+                    dropdown.classList.remove(
+                        "show"
+                    );
+                }
+            }
+        );
+    }
+
+
+    // =========================================================
+    // PROFILE NAVIGATION
+    // =========================================================
+
+    function openSellerProfile()
+    {
+        window.location.href =
+            "seller-profile.html";
+    }
+
+
+    function goDashboard()
+    {
+        window.location.href =
+            "dashboard.html";
+    }
+
+
+    // =========================================================
+    // LOGOUT
+    // =========================================================
+
+    function logout()
+    {
+        localStorage.removeItem("userId");
+        localStorage.removeItem("username");
+        localStorage.removeItem("userName");
+        localStorage.removeItem("userRole");
+        localStorage.removeItem("userEmail");
+        localStorage.removeItem("store_name");
+        localStorage.removeItem("phone");
+        localStorage.removeItem("address");
+        localStorage.removeItem("accountStatus");
+        localStorage.removeItem("verificationStatus");
+
+        window.location.href =
+            "../login.html";
+    }
+
+</script>
+
+</body>
+</html>

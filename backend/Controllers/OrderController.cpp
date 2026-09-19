@@ -40,31 +40,47 @@ void createOrder(
     auto dbClient = getDatabaseClient();
 
     dbClient->execSqlAsync(
-        "INSERT INTO orders (user_id, total_amount, status) "
-        "VALUES ($1, $2, 'Pending') RETURNING id",
+        "INSERT INTO orders "
+        "(user_id, total_amount, status) "
+        "VALUES ($1, $2, 'Pending') "
+        "RETURNING id",
+
         [callback](const Result &result)
         {
             Json::Value responseJson;
+
             responseJson["success"] = true;
             responseJson["message"] = "Order created";
-            responseJson["order_id"] = result[0]["id"].as<int>();
+            responseJson["order_id"] =
+                result[0]["id"].as<int>();
 
-            callback(HttpResponse::newHttpJsonResponse(responseJson));
+            callback(
+                HttpResponse::newHttpJsonResponse(responseJson));
         },
+
         [callback](const DrogonDbException &error)
         {
             Json::Value responseJson;
-            responseJson["success"] = false;
-            responseJson["message"] = error.base().what();
 
-            callback(HttpResponse::newHttpJsonResponse(responseJson));
+            responseJson["success"] = false;
+            responseJson["message"] =
+                error.base().what();
+
+            auto response =
+                HttpResponse::newHttpJsonResponse(responseJson);
+
+            response->setStatusCode(k500InternalServerError);
+
+            callback(response);
         },
+
         userId,
         totalAmount);
 }
 
+
 // =========================================================
-// ADD ORDER ITEM
+// ADD ORDER ITEM + REDUCE PRODUCT STOCK
 // =========================================================
 
 void addOrderItem(
@@ -83,16 +99,27 @@ void addOrderItem(
         return;
     }
 
-    int orderId = (*json)["order_id"].asInt();
-    int productId = (*json)["product_id"].asInt();
-    int quantity = (*json)["quantity"].asInt();
-    double price = (*json)["price"].asDouble();
+    int orderId =
+        (*json)["order_id"].asInt();
 
-    if (orderId <= 0 || productId <= 0 || quantity <= 0)
+    int productId =
+        (*json)["product_id"].asInt();
+
+    int quantity =
+        (*json)["quantity"].asInt();
+
+    double price =
+        (*json)["price"].asDouble();
+
+    if (orderId <= 0 ||
+        productId <= 0 ||
+        quantity <= 0 ||
+        price <= 0)
     {
         Json::Value responseJson;
         responseJson["success"] = false;
-        responseJson["message"] = "Invalid order item details";
+        responseJson["message"] =
+            "Invalid order item details";
 
         callback(HttpResponse::newHttpJsonResponse(responseJson));
         return;
@@ -100,31 +127,157 @@ void addOrderItem(
 
     auto dbClient = getDatabaseClient();
 
-    dbClient->execSqlAsync(
-        "INSERT INTO order_items "
-        "(order_id, product_id, quantity, price) "
-        "VALUES ($1, $2, $3, $4)",
-        [callback](const Result &result)
-        {
-            Json::Value responseJson;
-            responseJson["success"] = true;
-            responseJson["message"] = "Order item added";
+    // -----------------------------------------------------
+    // Step 1: Check available stock
+    // -----------------------------------------------------
 
-            callback(HttpResponse::newHttpJsonResponse(responseJson));
+    dbClient->execSqlAsync(
+        "SELECT quantity "
+        "FROM products "
+        "WHERE id = $1",
+
+        [callback, dbClient, orderId, productId, quantity, price](
+            const Result &result)
+        {
+            if (result.empty())
+            {
+                Json::Value responseJson;
+                responseJson["success"] = false;
+                responseJson["message"] =
+                    "Product not found";
+
+                callback(
+                    HttpResponse::newHttpJsonResponse(responseJson));
+                return;
+            }
+
+            int availableStock =
+                result[0]["quantity"].as<int>();
+
+            if (availableStock <= 0)
+            {
+                Json::Value responseJson;
+                responseJson["success"] = false;
+                responseJson["message"] =
+                    "Product is out of stock";
+
+                callback(
+                    HttpResponse::newHttpJsonResponse(responseJson));
+                return;
+            }
+
+            if (quantity > availableStock)
+            {
+                Json::Value responseJson;
+                responseJson["success"] = false;
+                responseJson["message"] =
+                    "Insufficient stock available";
+
+                callback(
+                    HttpResponse::newHttpJsonResponse(responseJson));
+                return;
+            }
+
+            // -------------------------------------------------
+            // Step 2: Insert order item
+            // -------------------------------------------------
+
+            dbClient->execSqlAsync(
+                "INSERT INTO order_items "
+                "(order_id, product_id, quantity, price) "
+                "VALUES ($1, $2, $3, $4)",
+
+                [callback, dbClient, productId, quantity](
+                    const Result &result)
+                {
+                    // -----------------------------------------
+                    // Step 3: Reduce product stock
+                    // -----------------------------------------
+
+                    dbClient->execSqlAsync(
+                        "UPDATE products "
+                        "SET quantity = quantity - $1 "
+                        "WHERE id = $2 "
+                        "AND quantity >= $1",
+
+                        [callback](const Result &updateResult)
+                        {
+                            Json::Value responseJson;
+
+                            responseJson["success"] = true;
+                            responseJson["message"] =
+                                "Order item added and stock updated";
+
+                            callback(
+                                HttpResponse::newHttpJsonResponse(
+                                    responseJson));
+                        },
+
+                        [callback](const DrogonDbException &error)
+                        {
+                            Json::Value responseJson;
+
+                            responseJson["success"] = false;
+                            responseJson["message"] =
+                                error.base().what();
+
+                            auto response =
+                                HttpResponse::newHttpJsonResponse(
+                                    responseJson);
+
+                            response->setStatusCode(
+                                k500InternalServerError);
+
+                            callback(response);
+                        },
+
+                        quantity,
+                        productId);
+                },
+
+                [callback](const DrogonDbException &error)
+                {
+                    Json::Value responseJson;
+
+                    responseJson["success"] = false;
+                    responseJson["message"] =
+                        error.base().what();
+
+                    auto response =
+                        HttpResponse::newHttpJsonResponse(
+                            responseJson);
+
+                    response->setStatusCode(
+                        k500InternalServerError);
+
+                    callback(response);
+                },
+
+                orderId,
+                productId,
+                quantity,
+                price);
         },
+
         [callback](const DrogonDbException &error)
         {
             Json::Value responseJson;
-            responseJson["success"] = false;
-            responseJson["message"] = error.base().what();
 
-            callback(HttpResponse::newHttpJsonResponse(responseJson));
+            responseJson["success"] = false;
+            responseJson["message"] =
+                error.base().what();
+
+            auto response =
+                HttpResponse::newHttpJsonResponse(responseJson);
+
+            response->setStatusCode(k500InternalServerError);
+
+            callback(response);
         },
-        orderId,
-        productId,
-        quantity,
-        price);
+
+        productId);
 }
+
 
 // =========================================================
 // GET USER ORDERS
@@ -132,26 +285,17 @@ void addOrderItem(
 
 void getUserOrders(
     const HttpRequestPtr &req,
-    std::function<void(const HttpResponsePtr &)> &&callback)
+    std::function<void(const HttpResponsePtr &)> &&callback,
+    int userId)
 {
-    std::string userId = req->getParameter("user_id");
-
-    if (userId.empty())
-    {
-        Json::Value responseJson;
-        responseJson["success"] = false;
-        responseJson["message"] = "User ID is required";
-
-        callback(HttpResponse::newHttpJsonResponse(responseJson));
-        return;
-    }
-
     auto dbClient = getDatabaseClient();
+
     dbClient->execSqlAsync(
         "SELECT id, total_amount, status, created_at "
         "FROM orders "
         "WHERE user_id = $1 "
         "ORDER BY id DESC",
+
         [callback](const Result &result)
         {
             Json::Value orders(Json::arrayValue);
@@ -160,9 +304,12 @@ void getUserOrders(
             {
                 Json::Value order;
 
-                order["id"] = row["id"].as<int>();
+                order["id"] =
+                    row["id"].as<int>();
+
                 order["total_amount"] =
                     row["total_amount"].as<double>();
+
                 order["status"] =
                     row["status"].as<std::string>();
 
@@ -179,15 +326,22 @@ void getUserOrders(
             responseJson["success"] = true;
             responseJson["orders"] = orders;
 
-            callback(HttpResponse::newHttpJsonResponse(responseJson));
+            callback(
+                HttpResponse::newHttpJsonResponse(responseJson)
+            );
         },
+
         [callback](const DrogonDbException &error)
         {
             Json::Value responseJson;
             responseJson["success"] = false;
             responseJson["message"] = error.base().what();
 
-            callback(HttpResponse::newHttpJsonResponse(responseJson));
+            callback(
+                HttpResponse::newHttpJsonResponse(responseJson)
+            );
         },
-        userId);
+
+        userId
+    );
 }

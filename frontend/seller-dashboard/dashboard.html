@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Seller Dashboard | NishandhiniMart</title>
+
+    <link rel="stylesheet" href="css/seller-dashboard.css">
+</head>
+
+<body>
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="main-header">
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                N
+            </div>
+
+            <div>
+                <h2>NishandhiniMart</h2>
+                <span>Seller Management Panel</span>
+            </div>
+
+        </div>
+
+
+        <div class="header-actions">
+
+            <!-- Notification -->
+
+            <button
+                type="button"
+                class="notification-btn"
+                title="Notifications"
+            >
+                🔔
+                <span class="notification-dot"></span>
+            </button>
+
+
+            <!-- Profile -->
+
+            <div class="profile-menu">
+
+                <button
+                    type="button"
+                    class="profile-menu-btn"
+                    onclick="toggleProfileMenu()"
+                >
+
+                    <span
+                        class="top-profile-avatar"
+                        id="topProfileAvatar"
+                    >
+                        S
+                    </span>
+
+                    <span
+                        class="top-profile-name"
+                        id="topProfileName"
+                    >
+                        Seller
+                    </span>
+
+                    <span class="profile-arrow">
+                        ▾
+                    </span>
+
+                </button>
+
+
+                <div
+                    class="profile-dropdown"
+                    id="profileDropdown"
+                >
+
+                    <button
+                        type="button"
+                        onclick="openSellerProfile()"
+                    >
+                        👤 My Profile
+                    </button>
+
+                    <button
+                        type="button"
+                        onclick="logout()"
+                    >
+                        🚪 Logout
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         DASHBOARD LAYOUT
+    ====================================================== -->
+
+    <div class="dashboard-layout">
+
+
+        <!-- =================================================
+             SIDEBAR
+        ================================================== -->
+
+        <aside class="sidebar">
+
+            <div class="sidebar-title">
+                Seller Menu
+            </div>
+
+
+            <nav class="sidebar-nav">
+
+                <!-- Dashboard -->
+
+                <a
+                    href="dashboard.html"
+                    class="sidebar-link active"
+                >
+                    <span class="sidebar-icon">🏠</span>
+                    <span>Dashboard</span>
+                </a>
+
+
+                <!-- My Products -->
+
+                <a
+                    href="my-products.html"
+                    class="sidebar-link"
+                >
+                    <span class="sidebar-icon">📦</span>
+                    <span>My Products</span>
+                </a>
+
+
+                <!-- Add Product -->
+
+                <a
+                    href="add-product.html"
+                    class="sidebar-link"
+                >
+                    <span class="sidebar-icon">➕</span>
+                    <span>Add Product</span>
+                </a>
+
+
+                <!-- Orders -->
+
+                <a
+                    href="orders.html"
+                    class="sidebar-link"
+                >
+                    <span class="sidebar-icon">🛒</span>
+                    <span>Orders</span>
+                </a>
+
+
+                <!-- Sales -->
+
+                <a
+                    href="sales.html"
+                    class="sidebar-link"
+                >
+                    <span class="sidebar-icon">📈</span>
+                    <span>Sales</span>
+                </a>
+
+
+                <!-- Settings -->
+
+                <a
+                    href="settings.html"
+                    class="sidebar-link"
+                >
+                    <span class="sidebar-icon">⚙️</span>
+                    <span>Settings</span>
+                </a>
+
+            </nav>
+
+
+            <div class="sidebar-divider"></div>
+
+
+            <!-- Profile shortcut -->
+
+            <nav class="sidebar-nav">
+
+                <a
+                    href="seller-profile.html"
+                    class="sidebar-link"
+                >
+                    <span class="sidebar-icon">👤</span>
+                    <span>My Profile</span>
+                </a>
+
+            </nav>
+
+        </aside>
+
+
+        <!-- =================================================
+             MAIN CONTENT
+        ================================================== -->
+
+        <main class="dashboard-main">
+
+
+            <!-- =================================================
+                 PAGE HEADING
+            ================================================== -->
+
+            <div class="page-heading">
+
+                <div class="page-heading-left">
+
+                    <span class="page-label">
+                        SELLER CENTER
+                    </span>
+
+                    <h1>
+                        Seller Dashboard
+                    </h1>
+
+                    <p>
+                        Manage your products, orders and sales
+                        from one place.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 HERO
+            ================================================== -->
+
+            <section class="seller-hero">
+
+                <div class="hero-content">
+
+                    <span class="hero-tag">
+                        WELCOME BACK
+                    </span>
+
+                    <h1>
+                        Hello,<br>
+                        <span id="heroStoreName">
+                            Seller
+                        </span>
+                    </h1>
+
+                    <p>
+                        Manage your products, monitor your stock,
+                        track orders and grow your business with
+                        NishandhiniMart.
+                    </p>
+
+                    <button
+                        type="button"
+                        class="hero-btn"
+                        onclick="window.location.href='add-product.html'"
+                    >
+                        Add New Product →
+                    </button>
+
+                </div>
+
+
+                <div class="hero-decoration">
+
+                    <div class="floating-card card-one">
+                        📦
+                    </div>
+
+                    <div class="floating-card card-two">
+                        🛍️
+                    </div>
+
+                    <div class="floating-card card-three">
+                        📈
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 STATISTICS
+            ================================================== -->
+
+            <section class="stats-grid">
+
+
+                <!-- My Products -->
+
+                <div class="stat-card">
+
+                    <div class="stat-icon purple-icon">
+                        📦
+                    </div>
+
+                    <div>
+
+                        <span>
+                            My Products
+                        </span>
+
+                        <h3 id="totalProducts">
+                            0
+                        </h3>
+
+                        <small>
+                            Listed products
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Orders -->
+
+                <div class="stat-card">
+
+                    <div class="stat-icon blue-icon">
+                        🛒
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Total Orders
+                        </span>
+
+                        <h3 id="totalOrders">
+                            0
+                        </h3>
+
+                        <small>
+                            Customer orders
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Sales -->
+
+                <div class="stat-card">
+
+                    <div class="stat-icon pink-icon">
+                        💰
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Total Sales
+                        </span>
+
+                        <h3 id="totalSales">
+                            ₹0
+                        </h3>
+
+                        <small>
+                            Sales amount
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Stock -->
+
+                <div class="stat-card">
+
+                    <div class="stat-icon green-icon">
+                        📊
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Total Stock
+                        </span>
+
+                        <h3 id="totalStock">
+                            0
+                        </h3>
+
+                        <small>
+                            Available quantity
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 RECENT ORDERS + QUICK ACTIONS
+            ================================================== -->
+
+            <div class="dashboard-two-column">
+
+
+                <!-- =================================================
+                     RECENT ORDERS
+                ================================================== -->
+
+                <section class="dashboard-card">
+
+                    <div class="card-header">
+
+                        <div>
+
+                            <h2>
+                                Recent Orders
+                            </h2>
+
+                            <p>
+                                Latest orders for your products.
+                            </p>
+
+                        </div>
+
+                        <a
+                            href="orders.html"
+                            class="secondary-btn"
+                        >
+                            View All
+                        </a>
+
+                    </div>
+
+
+                    <div class="orders-table-wrapper">
+
+                        <table class="orders-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Order ID
+                                    </th>
+
+                                    <th>
+                                        Product
+                                    </th>
+
+                                    <th>
+                                        Qty
+                                    </th>
+
+                                    <th>
+                                        Amount
+                                    </th>
+
+                                    <th>
+                                        Status
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody id="recentOrdersBody">
+
+                                <tr>
+
+                                    <td
+                                        colspan="5"
+                                        style="
+                                            text-align:center;
+                                            padding:35px;
+                                            color:#9997aa;
+                                        "
+                                    >
+                                        No recent orders available.
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================================
+                     QUICK ACTIONS
+                ================================================== -->
+
+                <section class="dashboard-card">
+
+                    <div class="card-header">
+
+                        <div>
+
+                            <h2>
+                                Quick Actions
+                            </h2>
+
+                            <p>
+                                Manage your store quickly.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="quick-actions">
+
+
+                        <a
+                            href="add-product.html"
+                            class="quick-action"
+                        >
+
+                            <span class="quick-action-icon">
+                                ➕
+                            </span>
+
+                            <span>
+                                Add Product
+                            </span>
+
+                        </a>
+
+
+                        <a
+                            href="my-products.html"
+                            class="quick-action"
+                        >
+
+                            <span class="quick-action-icon">
+                                📦
+                            </span>
+
+                            <span>
+                                My Products
+                            </span>
+
+                        </a>
+
+
+                        <a
+                            href="orders.html"
+                            class="quick-action"
+                        >
+
+                            <span class="quick-action-icon">
+                                🛒
+                            </span>
+
+                            <span>
+                                View Orders
+                            </span>
+
+                        </a>
+
+
+                        <a
+                            href="sales.html"
+                            class="quick-action"
+                        >
+
+                            <span class="quick-action-icon">
+                                📈
+                            </span>
+
+                            <span>
+                                View Sales
+                            </span>
+
+                        </a>
+
+
+                        <a
+                            href="seller-profile.html"
+                            class="quick-action"
+                        >
+
+                            <span class="quick-action-icon">
+                                👤
+                            </span>
+
+                            <span>
+                                My Profile
+                            </span>
+
+                        </a>
+
+
+                        <a
+                            href="settings.html"
+                            class="quick-action"
+                        >
+
+                            <span class="quick-action-icon">
+                                ⚙️
+                            </span>
+
+                            <span>
+                                Settings
+                            </span>
+
+                        </a>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+
+            <!-- =================================================
+                 STOCK MANAGEMENT + ACCOUNT STATUS
+            ================================================== -->
+
+            <div class="dashboard-two-column">
+
+
+                <!-- =================================================
+                     STOCK MANAGEMENT
+                ================================================== -->
+
+                <section class="dashboard-card">
+
+                    <div class="card-header">
+
+                        <div>
+
+                            <h2>
+                                Stock Management
+                            </h2>
+
+                            <p>
+                                Monitor your available inventory.
+                            </p>
+
+                        </div>
+
+                        <a
+                            href="my-products.html"
+                            class="secondary-btn"
+                        >
+                            Manage
+                        </a>
+
+                    </div>
+
+
+                    <div
+                        class="stock-list"
+                        id="stockList"
+                    >
+
+                        <div class="stock-item">
+
+                            <div class="stock-item-top">
+
+                                <span class="stock-product-name">
+                                    Loading products...
+                                </span>
+
+                                <span class="stock-number">
+                                    --
+                                </span>
+
+                            </div>
+
+                            <div class="stock-bar">
+
+                                <div
+                                    class="stock-progress"
+                                    style="width:0%"
+                                ></div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================================
+                     ACCOUNT STATUS
+                ================================================== -->
+
+                <section class="dashboard-card">
+
+                    <div class="card-header">
+
+                        <div>
+
+                            <h2>
+                                Account Status
+                            </h2>
+
+                            <p>
+                                Your seller account information.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="account-status-card">
+
+                        <div class="account-status-top">
+
+                            <div class="account-status-info">
+
+                                <div class="account-status-icon">
+                                    ✓
+                                </div>
+
+                                <div>
+
+                                    <h3>
+                                        Seller Account
+                                    </h3>
+
+                                    <p>
+                                        Your account is active.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <span class="account-status-active">
+                                Active
+                            </span>
+
+                        </div>
+
+
+                        <div class="account-info-list">
+
+                            <div class="account-info-box">
+
+                                <span>
+                                    Store
+                                </span>
+
+                                <strong id="accountStoreName">
+                                    Not available
+                                </strong>
+
+                            </div>
+
+
+                            <div class="account-info-box">
+
+                                <span>
+                                    Email
+                                </span>
+
+                                <strong id="accountEmail">
+                                    Not available
+                                </strong>
+
+                            </div>
+
+
+                            <div class="account-info-box">
+
+                                <span>
+                                    Role
+                                </span>
+
+                                <strong id="accountRole">
+                                    Seller
+                                </strong>
+
+                            </div>
+
+
+                            <div class="account-info-box">
+
+                                <span>
+                                    Verification
+                                </span>
+
+                                <strong>
+                                    Pending
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+
+            <!-- =================================================
+                 LOW STOCK ALERT
+            ================================================== -->
+
+            <section class="dashboard-card">
+
+                <div class="card-header">
+
+                    <div>
+
+                        <h2>
+                            Stock Alert
+                        </h2>
+
+                        <p>
+                            Products that may need restocking.
+                        </p>
+
+                    </div>
+
+                    <a
+                        href="my-products.html"
+                        class="secondary-btn"
+                    >
+                        View Inventory
+                    </a>
+
+                </div>
+
+
+                <div
+                    id="lowStockContainer"
+                    class="empty-box"
+                >
+
+                    <div class="empty-icon">
+                        📦
+                    </div>
+
+                    <h3>
+                        No Stock Alerts
+                    </h3>
+
+                    <p>
+                        Your products currently have sufficient stock.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+        </main>
+
+    </div>
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer class="dashboard-footer">
+
+        <div class="footer-brand">
+
+            <div class="brand-icon">
+                N
+            </div>
+
+            <strong>
+                NishandhiniMart
+            </strong>
+
+        </div>
+
+        <p>
+            © 2026 NishandhiniMart. All rights reserved.
+        </p>
+
+        <span>
+            Empowering Sellers Digitally.
+        </span>
+
+    </footer>
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <!-- Existing seller functions -->
+    <script src="../seller.js"></script>
+
+    <!-- New dashboard JavaScript -->
+    <script src="js/seller-dashboard.js"></script>
+
+</body>
+
+</html>

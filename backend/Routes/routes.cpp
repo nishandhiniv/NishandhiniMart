@@ -1,5 +1,8 @@
 #include "./route.h"
 #include <drogon/drogon.h>
+#include <functional>
+#include <string>
+#include <utility>
 
 using namespace drogon;
 
@@ -29,6 +32,18 @@ void registerUser(
     std::function<void(const HttpResponsePtr &)> &&callback
 );
 
+void changePassword(
+    const HttpRequestPtr &req,
+    std::function<void(const HttpResponsePtr &)> &&callback
+);
+void updateSellerProfile(
+    const HttpRequestPtr &req,
+    std::function<void(const HttpResponsePtr &)> &&callback
+);
+void updateSellerVerificationDetails(
+    const HttpRequestPtr &req,
+    std::function<void(const HttpResponsePtr &)> &&callback
+);
 
 // =========================================================
 // PRODUCT CONTROLLER FUNCTIONS
@@ -40,6 +55,11 @@ void getProducts(
 );
 
 void createProduct(
+    const HttpRequestPtr &req,
+    std::function<void(const HttpResponsePtr &)> &&callback
+);
+
+void uploadProductImage(
     const HttpRequestPtr &req,
     std::function<void(const HttpResponsePtr &)> &&callback
 );
@@ -77,6 +97,16 @@ void getAllProducts(
     std::function<void(const HttpResponsePtr &)> &&callback
 );
 
+void deleteProduct(
+    const HttpRequestPtr &req,
+    std::function<void(const HttpResponsePtr &)> &&callback,
+    int productId
+);
+
+void updateVerificationStatus(
+    const HttpRequestPtr &req,
+    std::function<void(const HttpResponsePtr &)> &&callback
+);
 
 // =========================================================
 // ORDER CONTROLLER FUNCTIONS
@@ -94,7 +124,8 @@ void addOrderItem(
 
 void getUserOrders(
     const HttpRequestPtr &req,
-    std::function<void(const HttpResponsePtr &)> &&callback
+    std::function<void(const HttpResponsePtr &)> &&callback,
+    int userId
 );
 
 
@@ -139,13 +170,12 @@ void getProductReviews(
 
 void registerRoutes()
 {
-
     // =====================================================
     // BASIC CONTROLLER TEST
     // =====================================================
 
     app().registerHandler(
-        "/api/test-controller",
+        "/api/controller",
         [](const HttpRequestPtr &req,
            std::function<void(const HttpResponsePtr &)> &&callback)
         {
@@ -167,11 +197,14 @@ void registerRoutes()
     // =====================================================
 
     app().registerHandler(
-        "/api/test-products",
+        "/api/products",
         [](const HttpRequestPtr &req,
            std::function<void(const HttpResponsePtr &)> &&callback)
         {
-            getProducts(req, std::move(callback));
+            getProducts(
+                req,
+                std::move(callback)
+            );
         },
         {Get}
     );
@@ -182,7 +215,7 @@ void registerRoutes()
     // =====================================================
 
     app().registerHandler(
-        "/api/test-auth",
+        "/api/auth",
         [](const HttpRequestPtr &req,
            std::function<void(const HttpResponsePtr &)> &&callback)
         {
@@ -197,6 +230,7 @@ void registerRoutes()
                 callback(
                     HttpResponse::newHttpJsonResponse(response)
                 );
+
                 return;
             }
 
@@ -231,7 +265,10 @@ void registerRoutes()
         [](const HttpRequestPtr &req,
            std::function<void(const HttpResponsePtr &)> &&callback)
         {
-            loginUser(req, std::move(callback));
+            loginUser(
+                req,
+                std::move(callback)
+            );
         },
         {Post}
     );
@@ -246,22 +283,67 @@ void registerRoutes()
         [](const HttpRequestPtr &req,
            std::function<void(const HttpResponsePtr &)> &&callback)
         {
-            registerUser(req, std::move(callback));
+            registerUser(
+                req,
+                std::move(callback)
+            );
         },
         {Post}
     );
 
+    // =====================================================
+// AUTH CONTROLLER - CHANGE PASSWORD
+// =====================================================
 
+app().registerHandler(
+    "/api/change-password",
+    [](const HttpRequestPtr &req,
+       std::function<void(const HttpResponsePtr &)> &&callback)
+    {
+        changePassword(
+            req,
+            std::move(callback)
+        );
+    },
+    {Post}
+);
+app().registerHandler(
+    "/api/update-seller-profile",
+    [](const HttpRequestPtr &req,
+       std::function<void(const HttpResponsePtr &)> &&callback)
+    {
+        updateSellerProfile(
+            req,
+            std::move(callback)
+        );
+    },
+    {Post}
+);
+app().registerHandler(
+    "/api/update-seller-verification",
+    [](const HttpRequestPtr &req,
+       std::function<void(const HttpResponsePtr &)> &&callback)
+    {
+        updateSellerVerificationDetails(
+            req,
+            std::move(callback)
+        );
+    },
+    {Post}
+);
     // =====================================================
     // ADMIN - GET ALL USERS
     // =====================================================
 
     app().registerHandler(
-        "/api/test-admin-users",
+        "/api/admin-users",
         [](const HttpRequestPtr &req,
            std::function<void(const HttpResponsePtr &)> &&callback)
         {
-            getAllUsers(req, std::move(callback));
+            getAllUsers(
+                req,
+                std::move(callback)
+            );
         },
         {Get}
     );
@@ -272,26 +354,82 @@ void registerRoutes()
     // =====================================================
 
     app().registerHandler(
-        "/api/test-admin-products",
+        "/api/admin-products",
         [](const HttpRequestPtr &req,
            std::function<void(const HttpResponsePtr &)> &&callback)
         {
-            getAllProducts(req, std::move(callback));
+            getAllProducts(
+                req,
+                std::move(callback)
+            );
         },
         {Get}
     );
+    // =====================================================
+// ADMIN - DELETE PRODUCT
+// =====================================================
 
+app().registerHandler(
+    "/api/admin-delete-product/{1}",
+    [](const HttpRequestPtr &req,
+       std::function<void(const HttpResponsePtr &)> &&callback,
+       int productId)
+    {
+        deleteProduct(
+            req,
+            std::move(callback),
+            productId
+        );
+    },
+    {Delete}
+);
+    // =====================================================
+// ADMIN - UPDATE SELLER VERIFICATION STATUS
+// =====================================================
+
+app().registerHandler(
+    "/api/update-verification-status",
+    [](const HttpRequestPtr &req,
+       std::function<void(const HttpResponsePtr &)> &&callback)
+    {
+        updateVerificationStatus(
+            req,
+            std::move(callback)
+        );
+    },
+    {Put}
+);
+
+    // =====================================================
+// PRODUCT - UPLOAD IMAGE
+// =====================================================
+
+app().registerHandler(
+    "/api/upload-product-image",
+    [](const HttpRequestPtr &req,
+       std::function<void(const HttpResponsePtr &)> &&callback)
+    {
+        uploadProductImage(
+            req,
+            std::move(callback)
+        );
+    },
+    {Post}
+);
 
     // =====================================================
     // PRODUCT - CREATE PRODUCT
     // =====================================================
 
     app().registerHandler(
-        "/api/test-create-product",
+        "/api/create-product",
         [](const HttpRequestPtr &req,
            std::function<void(const HttpResponsePtr &)> &&callback)
         {
-            createProduct(req, std::move(callback));
+            createProduct(
+                req,
+                std::move(callback)
+            );
         },
         {Post}
     );
@@ -302,7 +440,7 @@ void registerRoutes()
     // =====================================================
 
     app().registerHandler(
-        "/api/test-update-product/{1}",
+        "/api/update-product/{1}",
         [](const HttpRequestPtr &req,
            std::function<void(const HttpResponsePtr &)> &&callback,
            int productId)
@@ -322,7 +460,7 @@ void registerRoutes()
     // =====================================================
 
     app().registerHandler(
-        "/api/test-delete-product/{1}",
+        "/api/delete-product/{1}",
         [](const HttpRequestPtr &req,
            std::function<void(const HttpResponsePtr &)> &&callback,
            int productId)
@@ -342,7 +480,7 @@ void registerRoutes()
     // =====================================================
 
     app().registerHandler(
-        "/api/test-delete-user/{1}",
+        "/api/delete-user/{1}",
         [](const HttpRequestPtr &req,
            std::function<void(const HttpResponsePtr &)> &&callback,
            int userId)
@@ -362,11 +500,14 @@ void registerRoutes()
     // =====================================================
 
     app().registerHandler(
-        "/api/test-create-order",
+        "/api/create-order",
         [](const HttpRequestPtr &req,
            std::function<void(const HttpResponsePtr &)> &&callback)
         {
-            createOrder(req, std::move(callback));
+            createOrder(
+                req,
+                std::move(callback)
+            );
         },
         {Post}
     );
@@ -377,11 +518,14 @@ void registerRoutes()
     // =====================================================
 
     app().registerHandler(
-        "/api/test-add-order-item",
+        "/api/order-item",
         [](const HttpRequestPtr &req,
            std::function<void(const HttpResponsePtr &)> &&callback)
         {
-            addOrderItem(req, std::move(callback));
+            addOrderItem(
+                req,
+                std::move(callback)
+            );
         },
         {Post}
     );
@@ -392,11 +536,16 @@ void registerRoutes()
     // =====================================================
 
     app().registerHandler(
-        "/api/test-user-orders/30",
+        "/api/user-orders/{1}",
         [](const HttpRequestPtr &req,
-           std::function<void(const HttpResponsePtr &)> &&callback)
+           std::function<void(const HttpResponsePtr &)> &&callback,
+           int userId)
         {
-            getUserOrders(req, std::move(callback));
+            getUserOrders(
+                req,
+                std::move(callback),
+                userId
+            );
         },
         {Get}
     );
@@ -407,11 +556,14 @@ void registerRoutes()
     // =====================================================
 
     app().registerHandler(
-        "/api/test-add-cart",
+        "/api/add-cart",
         [](const HttpRequestPtr &req,
            std::function<void(const HttpResponsePtr &)> &&callback)
         {
-            addToCart(req, std::move(callback));
+            addToCart(
+                req,
+                std::move(callback)
+            );
         },
         {Post}
     );
@@ -422,11 +574,14 @@ void registerRoutes()
     // =====================================================
 
     app().registerHandler(
-        "/api/test-get-cart",
+        "/api/get-cart",
         [](const HttpRequestPtr &req,
            std::function<void(const HttpResponsePtr &)> &&callback)
         {
-            getCart(req, std::move(callback));
+            getCart(
+                req,
+                std::move(callback)
+            );
         },
         {Get}
     );
@@ -437,11 +592,14 @@ void registerRoutes()
     // =====================================================
 
     app().registerHandler(
-        "/api/test-remove-cart",
+        "/api/remove-cart",
         [](const HttpRequestPtr &req,
            std::function<void(const HttpResponsePtr &)> &&callback)
         {
-            removeFromCart(req, std::move(callback));
+            removeFromCart(
+                req,
+                std::move(callback)
+            );
         },
         {Delete}
     );
@@ -452,11 +610,14 @@ void registerRoutes()
     // =====================================================
 
     app().registerHandler(
-        "/api/test-add-review",
+        "/api/add-review",
         [](const HttpRequestPtr &req,
            std::function<void(const HttpResponsePtr &)> &&callback)
         {
-            addReview(req, std::move(callback));
+            addReview(
+                req,
+                std::move(callback)
+            );
         },
         {Post}
     );
@@ -467,13 +628,15 @@ void registerRoutes()
     // =====================================================
 
     app().registerHandler(
-        "/api/test-product-reviews",
+        "/api/product-reviews",
         [](const HttpRequestPtr &req,
            std::function<void(const HttpResponsePtr &)> &&callback)
         {
-            getProductReviews(req, std::move(callback));
+            getProductReviews(
+                req,
+                std::move(callback)
+            );
         },
         {Get}
     );
-
 }

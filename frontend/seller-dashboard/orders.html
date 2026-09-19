@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Orders | NishandhiniMart</title>
+
+    <link
+        rel="stylesheet"
+        href="css/seller-dashboard.css"
+    >
+
+    <style>
+
+        /* =====================================================
+           ORDERS PAGE
+        ===================================================== */
+
+        .orders-summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 22px;
+        }
+
+        .order-summary-card {
+            background: #ffffff;
+            border: 1px solid #eeeaf5;
+            border-radius: 14px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .order-summary-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 20px;
+            background: #f0ebff;
+        }
+
+        .order-summary-card span {
+            display: block;
+            font-size: 12px;
+            color: #9290a5;
+            margin-bottom: 4px;
+        }
+
+        .order-summary-card strong {
+            display: block;
+            color: #302b4c;
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+
+        /* =====================================================
+           TOOLBAR
+        ===================================================== */
+
+        .orders-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .orders-search {
+            flex: 1;
+            min-width: 250px;
+            height: 44px;
+
+            padding: 0 15px;
+
+            border: 1px solid #e3e1ec;
+            border-radius: 10px;
+
+            background: #ffffff;
+            color: #302b4c;
+
+            font-size: 13px;
+            outline: none;
+        }
+
+        .orders-search:focus {
+            border-color: #7956df;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(121, 86, 223, 0.10);
+        }
+
+
+        .orders-filter {
+            width: 170px;
+            height: 44px;
+
+            padding: 0 14px;
+
+            border: 1px solid #e3e1ec;
+            border-radius: 10px;
+
+            background: #ffffff;
+            color: #302b4c;
+
+            font-size: 13px;
+            outline: none;
+        }
+
+        .orders-filter:focus {
+            border-color: #7956df;
+        }
+
+
+        /* =====================================================
+           ORDER TABLE
+        ===================================================== */
+
+        .orders-table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .orders-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 760px;
+        }
+
+        .orders-table th {
+            text-align: left;
+
+            padding: 14px 12px;
+
+            background: #faf9fd;
+
+            color: #77738c;
+
+            font-size: 11px;
+            font-weight: 700;
+
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+
+            border-bottom: 1px solid #eeeaf5;
+        }
+
+        .orders-table td {
+            padding: 16px 12px;
+
+            border-bottom: 1px solid #f0eef5;
+
+            color: #4d4963;
+
+            font-size: 13px;
+        }
+
+        .orders-table tbody tr:hover {
+            background: #fcfbff;
+        }
+
+
+        /* =====================================================
+           ORDER DATA
+        ===================================================== */
+
+        .order-id {
+            color: #6548c8;
+            font-weight: 800;
+        }
+
+        .order-product {
+            color: #302b4c;
+            font-weight: 600;
+        }
+
+        .order-quantity {
+            font-weight: 600;
+            color: #454158;
+        }
+
+        .order-amount {
+            color: #302b4c;
+            font-weight: 700;
+        }
+
+        .order-date {
+            color: #77738c;
+            white-space: nowrap;
+        }
+
+
+        /* =====================================================
+           STATUS
+        ===================================================== */
+
+        .order-status {
+            display: inline-flex;
+
+            align-items: center;
+            justify-content: center;
+
+            min-width: 85px;
+
+            padding: 6px 11px;
+
+            border-radius: 20px;
+
+            font-size: 11px;
+            font-weight: 700;
+
+            text-transform: capitalize;
+        }
+
+        .status-pending {
+            background: #fff4dc;
+            color: #a36a00;
+        }
+
+        .status-processing {
+            background: #e9f1ff;
+            color: #3567b8;
+        }
+
+        .status-shipped {
+            background: #eee8ff;
+            color: #6947c7;
+        }
+
+        .status-delivered {
+            background: #e7f8ee;
+            color: #21834b;
+        }
+
+        .status-cancelled {
+            background: #ffe9e9;
+            color: #c44949;
+        }
+
+
+        /* =====================================================
+           LOADING / EMPTY
+        ===================================================== */
+
+        .orders-message {
+            text-align: center !important;
+            padding: 45px 20px !important;
+
+            color: #9290a5 !important;
+
+            font-size: 13px !important;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 900px) {
+
+            .orders-summary {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+        @media (max-width: 600px) {
+
+            .orders-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .orders-search,
+            .orders-filter {
+                width: 100%;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     HEADER
+========================================================= -->
+
+<header class="main-header">
+
+    <div class="brand">
+
+        <div class="brand-icon">
+            N
+        </div>
+
+        <div>
+
+            <h2>
+                NishandhiniMart
+            </h2>
+
+            <span>
+                Seller Management Panel
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="header-actions">
+
+        <button
+            type="button"
+            class="notification-btn"
+            title="Notifications"
+        >
+            🔔
+
+            <span class="notification-dot"></span>
+
+        </button>
+
+
+        <div class="profile-menu">
+
+            <button
+                type="button"
+                class="profile-menu-btn"
+                onclick="toggleProfileMenu()"
+            >
+
+                <span
+                    class="top-profile-avatar"
+                    id="topProfileAvatar"
+                >
+                    S
+                </span>
+
+                <span
+                    class="top-profile-name"
+                    id="topProfileName"
+                >
+                    Seller
+                </span>
+
+                <span class="profile-arrow">
+                    ▾
+                </span>
+
+            </button>
+
+
+            <div
+                class="profile-dropdown"
+                id="profileDropdown"
+            >
+
+                <button
+                    type="button"
+                    onclick="openSellerProfile()"
+                >
+                    👤 My Profile
+                </button>
+
+                <button
+                    type="button"
+                    onclick="logout()"
+                >
+                    🚪 Logout
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+
+<!-- =========================================================
+     MAIN LAYOUT
+========================================================= -->
+
+<div class="dashboard-layout">
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-title">
+            Seller Menu
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+
+            <a
+                href="dashboard.html"
+                class="sidebar-link"
+            >
+
+                <span class="sidebar-icon">
+                    🏠
+                </span>
+
+                <span>
+                    Dashboard
+                </span>
+
+            </a>
+
+
+            <a
+                href="my-products.html"
+                class="sidebar-link"
+            >
+
+                <span class="sidebar-icon">
+                    📦
+                </span>
+
+                <span>
+                    My Products
+                </span>
+
+            </a>
+
+
+            <a
+                href="add-product.html"
+                class="sidebar-link"
+            >
+
+                <span class="sidebar-icon">
+                    ➕
+                </span>
+
+                <span>
+                    Add Product
+                </span>
+
+            </a>
+
+
+            <a
+                href="orders.html"
+                class="sidebar-link active"
+            >
+
+                <span class="sidebar-icon">
+                    🛒
+                </span>
+
+                <span>
+                    Orders
+                </span>
+
+            </a>
+
+
+            <a
+                href="sales.html"
+                class="sidebar-link"
+            >
+
+                <span class="sidebar-icon">
+                    📈
+                </span>
+
+                <span>
+                    Sales
+                </span>
+
+            </a>
+
+
+            <a
+                href="settings.html"
+                class="sidebar-link"
+            >
+
+                <span class="sidebar-icon">
+                    ⚙️
+                </span>
+
+                <span>
+                    Settings
+                </span>
+
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-divider"></div>
+
+
+        <nav class="sidebar-nav">
+
+            <a
+                href="seller-profile.html"
+                class="sidebar-link"
+            >
+
+                <span class="sidebar-icon">
+                    👤
+                </span>
+
+                <span>
+                    My Profile
+                </span>
+
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main class="dashboard-main">
+
+
+        <!-- PAGE HEADING -->
+
+        <div class="page-heading">
+
+            <div class="page-heading-left">
+
+                <span class="page-label">
+                    ORDER MANAGEMENT
+                </span>
+
+                <h1>
+                    Orders
+                </h1>
+
+                <p>
+                    View and manage orders received for your products.
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             SUMMARY CARDS
+        ================================================== -->
+
+        <section class="orders-summary">
+
+
+            <div class="order-summary-card">
+
+                <div class="order-summary-icon">
+                    🛒
+                </div>
+
+                <div>
+
+                    <span>
+                        Total Orders
+                    </span>
+
+                    <strong id="totalOrders">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="order-summary-card">
+
+                <div class="order-summary-icon">
+                    ⏳
+                </div>
+
+                <div>
+
+                    <span>
+                        Pending Orders
+                    </span>
+
+                    <strong id="pendingOrders">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="order-summary-card">
+
+                <div class="order-summary-icon">
+                    💰
+                </div>
+
+                <div>
+
+                    <span>
+                        Total Order Value
+                    </span>
+
+                    <strong id="totalOrderValue">
+                        ₹0
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             ORDERS CARD
+        ================================================== -->
+
+        <section class="dashboard-card">
+
+
+            <div class="card-header">
+
+                <div>
+
+                    <h2>
+                        Orders Received
+                    </h2>
+
+                    <p>
+                        Orders containing your products.
+                    </p>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="secondary-btn"
+                    onclick="loadOrders()"
+                >
+                    ↻ Refresh
+                </button>
+
+            </div>
+
+
+
+            <!-- SEARCH + FILTER -->
+
+            <div class="orders-toolbar">
+
+                <input
+                    type="text"
+                    id="orderSearch"
+                    class="orders-search"
+                    placeholder="Search by order ID or product..."
+                >
+
+
+                <select
+                    id="orderStatusFilter"
+                    class="orders-filter"
+                >
+
+                    <option value="all">
+                        All Status
+                    </option>
+
+                    <option value="pending">
+                        Pending
+                    </option>
+
+                    <option value="processing">
+                        Processing
+                    </option>
+
+                    <option value="shipped">
+                        Shipped
+                    </option>
+
+                    <option value="delivered">
+                        Delivered
+                    </option>
+
+                    <option value="cancelled">
+                        Cancelled
+                    </option>
+
+                </select>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 TABLE
+            ================================================== -->
+
+            <div class="orders-table-wrapper">
+
+                <table class="orders-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Order ID
+                            </th>
+
+                            <th>
+                                Product
+                            </th>
+
+                            <th>
+                                Quantity
+                            </th>
+
+                            <th>
+                                Amount
+                            </th>
+
+                            <th>
+                                Order Date
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="ordersTableBody">
+
+                        <tr>
+
+                            <td
+                                colspan="6"
+                                class="orders-message"
+                            >
+                                Loading orders...
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+
+            <!-- EMPTY -->
+
+            <div
+                id="ordersEmpty"
+                class="empty-box"
+                style="display:none;"
+            >
+
+                <div class="empty-icon">
+                    🛒
+                </div>
+
+                <h3>
+                    No Orders Found
+                </h3>
+
+                <p>
+                    Orders for your products will appear here.
+                </p>
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+</div>
+
+
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
+
+<footer class="dashboard-footer">
+
+    <div class="footer-brand">
+
+        <div class="brand-icon">
+            N
+        </div>
+
+        <strong>
+            NishandhiniMart
+        </strong>
+
+    </div>
+
+
+    <p>
+        © 2026 NishandhiniMart. All rights reserved.
+    </p>
+
+
+    <span>
+        Empowering Sellers Digitally.
+    </span>
+
+</footer>
+
+
+
+<script src="js/orders.js"></script>
+
+</body>
+
+</html>

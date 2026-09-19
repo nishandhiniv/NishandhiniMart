@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard - NishandhiniMart</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <link rel="stylesheet" href="css/admin-dashboard.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     MAIN HEADER
+========================================================= -->
+
+<header class="admin-header">
+
+    <div class="brand">
+
+        <div class="brand-icon">
+            NM
+        </div>
+
+        <div class="brand-text">
+
+            <h2>NishandhiniMart</h2>
+
+            <span>Admin Management System</span>
+
+        </div>
+
+    </div>
+
+
+    <div class="header-right">
+
+        <div class="admin-badge">
+            ADMIN
+        </div>
+
+
+        <div class="admin-profile">
+
+            <div class="profile-avatar">
+                A
+            </div>
+
+            <div class="profile-info">
+
+                <strong id="adminName">
+                    Admin
+                </strong>
+
+                <span>
+                    Administrator
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <button
+            type="button"
+            class="logout-btn"
+            onclick="logout()"
+        >
+            Logout
+        </button>
+
+    </div>
+
+</header>
+
+
+
+<!-- =========================================================
+     SIDEBAR
+========================================================= -->
+
+<aside class="admin-sidebar">
+
+
+    <!-- BRAND -->
+
+    <div class="sidebar-brand">
+
+        <div class="sidebar-logo">
+            NM
+        </div>
+
+        <div class="sidebar-brand-text">
+
+            <h2>
+                NishandhiniMart
+            </h2>
+
+            <span>
+                Admin Panel
+            </span>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- NAVIGATION -->
+
+    <nav class="sidebar-nav">
+
+
+        <!-- DASHBOARD -->
+
+        <a
+            href="dashboard.html"
+            class="sidebar-link active"
+        >
+
+            <span class="sidebar-icon">
+                🏠
+            </span>
+
+            <span>
+                Dashboard
+            </span>
+
+        </a>
+
+
+
+        <!-- USERS -->
+
+        <a
+            href="users.html"
+            class="sidebar-link"
+        >
+
+            <span class="sidebar-icon">
+                👥
+            </span>
+
+            <span>
+                Users
+            </span>
+
+        </a>
+
+
+
+        <!-- ORDERS -->
+
+        <a
+            href="orders.html"
+            class="sidebar-link"
+        >
+
+            <span class="sidebar-icon">
+                🛒
+            </span>
+
+            <span>
+                Orders
+            </span>
+
+        </a>
+
+
+
+        <!-- PRODUCTS -->
+
+        <a
+            href="products.html"
+            class="sidebar-link"
+        >
+
+            <span class="sidebar-icon">
+                📦
+            </span>
+
+            <span>
+                Products
+            </span>
+
+        </a>
+
+
+
+        <!-- INVENTORY -->
+
+        <a
+            href="inventory.html"
+            class="sidebar-link"
+        >
+
+            <span class="sidebar-icon">
+                📊
+            </span>
+
+            <span>
+                Inventory
+            </span>
+
+        </a>
+
+
+
+        <!-- SELLER VERIFICATION -->
+
+        <a
+            href="verification.html"
+            class="sidebar-link"
+        >
+
+            <span class="sidebar-icon">
+                🛡️
+            </span>
+
+            <span>
+                Seller Verification
+            </span>
+
+        </a>
+
+
+    </nav>
+
+
+
+    <!-- SIDEBAR BOTTOM -->
+
+    <div class="sidebar-bottom">
+
+
+        <!-- SETTINGS -->
+
+        <a
+            href="settings.html"
+            class="sidebar-link"
+        >
+
+            <span class="sidebar-icon">
+                ⚙️
+            </span>
+
+            <span>
+                Settings
+            </span>
+
+        </a>
+
+
+
+        <!-- LOGOUT -->
+
+        <button
+            type="button"
+            class="sidebar-link logout-link"
+            onclick="logout()"
+        >
+
+            <span class="sidebar-icon">
+                🚪
+            </span>
+
+            <span>
+                Logout
+            </span>
+
+        </button>
+
+
+    </div>
+
+</aside>
+
+
+
+<!-- =========================================================
+     MAIN CONTENT
+========================================================= -->
+
+<main class="admin-main">
+
+
+    <!-- =====================================================
+         MOBILE / MAIN HEADER
+    ====================================================== -->
+
+    <header class="main-header">
+
+
+        <div>
+
+            <button
+                type="button"
+                class="mobile-menu-btn"
+                onclick="toggleAdminSidebar()"
+            >
+                ☰
+            </button>
+
+        </div>
+
+
+        <div>
+
+            <h1>
+                Dashboard
+            </h1>
+
+            <p>
+                Welcome back, Admin
+            </p>
+
+        </div>
+
+
+    </header>
+
+
+
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
+
+    <section class="admin-hero">
+
+
+        <div class="hero-content">
+
+
+            <span class="hero-label">
+                ADMIN DASHBOARD
+            </span>
+
+
+            <h1>
+                Manage your marketplace
+                <br>
+                from one place.
+            </h1>
+
+
+            <p>
+                Monitor users, orders, products,
+                revenue and seller performance
+                from your NishandhiniMart admin panel.
+            </p>
+
+
+            <button
+                type="button"
+                class="hero-btn"
+                onclick="refreshDashboard()"
+            >
+
+                Refresh Dashboard
+
+                <span>
+                    ↻
+                </span>
+
+            </button>
+
+
+        </div>
+
+
+
+        <div class="hero-visual">
+
+
+            <div class="hero-circle">
+
+
+                <div class="circle-icon">
+                    📊
+                </div>
+
+
+                <span>
+                    MARKETPLACE
+                </span>
+
+
+            </div>
+
+
+
+            <div class="floating-card card-one">
+
+                <span>
+                    👥
+                </span>
+
+                Users
+
+            </div>
+
+
+
+            <div class="floating-card card-two">
+
+                <span>
+                    🛒
+                </span>
+
+                Orders
+
+            </div>
+
+
+
+            <div class="floating-card card-three">
+
+                <span>
+                    💰
+                </span>
+
+                Revenue
+
+            </div>
+
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- =====================================================
+         DASHBOARD CONTAINER
+    ====================================================== -->
+
+    <div class="dashboard-container">
+
+
+        <!-- =================================================
+             PAGE HEADING
+        ================================================== -->
+
+        <div class="page-heading">
+
+            <div>
+
+                <span class="section-label">
+                    OVERVIEW
+                </span>
+
+                <h2>
+                    Marketplace Summary
+                </h2>
+
+                <p>
+                    Current marketplace performance
+                </p>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="refresh-btn"
+                onclick="refreshDashboard()"
+            >
+                ↻ Refresh
+            </button>
+
+        </div>
+
+
+
+        <!-- =================================================
+             METRICS
+        ================================================== -->
+
+        <section class="metrics-grid">
+
+
+            <!-- TOTAL REVENUE -->
+
+            <div class="metric-card">
+
+                <div class="metric-icon revenue-icon">
+                    ₹
+                </div>
+
+                <div class="metric-content">
+
+                    <span>
+                        Total Revenue
+                    </span>
+
+                    <h3 id="totalRevenue">
+                        ₹0
+                    </h3>
+
+                    <small>
+                        Overall sales revenue
+                    </small>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- TOTAL ORDERS -->
+
+            <div class="metric-card">
+
+                <div class="metric-icon order-icon">
+                    🛒
+                </div>
+
+                <div class="metric-content">
+
+                    <span>
+                        Total Orders
+                    </span>
+
+                    <h3 id="totalOrders">
+                        0
+                    </h3>
+
+                    <small>
+                        Orders received
+                    </small>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- TOTAL CUSTOMERS -->
+
+            <div class="metric-card">
+
+                <div class="metric-icon customer-icon">
+                    👥
+                </div>
+
+                <div class="metric-content">
+
+                    <span>
+                        Total Customers
+                    </span>
+
+                    <h3 id="totalCustomers">
+                        0
+                    </h3>
+
+                    <small>
+                        Registered buyers
+                    </small>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- TOTAL PRODUCTS -->
+
+            <div class="metric-card">
+
+                <div class="metric-icon product-icon">
+                    📦
+                </div>
+
+                <div class="metric-content">
+
+                    <span>
+                        Total Products
+                    </span>
+
+                    <h3 id="totalProducts">
+                        0
+                    </h3>
+
+                    <small>
+                        Products listed
+                    </small>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- TOTAL SELLERS -->
+
+            <div class="metric-card">
+
+                <div class="metric-icon seller-icon">
+                    🏪
+                </div>
+
+                <div class="metric-content">
+
+                    <span>
+                        Total Sellers
+                    </span>
+
+                    <h3 id="totalSellers">
+                        0
+                    </h3>
+
+                    <small>
+                        Registered sellers
+                    </small>
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             SALES OVERVIEW
+        ================================================== -->
+
+        <section class="dashboard-section">
+
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span class="section-label">
+                        PERFORMANCE
+                    </span>
+
+                    <h2>
+                        Sales Overview
+                    </h2>
+
+                    <p>
+                        Revenue and order performance
+                    </p>
+
+                </div>
+
+
+                <select
+                    id="analyticsPeriod"
+                    class="period-select"
+                    onchange="updateAnalytics()"
+                >
+
+                    <option value="30">
+                        Last 30 Days
+                    </option>
+
+                    <option value="7">
+                        Last 7 Days
+                    </option>
+
+                </select>
+
+            </div>
+
+
+
+            <div class="analytics-card">
+
+
+                <div class="analytics-summary">
+
+
+                    <div>
+
+                        <span>
+                            Revenue
+                        </span>
+
+                        <strong id="chartRevenue">
+                            ₹0
+                        </strong>
+
+                    </div>
+
+
+
+                    <div>
+
+                        <span>
+                            Orders
+                        </span>
+
+                        <strong id="chartOrders">
+                            0
+                        </strong>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <div class="chart-container">
+
+                    <canvas id="salesChart"></canvas>
+
+                    <div
+                        id="chartEmpty"
+                        class="chart-empty"
+                        style="display:none;"
+                    >
+
+                        <span>
+                            📊
+                        </span>
+
+                        <p>
+                            No sales data available
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             ORDER OVERVIEW
+        ================================================== -->
+
+        <section class="dashboard-section">
+
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span class="section-label">
+                        ORDERS
+                    </span>
+
+                    <h2>
+                        Order Overview
+                    </h2>
+
+                    <p>
+                        Current order status summary
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="status-grid">
+
+
+                <!-- PENDING -->
+
+                <div class="status-card pending">
+
+                    <div class="status-icon">
+                        ⏳
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Pending
+                        </span>
+
+                        <strong id="pendingOrders">
+                            0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- PROCESSING -->
+
+                <div class="status-card processing">
+
+                    <div class="status-icon">
+                        ⚙️
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Processing
+                        </span>
+
+                        <strong id="processingOrders">
+                            0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- SHIPPED -->
+
+                <div class="status-card shipped">
+
+                    <div class="status-icon">
+                        🚚
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Shipped
+                        </span>
+
+                        <strong id="shippedOrders">
+                            0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- DELIVERED -->
+
+                <div class="status-card delivered">
+
+                    <div class="status-icon">
+                        ✅
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Delivered
+                        </span>
+
+                        <strong id="deliveredOrders">
+                            0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- CANCELLED -->
+
+                <div class="status-card cancelled">
+
+                    <div class="status-icon">
+                        ❌
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Cancelled
+                        </span>
+
+                        <strong id="cancelledOrders">
+                            0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             FOOTER
+        ================================================== -->
+
+        <footer class="admin-footer">
+
+
+            <div class="footer-brand">
+
+                <div class="brand-icon">
+                    NM
+                </div>
+
+                <div>
+
+                    <strong>
+                        NishandhiniMart
+                    </strong>
+
+                    <p>
+                        Admin Management System
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <span>
+                © 2026 NishandhiniMart. All rights reserved.
+            </span>
+
+
+        </footer>
+
+
+    </div>
+
+
+</main>
+
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script src="js/admin-dashboard.js"></script>
+
+
+</body>
+
+</html>

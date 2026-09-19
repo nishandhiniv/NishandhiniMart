@@ -1,119 +1,265 @@
+// =========================================================
+// NISHANDHINIMART - LOGIN
+// =========================================================
+
 const loginForm = document.getElementById("loginForm");
 
-loginForm.addEventListener("submit", async function (event) {
+if (loginForm) {
 
-    event.preventDefault();
+    loginForm.addEventListener("submit", async function (event) {
 
-    const username =
-        document.getElementById("username").value;
+        event.preventDefault();
 
-    const password =
-        document.getElementById("password").value;
+        const username =
+            document.getElementById("username").value.trim();
 
-    const loginData = {
-        username: username,
-        password: password
-    };
+        const password =
+            document.getElementById("password").value;
 
-    try {
+        const loginMessage =
+            document.getElementById("loginMessage");
 
-        const response = await fetch(
-            "http://127.0.0.1:8090/api/login",
-            {
-                method: "POST",
 
-                headers: {
-                    "Content-Type": "application/json"
-                },
+        // -----------------------------------------
+        // VALIDATION
+        // -----------------------------------------
 
-                body: JSON.stringify(loginData)
+        if (!username || !password) {
+
+            loginMessage.style.color = "red";
+
+            loginMessage.textContent =
+                "Please enter username/email and password.";
+
+            return;
+        }
+
+
+        try {
+
+            loginMessage.style.color = "#555";
+
+            loginMessage.textContent =
+                "Logging in...";
+
+
+            // -----------------------------------------
+            // LOGIN API
+            // -----------------------------------------
+
+            const response = await fetch(
+                "http://127.0.0.1:8090/api/login",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        username: username,
+                        password: password
+                    })
+                }
+            );
+
+
+            const result =
+                await response.json();
+
+
+            console.log(
+                "Login response:",
+                result
+            );
+
+
+            // -----------------------------------------
+            // LOGIN FAILED
+            // -----------------------------------------
+
+            if (
+                !response.ok ||
+                result.success !== true ||
+                !result.user
+            ) {
+
+                loginMessage.style.color = "red";
+
+                loginMessage.textContent =
+                    result.message ||
+                    "Invalid username/email or password.";
+
+                return;
             }
-        );
-
-        const result = await response.json();
-
-        console.log(
-            "Backend Response:",
-            result
-        );
-
-        document.getElementById(
-            "loginMessage"
-        ).textContent = result.message;
 
 
-        // -----------------------------------------
-        // LOGIN SUCCESS
-        // -----------------------------------------
+            // -----------------------------------------
+            // USER DATA FROM BACKEND
+            // -----------------------------------------
 
-        if (
-            response.ok &&
-            result.success &&
-            result.user
-        ) {
+            const user = result.user;
 
-            // Save user information
+            console.log(
+                "User received from backend:",
+                user
+            );
+
+
+            // -----------------------------------------
+            // SAVE USER INFORMATION
+            // -----------------------------------------
+
             localStorage.setItem(
                 "userId",
-                result.user.id
+                user.id || ""
             );
 
             localStorage.setItem(
                 "username",
-                result.user.username
-            );
-
-            localStorage.setItem(
-                "userRole",
-                result.user.role
+                user.username || ""
             );
 
             localStorage.setItem(
                 "userName",
-                result.user.name
+                user.name || user.username || ""
+            );
+
+            localStorage.setItem(
+                "userRole",
+                user.role || ""
             );
 
 
-            // -------------------------------------
+            // -----------------------------------------
+            // SAVE PROFILE INFORMATION
+            // -----------------------------------------
+
+            localStorage.setItem(
+                "userEmail",
+                user.email || ""
+            );
+
+            localStorage.setItem(
+                "store_name",
+                user.store_name || ""
+            );
+
+            localStorage.setItem(
+                "phone",
+                user.phone || ""
+            );
+
+            localStorage.setItem(
+                "address",
+                user.address || ""
+            );
+
+
+            // -----------------------------------------
+            // DEFAULT PROFILE STATUS
+            // -----------------------------------------
+
+            localStorage.setItem(
+                "accountStatus",
+                "Active"
+            );
+
+            localStorage.setItem(
+                "verificationStatus",
+                "Pending Verification"
+            );
+
+
+            // -----------------------------------------
+            // DEBUG - CHECK SAVED DATA
+            // -----------------------------------------
+
+            console.log(
+                "Saved Profile Data:",
+                {
+                    userId:
+                        localStorage.getItem("userId"),
+
+                    username:
+                        localStorage.getItem("username"),
+
+                    userEmail:
+                        localStorage.getItem("userEmail"),
+
+                    store_name:
+                        localStorage.getItem("store_name"),
+
+                    phone:
+                        localStorage.getItem("phone"),
+
+                    address:
+                        localStorage.getItem("address")
+                }
+            );
+
+
+            // -----------------------------------------
+            // SUCCESS MESSAGE
+            // -----------------------------------------
+
+            loginMessage.style.color = "green";
+
+            loginMessage.textContent =
+                "Login successful!";
+
+
+            // -----------------------------------------
             // REDIRECT BASED ON ROLE
-            // -------------------------------------
+            // -----------------------------------------
 
-            if (result.user.role === "buyer") {
+            setTimeout(function () {
 
-                window.location.href =
-                    "buyer_dashboard.html";
+                if (user.role === "buyer") {
 
-            }
-            else if (
-                result.user.role === "seller"
-            ) {
+                    window.location.href =
+                        "buyer-dashboard/buyer_dashboard.html";
 
-                window.location.href =
-                    "seller_dashboard.html";
+                }
 
-            }
-            else if (
-                result.user.role === "admin"
-            ) {
+                else if (user.role === "seller") {
 
-                window.location.href =
-                    "admin_dashboard.html";
+                    window.location.href =
+                        "seller-dashboard/dashboard.html";
 
-            }
+                }
+
+                else if (user.role === "admin") {
+
+                    window.location.href =
+                        "admin-dashboard/dashboard.html";
+
+                }
+
+                else {
+
+                    window.location.href =
+                        "login.html";
+                }
+
+            }, 500);
+
+
+        }
+        catch (error) {
+
+            console.error(
+                "Login Error:",
+                error
+            );
+
+            loginMessage.style.color = "red";
+
+            loginMessage.textContent =
+                "Backend connection failed!";
+
         }
 
-    }
-    catch (error) {
+    });
 
-        document.getElementById(
-            "loginMessage"
-        ).textContent =
-            "Backend connection failed!";
-
-        console.error(
-            "Login Error:",
-            error
-        );
-    }
-
-});
+}

@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Users - NishandhiniMart Admin</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <link rel="stylesheet" href="css/admin-dashboard.css">
+
+</head>
+
+<body>
+
+
+    <!-- =====================================================
+         ADMIN SIDEBAR
+    ====================================================== -->
+
+    <aside class="admin-sidebar">
+
+        <!-- BRAND -->
+
+        <div class="sidebar-brand">
+
+            <div class="sidebar-logo">
+                N
+            </div>
+
+            <div class="sidebar-brand-text">
+
+                <h2>
+                    NishandhiniMart
+                </h2>
+
+                <span>
+                    Admin Panel
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- NAVIGATION -->
+
+        <nav class="sidebar-nav">
+
+            <a
+                href="dashboard.html"
+                class="sidebar-link"
+            >
+
+                <span class="sidebar-icon">
+                    🏠
+                </span>
+
+                <span>
+                    Dashboard
+                </span>
+
+            </a>
+
+
+            <a
+                href="users.html"
+                class="sidebar-link active"
+            >
+
+                <span class="sidebar-icon">
+                    👥
+                </span>
+
+                <span>
+                    Users
+                </span>
+
+            </a>
+
+
+            <a
+                href="orders.html"
+                class="sidebar-link"
+            >
+
+                <span class="sidebar-icon">
+                    🛒
+                </span>
+
+                <span>
+                    Orders
+                </span>
+
+            </a>
+
+
+            <a
+                href="products.html"
+                class="sidebar-link"
+            >
+
+                <span class="sidebar-icon">
+                    📦
+                </span>
+
+                <span>
+                    Products
+                </span>
+
+            </a>
+
+
+            <a
+                href="inventory.html"
+                class="sidebar-link"
+            >
+
+                <span class="sidebar-icon">
+                    📊
+                </span>
+
+                <span>
+                    Inventory
+                </span>
+
+            </a>
+
+
+            <a
+                href="verification.html"
+                class="sidebar-link"
+            >
+
+                <span class="sidebar-icon">
+                    🛡️
+                </span>
+
+                <span>
+                    Seller Verification
+                </span>
+
+            </a>
+
+
+            <a
+                href="settings.html"
+                class="sidebar-link"
+            >
+
+                <span class="sidebar-icon">
+                    ⚙️
+                </span>
+
+                <span>
+                    Settings
+                </span>
+
+            </a>
+
+        </nav>
+
+
+        <!-- LOGOUT -->
+
+        <div class="sidebar-bottom">
+
+            <button
+                type="button"
+                class="sidebar-link logout-link"
+                onclick="logout()"
+            >
+
+                <span class="sidebar-icon">
+                    🚪
+                </span>
+
+                <span>
+                    Logout
+                </span>
+
+            </button>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- =====================================================
+         MAIN AREA
+    ====================================================== -->
+
+    <main class="admin-main">
+
+
+        <!-- =================================================
+             TOP HEADER
+        ================================================== -->
+
+        <header class="main-header">
+
+
+            <!-- LEFT -->
+
+            <div class="header-left">
+
+                <h1>
+                    Users
+                </h1>
+
+                <p>
+                    Manage and monitor NishandhiniMart users
+                </p>
+
+            </div>
+
+
+            <!-- RIGHT -->
+             
+
+        </header>
+
+
+
+        <!-- =================================================
+             PAGE CONTENT
+        ================================================== -->
+
+        <div class="dashboard-container">
+
+
+            <!-- =================================================
+                 PAGE HEADING
+            ================================================== -->
+
+            <div class="page-heading">
+
+                <div>
+
+                    <span class="section-label">
+                        USER MANAGEMENT
+                    </span>
+
+                    <h2>
+                        Users
+                    </h2>
+
+                    <p>
+                        View and manage registered users
+                    </p>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="refresh-btn"
+                    onclick="loadUsers()"
+                >
+
+                    🔄 Refresh
+
+                </button>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 USER METRICS
+            ================================================== -->
+
+            <div class="metrics-grid">
+
+
+                <!-- TOTAL USERS -->
+
+                <div class="metric-card">
+
+                    <div class="metric-icon customer-icon">
+                        👥
+                    </div>
+
+
+                    <div class="metric-content">
+
+                        <span>
+                            Total Users
+                        </span>
+
+                        <h3 id="totalUsers">
+                            0
+                        </h3>
+
+                        <small>
+                            Registered users
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- BUYERS -->
+
+                <div class="metric-card">
+
+                    <div class="metric-icon product-icon">
+                        🛍️
+                    </div>
+
+
+                    <div class="metric-content">
+
+                        <span>
+                            Buyers
+                        </span>
+
+                        <h3 id="totalBuyers">
+                            0
+                        </h3>
+
+                        <small>
+                            Customer accounts
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- SELLERS -->
+
+                <div class="metric-card">
+
+                    <div class="metric-icon seller-icon">
+                        🏪
+                    </div>
+
+
+                    <div class="metric-content">
+
+                        <span>
+                            Sellers
+                        </span>
+
+                        <h3 id="totalSellers">
+                            0
+                        </h3>
+
+                        <small>
+                            Seller accounts
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- ADMINS -->
+
+                <div class="metric-card">
+
+                    <div class="metric-icon revenue-icon">
+                        🛡️
+                    </div>
+
+
+                    <div class="metric-content">
+
+                        <span>
+                            Admins
+                        </span>
+
+                        <h3 id="totalAdmins">
+                            0
+                        </h3>
+
+                        <small>
+                            Admin accounts
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- CURRENT USERS -->
+
+                <div class="metric-card">
+
+                    <div class="metric-icon order-icon">
+                        🟢
+                    </div>
+
+
+                    <div class="metric-content">
+
+                        <span>
+                            Current Users
+                        </span>
+
+                        <h3 id="activeUsers">
+                            0
+                        </h3>
+
+                        <small>
+                            Current session
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 USER LIST SECTION
+            ================================================== -->
+
+            <section class="dashboard-section">
+
+
+                <!-- SECTION HEADER -->
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <span class="section-label">
+                            REGISTERED ACCOUNTS
+                        </span>
+
+                        <h2>
+                            User List
+                        </h2>
+
+                        <p>
+                            All users registered in NishandhiniMart
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     USER TABLE CARD
+                ================================================== -->
+
+                <div class="table-card">
+
+
+                    <!-- TOOLBAR -->
+
+                    <div class="table-toolbar">
+
+
+                        <!-- SEARCH -->
+
+                        <input
+                            type="text"
+                            id="userSearch"
+                            placeholder="Search by name, username or email..."
+                            autocomplete="off"
+                        >
+
+
+                        <!-- ROLE FILTER -->
+
+                        <select id="roleFilter">
+
+                            <option value="all">
+                                All Roles
+                            </option>
+
+                            <option value="buyer">
+                                Buyer
+                            </option>
+
+                            <option value="seller">
+                                Seller
+                            </option>
+
+                            <option value="admin">
+                                Admin
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- =================================================
+                         TABLE
+                    ================================================== -->
+
+                    <div class="table-wrapper">
+
+                        <table class="admin-table">
+
+
+                            <!-- TABLE HEAD -->
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Name
+                                    </th>
+
+                                    <th>
+                                        Username
+                                    </th>
+
+                                    <th>
+                                        Email
+                                    </th>
+
+                                    <th>
+                                        Role
+                                    </th>
+
+                                    <th>
+                                        Status
+                                    </th>
+
+                                    <th>
+                                        Action
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <!-- TABLE BODY -->
+
+                            <tbody id="usersTableBody">
+
+                                <tr>
+
+                                    <td colspan="6">
+
+                                        <div class="loading-box">
+
+                                            <div class="spinner"></div>
+
+                                            <p>
+                                                Loading users...
+                                            </p>
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+
+
+        <!-- =================================================
+             FOOTER
+        ================================================== -->
+
+        <footer class="admin-footer">
+
+
+            <div class="footer-brand">
+
+                <div class="brand-icon">
+                    N
+                </div>
+
+
+                <div>
+
+                    <strong>
+                        NishandhiniMart
+                    </strong>
+
+                    <p>
+                        Admin Management System
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <span>
+                © 2026 NishandhiniMart
+            </span>
+
+        </footer>
+
+    </main>
+
+
+
+    <!-- =====================================================
+         USERS JAVASCRIPT
+    ====================================================== -->
+
+    <script src="js/users.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NishandhiniMart - Settings</title>
+
+    <link rel="stylesheet" href="css/seller-dashboard.css">
+
+    <style>
+        /* =====================================================
+           SETTINGS PAGE
+           ===================================================== */
+
+        .settings-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 22px;
+            margin-bottom: 22px;
+        }
+
+        .settings-card {
+            background: #ffffff;
+            border: 1px solid #eeeef5;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 5px 20px rgba(47, 43, 76, 0.04);
+        }
+
+        .settings-card.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .settings-card-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            margin-bottom: 22px;
+        }
+
+        .settings-card-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #eeeaff;
+            color: #6658d7;
+            font-size: 19px;
+            flex-shrink: 0;
+        }
+
+        .settings-card-header h2 {
+            margin: 0;
+            color: #302b4c;
+            font-size: 17px;
+            font-weight: 800;
+        }
+
+        .settings-card-header p {
+            margin: 5px 0 0;
+            color: #9290a5;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .settings-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .settings-info-item {
+            padding: 14px 15px;
+            background: #f8f8fc;
+            border: 1px solid #efeff5;
+            border-radius: 11px;
+        }
+
+        .settings-info-item span {
+            display: block;
+            color: #9996aa;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+            margin-bottom: 6px;
+        }
+
+        .settings-info-item strong {
+            display: block;
+            color: #39354f;
+            font-size: 13px;
+            font-weight: 700;
+            word-break: break-word;
+        }
+
+        .setting-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 16px 0;
+            border-bottom: 1px solid #efeff5;
+        }
+
+        .setting-row:first-child {
+            padding-top: 0;
+        }
+
+        .setting-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .setting-row-text {
+            flex: 1;
+        }
+
+        .setting-row-text strong {
+            display: block;
+            color: #39354f;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .setting-row-text span {
+            display: block;
+            color: #9895a8;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        /* Toggle */
+
+        .toggle {
+            position: relative;
+            width: 46px;
+            height: 25px;
+            flex-shrink: 0;
+        }
+
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            inset: 0;
+            background: #d9d8e2;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .toggle-slider::before {
+            content: "";
+            position: absolute;
+            width: 19px;
+            height: 19px;
+            left: 3px;
+            top: 3px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.12);
+            transition: 0.2s ease;
+        }
+
+        .toggle input:checked + .toggle-slider {
+            background: #6b5bdd;
+        }
+
+        .toggle input:checked + .toggle-slider::before {
+            transform: translateX(21px);
+        }
+
+        /* Buttons */
+
+        .settings-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .settings-btn {
+            border: none;
+            border-radius: 10px;
+            padding: 11px 17px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .settings-btn.primary {
+            background: linear-gradient(135deg, #6859dc, #8a7af3);
+            color: white;
+        }
+
+        .settings-btn.primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 18px rgba(104, 89, 220, 0.20);
+        }
+
+        .settings-btn.secondary {
+            background: #f1f0f8;
+            color: #5d5877;
+        }
+
+        .settings-btn.secondary:hover {
+            background: #e9e7f2;
+        }
+
+        .settings-btn.danger {
+            background: #fff0f0;
+            color: #d45757;
+        }
+
+        .settings-btn.danger:hover {
+            background: #ffe4e4;
+        }
+
+        .settings-message {
+            display: none;
+            margin-top: 12px;
+            padding: 10px 13px;
+            border-radius: 9px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .settings-message.success {
+            display: block;
+            background: #eaf8ef;
+            color: #2c9654;
+        }
+
+        .settings-message.error {
+            display: block;
+            background: #fff0f0;
+            color: #d45757;
+        }
+
+        /* Password */
+
+        .password-form {
+            display: grid;
+            gap: 14px;
+        }
+
+        .settings-field label {
+            display: block;
+            margin-bottom: 6px;
+            color: #514d68;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .settings-field input {
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid #e4e3ec;
+            background: #fbfbfd;
+            border-radius: 9px;
+            padding: 11px 12px;
+            outline: none;
+            color: #39354f;
+            font-size: 12px;
+            font-family: inherit;
+        }
+
+        .settings-field input:focus {
+            border-color: #8175e6;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(104, 89, 220, 0.08);
+        }
+
+        .security-note {
+            margin-top: 14px;
+            padding: 12px 14px;
+            border-radius: 10px;
+            background: #f5f3ff;
+            color: #68618a;
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        /* Account status */
+
+        .account-status-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 16px;
+            background: #f8f8fc;
+            border: 1px solid #efeff5;
+            border-radius: 12px;
+        }
+
+        .account-status-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .account-status-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #eaf8ef;
+            color: #2c9654;
+        }
+
+        .account-status-left strong {
+            display: block;
+            color: #39354f;
+            font-size: 13px;
+        }
+
+        .account-status-left span {
+            display: block;
+            color: #9895a8;
+            font-size: 10px;
+            margin-top: 3px;
+        }
+
+        .active-badge {
+            display: inline-flex;
+            padding: 6px 10px;
+            border-radius: 20px;
+            background: #eaf8ef;
+            color: #2c9654;
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        /* Logout */
+
+        .logout-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .logout-box h3 {
+            margin: 0 0 5px;
+            color: #39354f;
+            font-size: 14px;
+        }
+
+        .logout-box p {
+            margin: 0;
+            color: #9895a8;
+            font-size: 11px;
+        }
+
+        @media (max-width: 850px) {
+            .settings-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .settings-card.full-width {
+                grid-column: auto;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .settings-info {
+                grid-template-columns: 1fr;
+            }
+
+            .setting-row {
+                align-items: flex-start;
+            }
+
+            .account-status-box,
+            .logout-box {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- =====================================================
+     HEADER
+     ===================================================== -->
+
+<header class="main-header">
+
+    <div class="brand">
+
+        <div class="brand-icon">
+            N
+        </div>
+
+        <div>
+            <h2>NishandhiniMart</h2>
+            <span>Seller Management Panel</span>
+        </div>
+
+    </div>
+
+
+    <div class="header-right">
+
+        <button
+            class="notification-btn"
+            title="Notifications">
+
+            🔔
+
+            <span class="notification-dot"></span>
+
+        </button>
+
+
+        <div class="profile-menu">
+
+            <button
+                class="profile-menu-btn"
+                onclick="toggleProfileMenu()">
+
+                <div
+                    class="top-profile-avatar"
+                    id="topProfileAvatar">
+
+                    S
+
+                </div>
+
+                <span
+                    class="top-profile-name"
+                    id="topProfileName">
+
+                    Seller
+
+                </span>
+
+                <span class="profile-arrow">
+                    ⌄
+                </span>
+
+            </button>
+
+
+            <div
+                class="profile-dropdown"
+                id="profileDropdown">
+
+                <button onclick="openSellerProfile()">
+                    👤 My Profile
+                </button>
+
+                <button onclick="logout()">
+                    🚪 Logout
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<!-- =====================================================
+     DASHBOARD LAYOUT
+     ===================================================== -->
+
+<div class="dashboard-layout">
+
+
+    <!-- =================================================
+         SIDEBAR
+         ================================================= -->
+
+    <aside class="sidebar">
+
+        <nav class="sidebar-nav">
+
+            <a
+                href="dashboard.html"
+                class="sidebar-link">
+
+                <span>▣</span>
+                <span>Dashboard</span>
+
+            </a>
+
+
+            <a
+                href="my-products.html"
+                class="sidebar-link">
+
+                <span>▤</span>
+                <span>My Products</span>
+
+            </a>
+
+
+            <a
+                href="add-product.html"
+                class="sidebar-link">
+
+                <span>＋</span>
+                <span>Add Product</span>
+
+            </a>
+
+
+            <a
+                href="orders.html"
+                class="sidebar-link">
+
+                <span>🛒</span>
+                <span>Orders</span>
+
+            </a>
+
+
+            <a
+                href="sales.html"
+                class="sidebar-link">
+
+                <span>📈</span>
+                <span>Sales</span>
+
+            </a>
+
+
+            <a
+                href="settings.html"
+                class="sidebar-link active">
+
+                <span>⚙</span>
+                <span>Settings</span>
+
+            </a>
+
+
+            <a
+                href="seller-profile.html"
+                class="sidebar-link">
+
+                <span>👤</span>
+                <span>My Profile</span>
+
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+    <!-- =================================================
+         MAIN
+         ================================================= -->
+
+    <main class="dashboard-main">
+
+
+        <!-- PAGE HEADING -->
+
+        <div class="page-heading">
+
+            <div class="page-heading-left">
+
+                <span class="page-label">
+                    ACCOUNT MANAGEMENT
+                </span>
+
+                <h1>Settings</h1>
+
+                <p>
+                    Manage your seller account and preferences.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             SETTINGS GRID
+             ================================================= -->
+
+        <div class="settings-grid">
+
+
+            <!-- =============================================
+                 ACCOUNT INFORMATION
+                 ============================================= -->
+
+            <section class="settings-card">
+
+                <div class="settings-card-header">
+
+                    <div class="settings-card-icon">
+                        👤
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Account Information
+                        </h2>
+
+                        <p>
+                            Your current seller account details.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="settings-info">
+
+                    <div class="settings-info-item">
+
+                        <span>
+                            Username
+                        </span>
+
+                        <strong id="settingsUsername">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <div class="settings-info-item">
+
+                        <span>
+                            Email
+                        </span>
+
+                        <strong id="settingsEmail">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <div class="settings-info-item">
+
+                        <span>
+                            Store Name
+                        </span>
+
+                        <strong id="settingsStore">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <div class="settings-info-item">
+
+                        <span>
+                            Phone
+                        </span>
+
+                        <strong id="settingsPhone">
+                            -
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="settings-actions">
+
+                    <button
+                        class="settings-btn primary"
+                        onclick="openSellerProfile()">
+
+                        Edit Profile
+
+                    </button>
+
+                </div>
+
+            </section>
+
+
+            <!-- =============================================
+                 ACCOUNT STATUS
+                 ============================================= -->
+
+            <section class="settings-card">
+
+                <div class="settings-card-header">
+
+                    <div class="settings-card-icon">
+                        ✓
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Account Status
+                        </h2>
+
+                        <p>
+                            Current status of your seller account.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="account-status-box">
+
+                    <div class="account-status-left">
+
+                        <div class="account-status-icon">
+                            ✓
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Seller Account
+                            </strong>
+
+                            <span id="verificationText">
+                                Verification status
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <span
+                        class="active-badge"
+                        id="accountStatusBadge">
+
+                        Active
+
+                    </span>
+
+                </div>
+
+
+                <div class="settings-actions">
+
+                    <button
+                        class="settings-btn secondary"
+                        onclick="openSellerProfile()">
+
+                        View Profile
+
+                    </button>
+
+                </div>
+
+            </section>
+
+
+            <!-- =============================================
+                 NOTIFICATIONS
+                 ============================================= -->
+
+            <section class="settings-card">
+
+                <div class="settings-card-header">
+
+                    <div class="settings-card-icon">
+                        🔔
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Notifications
+                        </h2>
+
+                        <p>
+                            Choose which notifications you want to receive.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="setting-row">
+
+                    <div class="setting-row-text">
+
+                        <strong>
+                            New Order Notifications
+                        </strong>
+
+                        <span>
+                            Get notified when a customer places an order.
+                        </span>
+
+                    </div>
+
+
+                    <label class="toggle">
+
+                        <input
+                            type="checkbox"
+                            id="orderNotifications"
+                            checked>
+
+                        <span class="toggle-slider"></span>
+
+                    </label>
+
+                </div>
+
+
+                <div class="setting-row">
+
+                    <div class="setting-row-text">
+
+                        <strong>
+                            Low Stock Alerts
+                        </strong>
+
+                        <span>
+                            Receive alerts when product stock is low.
+                        </span>
+
+                    </div>
+
+
+                    <label class="toggle">
+
+                        <input
+                            type="checkbox"
+                            id="stockNotifications"
+                            checked>
+
+                        <span class="toggle-slider"></span>
+
+                    </label>
+
+                </div>
+
+
+                <div class="setting-row">
+
+                    <div class="setting-row-text">
+
+                        <strong>
+                            Sales Updates
+                        </strong>
+
+                        <span>
+                            Receive updates about your sales activity.
+                        </span>
+
+                    </div>
+
+
+                    <label class="toggle">
+
+                        <input
+                            type="checkbox"
+                            id="salesNotifications"
+                            checked>
+
+                        <span class="toggle-slider"></span>
+
+                    </label>
+
+                </div>
+
+
+                <div
+                    id="notificationMessage"
+                    class="settings-message">
+                </div>
+
+
+                <div class="settings-actions">
+
+                    <button
+                        class="settings-btn primary"
+                        onclick="saveNotificationSettings()">
+
+                        Save Preferences
+
+                    </button>
+
+                </div>
+
+            </section>
+
+
+            <!-- =============================================
+                 PASSWORD
+                 ============================================= -->
+
+            <section class="settings-card">
+
+                <div class="settings-card-header">
+
+                    <div class="settings-card-icon">
+                        🔒
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Password & Security
+                        </h2>
+
+                        <p>
+                            Manage your account security.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="password-form">
+
+                    <div class="settings-field">
+
+                        <label for="currentPassword">
+                            Current Password
+                        </label>
+
+                        <input
+                            type="password"
+                            id="currentPassword"
+                            placeholder="Enter current password">
+
+                    </div>
+
+
+                    <div class="settings-field">
+
+                        <label for="newPassword">
+                            New Password
+                        </label>
+
+                        <input
+                            type="password"
+                            id="newPassword"
+                            placeholder="Enter new password">
+
+                    </div>
+
+
+                    <div class="settings-field">
+
+                        <label for="confirmPassword">
+                            Confirm New Password
+                        </label>
+
+                        <input
+                            type="password"
+                            id="confirmPassword"
+                            placeholder="Confirm new password">
+
+                    </div>
+
+                </div>
+
+
+                <div class="security-note">
+
+                    🔐 For security, use a strong password that
+                    contains a combination of letters, numbers and
+                    special characters.
+
+                </div>
+
+
+                <div
+                    id="passwordMessage"
+                    class="settings-message">
+                </div>
+
+
+                <div class="settings-actions">
+
+                    <button
+                        class="settings-btn primary"
+                        onclick="changePassword()">
+
+                        Change Password
+
+                    </button>
+
+                    <button
+                        class="settings-btn secondary"
+                        onclick="clearPasswordFields()">
+
+                        Clear
+
+                    </button>
+
+                </div>
+
+            </section>
+
+
+            <!-- =============================================
+                 LOGOUT
+                 ============================================= -->
+
+            <section class="settings-card full-width">
+
+                <div class="settings-card-header">
+
+                    <div class="settings-card-icon">
+                        🚪
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Session
+                        </h2>
+
+                        <p>
+                            Manage your current seller session.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="logout-box">
+
+                    <div>
+
+                        <h3>
+                            Logout from NishandhiniMart
+                        </h3>
+
+                        <p>
+                            You will be returned to the login page.
+                        </p>
+
+                    </div>
+
+
+                    <button
+                        class="settings-btn danger"
+                        onclick="logout()">
+
+                        Logout
+
+                    </button>
+
+                </div>
+
+            </section>
+
+
+        </div>
+
+
+        <!-- =================================================
+             FOOTER
+             ================================================= -->
+
+        <footer class="dashboard-footer">
+
+            <p>
+                © 2026 NishandhiniMart. Seller Management Panel.
+            </p>
+
+        </footer>
+
+
+    </main>
+
+</div>
+
+
+<script src="js/settings.js"></script>
+
+</body>
+</html>

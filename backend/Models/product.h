@@ -13,7 +13,8 @@ struct Product
 
     std::string image;
     std::string category;
-
+    
+    int quantity;
     int seller_id;
 };
 
