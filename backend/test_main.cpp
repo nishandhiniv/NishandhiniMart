@@ -1,5 +1,6 @@
 #include <drogon/drogon.h>
 #include <iostream>
+#include <cstdlib>
 #include "Routes/route.h"
 
 using namespace drogon;
@@ -7,22 +8,59 @@ using namespace drogon;
 int main()
 {
     std::cout << "======================================" << std::endl;
-    std::cout << "   NishandhiniMart TEST BACKEND" << std::endl;
+    std::cout << "   NishandhiniMart BACKEND" << std::endl;
     std::cout << "======================================" << std::endl;
+
+    // ======================================
+    // Environment Variables
+    // ======================================
+
+    const char *dbHostEnv = std::getenv("DB_HOST");
+    const char *dbPortEnv = std::getenv("DB_PORT");
+    const char *dbNameEnv = std::getenv("DB_NAME");
+    const char *dbUserEnv = std::getenv("DB_USER");
+    const char *dbPasswordEnv = std::getenv("DB_PASSWORD");
+
+    const char *portEnv = std::getenv("PORT");
+
+    std::string dbHost =
+        dbHostEnv ? dbHostEnv : "127.0.0.1";
+
+    int dbPort =
+        dbPortEnv ? std::stoi(dbPortEnv) : 5432;
+
+    std::string dbName =
+        dbNameEnv ? dbNameEnv : "nishandhinimart";
+
+    std::string dbUser =
+        dbUserEnv ? dbUserEnv : "postgres";
+
+    std::string dbPassword =
+        dbPasswordEnv ? dbPasswordEnv : "vanitha123";
+
+    int serverPort =
+        portEnv ? std::stoi(portEnv) : 8090;
+
+
+    // ======================================
+    // PostgreSQL
+    // ======================================
 
     std::cout << "Creating PostgreSQL client..." << std::endl;
 
     app().createDbClient(
         "postgresql",
-        "127.0.0.1",
-        5432,
-        "nishandhinimart",
-        "postgres",
-        "vanitha123",
+        dbHost,
+        dbPort,
+        dbName,
+        dbUser,
+        dbPassword,
         1
     );
 
-    std::cout << "PostgreSQL client created successfully." << std::endl;
+    std::cout << "PostgreSQL client created successfully."
+              << std::endl;
+
 
     // ======================================
     // CORS - Handle browser preflight request
@@ -35,13 +73,14 @@ int main()
         {
             if (req->method() == Options)
             {
-                auto response = HttpResponse::newHttpResponse();
+                auto response =
+                    HttpResponse::newHttpResponse();
 
                 response->setStatusCode(k200OK);
 
                 response->addHeader(
                     "Access-Control-Allow-Origin",
-                    "http://127.0.0.1:5500"
+                    "*"
                 );
 
                 response->addHeader(
@@ -62,6 +101,7 @@ int main()
         }
     );
 
+
     // ======================================
     // CORS - Add headers to every response
     // ======================================
@@ -72,7 +112,7 @@ int main()
         {
             response->addHeader(
                 "Access-Control-Allow-Origin",
-                "http://127.0.0.1:5500"
+                "*"
             );
 
             response->addHeader(
@@ -87,16 +127,33 @@ int main()
         }
     );
 
+
+    // ======================================
+    // Routes
+    // ======================================
+
+    registerRoutes();
+
+
     // ======================================
     // Start server
     // ======================================
 
-    app().addListener("127.0.0.1", 8090);
+    // IMPORTANT:
+    // Render requires 0.0.0.0 instead of 127.0.0.1
 
-    std::cout << "Test server starting..." << std::endl;
-    std::cout << "URL: http://127.0.0.1:8090" << std::endl;
+    app().addListener(
+        "0.0.0.0",
+        serverPort
+    );
 
-    registerRoutes();
+    std::cout << "Backend server starting..."
+              << std::endl;
+
+    std::cout << "Listening on:"
+              << " 0.0.0.0:"
+              << serverPort
+              << std::endl;
 
     app().run();
 
