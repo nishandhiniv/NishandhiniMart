@@ -3,6 +3,7 @@
 #include <functional>
 #include <string>
 #include <utility>
+#include "../Chatbot/ChatbotController.h"
 
 using namespace drogon;
 
@@ -85,6 +86,10 @@ void getAllUsers(
     const HttpRequestPtr &req,
     std::function<void(const HttpResponsePtr &)> &&callback
 );
+void getAllOrders(
+    const drogon::HttpRequestPtr &req,
+    std::function<void(const drogon::HttpResponsePtr &)> &&callback
+);
 
 void deleteUser(
     const HttpRequestPtr &req,
@@ -126,6 +131,14 @@ void getUserOrders(
     const HttpRequestPtr &req,
     std::function<void(const HttpResponsePtr &)> &&callback,
     int userId
+);
+void getSellerOrders(
+    const HttpRequestPtr &req,
+    std::function<void(const HttpResponsePtr &)> &&callback
+);
+void updateOrderStatus(
+    const drogon::HttpRequestPtr &req,
+    std::function<void(const drogon::HttpResponsePtr &)> &&callback
 );
 
 
@@ -347,7 +360,22 @@ app().registerHandler(
         },
         {Get}
     );
+  // =========================================================
+// ADMIN - GET ALL ORDERS
+// =========================================================
 
+app().registerHandler(
+    "/api/admin-orders",
+    [](const HttpRequestPtr &req,
+       std::function<void(const HttpResponsePtr &)> &&callback)
+    {
+        getAllOrders(
+            req,
+            std::move(callback)
+        );
+    },
+    {Get}
+);
 
     // =====================================================
     // ADMIN - GET ALL PRODUCTS
@@ -399,7 +427,11 @@ app().registerHandler(
     },
     {Put}
 );
-
+app().registerHandler(
+    "/api/update-order-status",
+    &updateOrderStatus,
+    {Post}
+);
     // =====================================================
 // PRODUCT - UPLOAD IMAGE
 // =====================================================
@@ -549,7 +581,22 @@ app().registerHandler(
         },
         {Get}
     );
+// =====================================================
+// SELLER - GET SELLER ORDERS
+// =====================================================
 
+app().registerHandler(
+    "/api/seller/orders",
+    [](const HttpRequestPtr &req,
+       std::function<void(const HttpResponsePtr &)> &&callback)
+    {
+        getSellerOrders(
+            req,
+            std::move(callback)
+        );
+    },
+    {Get}
+);
 
     // =====================================================
     // CART - ADD TO CART
@@ -639,4 +686,9 @@ app().registerHandler(
         },
         {Get}
     );
+        // =====================================================
+    // CHATBOT
+    // =====================================================
+
+    registerChatbotRoutes();
 }

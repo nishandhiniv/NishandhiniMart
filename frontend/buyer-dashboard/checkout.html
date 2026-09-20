@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>NishandhiniMart - Checkout</title>
+
+    <link
+        rel="stylesheet"
+        href="css/buyer-dashboard.css"
+    >
+
+</head>
+
+<body>
+
+
+<!-- =========================================
+     HEADER
+========================================= -->
+
+<header class="buyer-header">
+
+    <div class="buyer-logo">
+
+        <div class="logo-text">
+
+            <span>
+                NishandhiniMart
+            </span>
+
+            <small>
+                Buyer Management System
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <div class="buyer-header-right">
+
+        <div class="buyer-welcome">
+            Welcome to NishandhiniMart
+        </div>
+
+
+        <button
+            class="cart-btn"
+            onclick="openCart()"
+        >
+            🛒 Cart
+            (
+            <span id="cartCount">0</span>
+            )
+        </button>
+
+
+        <button
+            class="logout-btn"
+            onclick="logout()"
+        >
+            Logout
+        </button>
+
+    </div>
+
+</header>
+
+
+
+<!-- =========================================
+     SIDEBAR
+========================================= -->
+
+<nav class="buyer-navigation">
+
+    <div class="shopping-hub-title">
+        🛍️ Shopping Hub
+    </div>
+
+
+    <a
+        href="buyer_dashboard.html"
+        class="nav-item"
+    >
+        <span class="nav-icon">
+            🏠
+        </span>
+
+        <span>
+            Dashboard
+        </span>
+    </a>
+
+
+    <a
+        href="profile.html"
+        class="nav-item"
+    >
+        <span class="nav-icon">
+            👤
+        </span>
+
+        <span>
+            Profile
+        </span>
+    </a>
+
+
+    <a
+        href="order-history.html"
+        class="nav-item"
+    >
+        <span class="nav-icon">
+            📦
+        </span>
+
+        <span>
+            Order History
+        </span>
+    </a>
+
+
+    <a
+        href="wishlist.html"
+        class="nav-item"
+    >
+        <span class="nav-icon">
+            ❤️
+        </span>
+
+        <span>
+            Wishlist
+        </span>
+    </a>
+
+
+    <a
+        href="order-tracking.html"
+        class="nav-item"
+    >
+        <span class="nav-icon">
+            🚚
+        </span>
+
+        <span>
+            Order Tracking
+        </span>
+    </a>
+
+
+    <a
+        href="sales-dashboard.html"
+        class="nav-item"
+    >
+        <span class="nav-icon">
+            📊
+        </span>
+
+        <span>
+            Sales Dashboard
+        </span>
+    </a>
+
+
+    <a
+        href="checkout.html"
+        class="nav-item active"
+    >
+        <span class="nav-icon">
+            💳
+        </span>
+
+        <span>
+            Checkout
+        </span>
+    </a>
+
+
+    <a
+        href="settings.html"
+        class="nav-item"
+    >
+        <span class="nav-icon">
+            ⚙️
+        </span>
+
+        <span>
+            Settings
+        </span>
+    </a>
+
+</nav>
+
+
+
+<!-- =========================================
+     CHECKOUT PAGE
+========================================= -->
+
+<main class="checkout-page">
+
+
+    <!-- =====================================
+         CHECKOUT VIEW
+    ====================================== -->
+
+    <section
+        id="checkoutView"
+        class="checkout-view"
+    >
+
+        <div class="checkout-heading">
+
+            <h1>
+                💳 Checkout
+            </h1>
+
+            <p>
+                Review your order and confirm your purchase.
+            </p>
+
+        </div>
+
+
+        <!-- =================================
+             PRODUCTS
+        ================================== -->
+
+        <section class="checkout-card">
+
+            <div class="checkout-card-header">
+
+                <div>
+
+                    <h2>
+                        📦 Order Summary
+                    </h2>
+
+                    <p>
+                        Review the products in your cart.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div
+                id="checkoutItems"
+                class="checkout-items"
+            >
+            </div>
+
+
+            <div
+                id="emptyCheckout"
+                class="empty-checkout"
+                style="display: none;"
+            >
+
+                <div class="empty-checkout-icon">
+                    🛒
+                </div>
+
+                <h2>
+                    Your Cart is Empty
+                </h2>
+
+                <p>
+                    Add products to your cart before checkout.
+                </p>
+
+                <a
+                    href="buyer_dashboard.html"
+                    class="checkout-shop-btn"
+                >
+                    🛍️ Continue Shopping
+                </a>
+
+            </div>
+
+
+            <div
+                id="checkoutTotalSection"
+                class="checkout-total-section"
+            >
+
+                <div class="checkout-total-row">
+
+                    <span>
+                        Total Items
+                    </span>
+
+                    <strong id="checkoutTotalItems">
+                        0
+                    </strong>
+
+                </div>
+
+
+                <div class="checkout-total-row final-total">
+
+                    <span>
+                        Total Amount
+                    </span>
+
+                    <strong>
+                        ₹<span id="checkoutTotal">
+                            0.00
+                        </span>
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================
+             DELIVERY DETAILS
+        ================================== -->
+
+        <section class="checkout-card">
+
+            <div class="checkout-card-header">
+
+                <div>
+
+                    <h2>
+                        📍 Delivery Details
+                    </h2>
+
+                    <p>
+                        Confirm your delivery information.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="checkout-details-grid">
+
+
+                <div class="checkout-detail-box">
+
+                    <span>
+                        👤 Name
+                    </span>
+
+                    <strong id="checkoutUserName">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="checkout-detail-box">
+
+                    <span>
+                        📧 Email
+                    </span>
+
+                    <strong id="checkoutUserEmail">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="checkout-detail-box">
+
+                    <span>
+                        📞 Phone
+                    </span>
+
+                    <strong id="checkoutUserPhone">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="checkout-detail-box">
+
+                    <span>
+                        📍 Address
+                    </span>
+
+                    <strong id="checkoutUserAddress">
+                        -
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================
+             CONFIRM ORDER
+        ================================== -->
+
+        <section
+            id="confirmOrderSection"
+            class="confirm-order-section"
+        >
+
+            <div class="confirm-order-info">
+
+                <h2>
+                    Ready to place your order?
+                </h2>
+
+                <p>
+                    Please check your products and delivery
+                    details before confirming your order.
+                </p>
+
+            </div>
+
+
+            <button
+                type="button"
+                id="confirmOrderBtn"
+                class="confirm-order-btn"
+                onclick="confirmOrder()"
+            >
+                ✅ Confirm Order
+            </button>
+
+        </section>
+
+
+        <p
+            id="checkoutMessage"
+            class="checkout-message"
+        >
+        </p>
+
+    </section>
+
+
+
+    <!-- =========================================
+         ORDER SUCCESS VIEW
+    ========================================== -->
+
+    <section
+        id="orderSuccessView"
+        class="order-success-view"
+        style="display: none;"
+    >
+
+
+        <!-- SUCCESS HEADER -->
+
+        <div class="success-header">
+
+            <div class="success-icon">
+                ✓
+            </div>
+
+
+            <h1>
+                Order Placed Successfully! 🎉
+            </h1>
+
+
+            <p>
+                Thank you for shopping with NishandhiniMart.
+            </p>
+
+        </div>
+
+
+
+        <!-- ORDER ID -->
+
+        <div class="success-order-id">
+
+            <span>
+                Your Order ID
+            </span>
+
+            <strong id="successOrderId">
+                #-
+            </strong>
+
+            <p>
+                Please keep this Order ID for your records.
+            </p>
+
+        </div>
+
+
+
+        <!-- PRODUCT DETAILS -->
+
+        <section class="success-card">
+
+            <div class="success-card-header">
+
+                <h2>
+                    📦 Order Details
+                </h2>
+
+            </div>
+
+
+            <div
+                id="successProductDetails"
+                class="success-product-details"
+            >
+            </div>
+
+
+            <div class="success-total">
+
+                <span>
+                    Total Amount
+                </span>
+
+                <strong>
+                    ₹<span id="successTotal">
+                        0.00
+                    </span>
+                </strong>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- DELIVERY DETAILS -->
+
+        <section class="success-card">
+
+            <div class="success-card-header">
+
+                <h2>
+                    🚚 Delivery Information
+                </h2>
+
+            </div>
+
+
+            <div class="success-info-grid">
+
+
+                <div class="success-info-box">
+
+                    <span>
+                        📅 Order Date
+                    </span>
+
+                    <strong id="successOrderDate">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="success-info-box">
+
+                    <span>
+                        📋 Order Status
+                    </span>
+
+                    <strong
+                        id="successOrderStatus"
+                        class="success-status"
+                    >
+                        Processing
+                    </strong>
+
+                </div>
+
+
+                <div class="success-info-box">
+
+                    <span>
+                        📅 Estimated Delivery
+                    </span>
+
+                    <strong id="successDeliveryDate">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="success-info-box">
+
+                    <span>
+                        📍 Delivery Address
+                    </span>
+
+                    <strong id="successAddress">
+                        -
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ACTION BUTTONS -->
+
+        <div class="success-actions">
+
+            <button
+                type="button"
+                class="track-success-btn"
+                onclick="trackSuccessfulOrder()"
+            >
+                🚚 Track Order
+            </button>
+
+
+            <button
+                type="button"
+                class="continue-shopping-btn"
+                onclick="continueShopping()"
+            >
+                🛍️ Continue Shopping
+            </button>
+
+        </div>
+
+
+    </section>
+
+</main>
+
+
+
+<!-- =========================================
+     FOOTER
+========================================= -->
+
+<footer class="buyer-footer">
+
+    <p>
+        © 2026 NishandhiniMart | Online Shopping Website
+    </p>
+
+</footer>
+
+
+
+<script src="js/checkout.js"></script>
+
+</body>
+
+</html>

@@ -11,6 +11,9 @@
 const ORDERS_API =
     "http://127.0.0.1:8090/api/seller/orders";
 
+const UPDATE_ORDER_STATUS_API =
+    "http://127.0.0.1:8090/api/update-order-status";
+
 
 /* =========================================================
    SELLER INFORMATION
@@ -277,7 +280,7 @@ async function loadOrders() {
     tableBody.innerHTML = `
         <tr>
             <td
-                colspan="6"
+                colspan="7"
                 class="orders-message"
             >
                 Loading orders...
@@ -364,7 +367,7 @@ async function loadOrders() {
         tableBody.innerHTML = `
             <tr>
                 <td
-                    colspan="6"
+                    colspan="7"
                     class="orders-message"
                 >
                     Unable to load orders.
@@ -613,11 +616,67 @@ function createOrderRow(
         );
 
 
+    const normalizedStatus =
+        status
+            .toLowerCase()
+            .trim();
+
+
 
     const statusClass =
         getStatusClass(
             status
         );
+
+
+
+    /* =====================================================
+       DELIVERY ACTION
+    ===================================================== */
+
+    let actionHtml = "";
+
+    if (
+        normalizedStatus ===
+        "delivered"
+    ) {
+
+        actionHtml = `
+            <span class="delivery-completed">
+                ✓ Delivered
+            </span>
+        `;
+
+    }
+
+    else if (
+        normalizedStatus ===
+        "cancelled" ||
+        normalizedStatus ===
+        "canceled"
+    ) {
+
+        actionHtml = `
+            <span class="delivery-not-available">
+                —
+            </span>
+        `;
+
+    }
+
+    else {
+
+        actionHtml = `
+            <button
+                type="button"
+                class="mark-delivered-btn"
+                onclick="markOrderDelivered(${Number(orderId)})"
+            >
+                Mark as Delivered
+            </button>
+        `;
+
+    }
 
 
 
@@ -711,9 +770,126 @@ function createOrderRow(
 
             </td>
 
+
+            <td>
+
+                ${actionHtml}
+
+            </td>
+
         </tr>
 
     `;
+
+}
+
+
+
+/* =========================================================
+   MARK ORDER AS DELIVERED
+========================================================= */
+
+async function markOrderDelivered(
+    orderId
+) {
+
+    if (!orderId) {
+
+        alert(
+            "Invalid order ID."
+        );
+
+        return;
+
+    }
+
+
+    const confirmed =
+        confirm(
+            `Mark Order #${orderId} as Delivered?`
+        );
+
+
+    if (!confirmed) {
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                UPDATE_ORDER_STATUS_API,
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        order_id:
+                            Number(orderId),
+
+                        status:
+                            "Delivered"
+                    })
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        console.log(
+            "Update Order Status:",
+            data
+        );
+
+
+        if (
+            !response.ok ||
+            !data.success
+        ) {
+
+            throw new Error(
+                data.message ||
+                "Unable to update order status"
+            );
+
+        }
+
+
+        alert(
+            `Order #${orderId} marked as Delivered successfully.`
+        );
+
+
+        /* Reload seller orders */
+
+        await loadOrders();
+
+    }
+
+
+    catch (error) {
+
+        console.error(
+            "Mark Delivered Error:",
+            error
+        );
+
+
+        alert(
+            error.message ||
+            "Unable to mark order as delivered."
+        );
+
+    }
 
 }
 

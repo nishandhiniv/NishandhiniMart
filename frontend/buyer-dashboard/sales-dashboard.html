@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>NishandhiniMart - Sales Dashboard</title>
+
+    <link
+        rel="stylesheet"
+        href="css/buyer-dashboard.css"
+    >
+
+</head>
+
+<body>
+
+
+<!-- =========================================
+     HEADER
+========================================= -->
+
+<header class="buyer-header">
+
+    <div class="buyer-logo">
+
+        <div class="logo-text">
+
+            <span>
+                NishandhiniMart
+            </span>
+
+            <small>
+                Buyer Management System
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <div class="buyer-header-right">
+
+        <div class="buyer-welcome">
+            Welcome to NishandhiniMart
+        </div>
+
+
+        <button
+            class="cart-btn"
+            onclick="openCart()"
+        >
+            🛒 Cart
+            (
+            <span id="cartCount">0</span>
+            )
+        </button>
+
+
+        <button
+            class="logout-btn"
+            onclick="logout()"
+        >
+            Logout
+        </button>
+
+    </div>
+
+</header>
+
+
+
+<!-- =========================================
+     SIDEBAR
+========================================= -->
+
+<nav class="buyer-navigation">
+
+    <div class="shopping-hub-title">
+        🛍️ Shopping Hub
+    </div>
+
+
+    <a
+        href="buyer_dashboard.html"
+        class="nav-item"
+    >
+        <span class="nav-icon">
+            🏠
+        </span>
+
+        <span>
+            Dashboard
+        </span>
+    </a>
+
+
+    <a
+        href="profile.html"
+        class="nav-item"
+    >
+        <span class="nav-icon">
+            👤
+        </span>
+
+        <span>
+            Profile
+        </span>
+    </a>
+
+
+    <a
+        href="order-history.html"
+        class="nav-item"
+    >
+        <span class="nav-icon">
+            📦
+        </span>
+
+        <span>
+            Order History
+        </span>
+    </a>
+
+
+    <a
+        href="wishlist.html"
+        class="nav-item"
+    >
+        <span class="nav-icon">
+            ❤️
+        </span>
+
+        <span>
+            Wishlist
+        </span>
+    </a>
+
+
+    <a
+        href="order-tracking.html"
+        class="nav-item"
+    >
+        <span class="nav-icon">
+            🚚
+        </span>
+
+        <span>
+            Order Tracking
+        </span>
+    </a>
+
+
+    <a
+        href="sales-dashboard.html"
+        class="nav-item active"
+    >
+        <span class="nav-icon">
+            📊
+        </span>
+
+        <span>
+            Sales Dashboard
+        </span>
+    </a>
+
+
+    <a
+        href="checkout.html"
+        class="nav-item"
+    >
+        <span class="nav-icon">
+            💳
+        </span>
+
+        <span>
+            Checkout
+        </span>
+    </a>
+
+
+    <a
+        href="settings.html"
+        class="nav-item"
+    >
+        <span class="nav-icon">
+            ⚙️
+        </span>
+
+        <span>
+            Settings
+        </span>
+    </a>
+
+</nav>
+
+
+
+<!-- =========================================
+     SALES DASHBOARD
+========================================= -->
+
+<main class="sales-dashboard-page">
+
+
+    <!-- PAGE HEADING -->
+
+    <section class="sales-dashboard-heading">
+
+        <div>
+
+            <h1>
+                📊 Sales Dashboard
+            </h1>
+
+            <p>
+                View your purchase and sales activity.
+            </p>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================
+         SUMMARY CARDS
+    ====================================== -->
+
+    <section class="sales-summary-grid">
+
+
+        <div class="sales-summary-card">
+
+            <div class="sales-summary-icon">
+                🛒
+            </div>
+
+            <div class="sales-summary-content">
+
+                <span>
+                    Total Orders
+                </span>
+
+                <strong id="totalOrders">
+                    0
+                </strong>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="sales-summary-card">
+
+            <div class="sales-summary-icon">
+                💰
+            </div>
+
+            <div class="sales-summary-content">
+
+                <span>
+                    Total Spent
+                </span>
+
+                <strong>
+                    ₹<span id="totalSpent">0.00</span>
+                </strong>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="sales-summary-card">
+
+            <div class="sales-summary-icon">
+                📦
+            </div>
+
+            <div class="sales-summary-content">
+
+                <span>
+                    Products Purchased
+                </span>
+
+                <strong id="productsPurchased">
+                    0
+                </strong>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="sales-summary-card">
+
+            <div class="sales-summary-icon">
+                🚚
+            </div>
+
+            <div class="sales-summary-content">
+
+                <span>
+                    Orders Delivered
+                </span>
+
+                <strong id="ordersDelivered">
+                    0
+                </strong>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================
+         SALES OVERVIEW
+    ====================================== -->
+
+    <section class="sales-overview-card">
+
+        <div class="sales-section-header">
+
+            <div>
+
+                <h2>
+                    📈 Sales Overview
+                </h2>
+
+                <p>
+                    Your recent shopping activity.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="sales-overview-content">
+
+
+            <div class="sales-overview-item">
+
+                <span>
+                    Average Order Value
+                </span>
+
+                <strong id="averageOrderValue">
+                    ₹0.00
+                </strong>
+
+            </div>
+
+
+            <div class="sales-overview-item">
+
+                <span>
+                    Latest Order
+                </span>
+
+                <strong id="latestOrderId">
+                    -
+                </strong>
+
+            </div>
+
+
+            <div class="sales-overview-item">
+
+                <span>
+                    Latest Order Date
+                </span>
+
+                <strong id="latestOrderDate">
+                    -
+                </strong>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================
+         RECENT ORDERS
+    ====================================== -->
+
+    <section class="recent-sales-card">
+
+        <div class="sales-section-header">
+
+            <div>
+
+                <h2>
+                    📦 Recent Orders
+                </h2>
+
+                <p>
+                    Your latest orders and purchase details.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div
+            id="salesLoading"
+            class="sales-loading"
+        >
+
+            <div class="loading-spinner"></div>
+
+            <p>
+                Loading sales data...
+            </p>
+
+        </div>
+
+
+        <div
+            id="salesTableContainer"
+            class="sales-table-container"
+            style="display: none;"
+        >
+
+            <div class="sales-table-wrapper">
+
+                <table class="sales-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Order ID
+                            </th>
+
+                            <th>
+                                Date
+                            </th>
+
+                            <th>
+                                Items
+                            </th>
+
+                            <th>
+                                Amount
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="salesTableBody">
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        <div
+            id="noSales"
+            class="no-sales"
+            style="display: none;"
+        >
+
+            <div class="no-sales-icon">
+                📊
+            </div>
+
+            <h3>
+                No Orders Yet
+            </h3>
+
+            <p>
+                Your purchase activity will appear here.
+            </p>
+
+            <a
+                href="buyer_dashboard.html"
+                class="sales-shop-btn"
+            >
+                🛍️ Start Shopping
+            </a>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================
+         QUICK ACTIONS
+    ====================================== -->
+
+    <section class="sales-quick-actions">
+
+        <a
+            href="order-history.html"
+            class="sales-action-card"
+        >
+
+            <span class="sales-action-icon">
+                📦
+            </span>
+
+            <div>
+
+                <strong>
+                    Order History
+                </strong>
+
+                <small>
+                    View all your orders
+                </small>
+
+            </div>
+
+        </a>
+
+
+        <a
+            href="order-tracking.html"
+            class="sales-action-card"
+        >
+
+            <span class="sales-action-icon">
+                🚚
+            </span>
+
+            <div>
+
+                <strong>
+                    Track Order
+                </strong>
+
+                <small>
+                    Check delivery status
+                </small>
+
+            </div>
+
+        </a>
+
+
+        <a
+            href="buyer_dashboard.html"
+            class="sales-action-card"
+        >
+
+            <span class="sales-action-icon">
+                🛍️
+            </span>
+
+            <div>
+
+                <strong>
+                    Continue Shopping
+                </strong>
+
+                <small>
+                    Explore more products
+                </small>
+
+            </div>
+
+        </a>
+
+    </section>
+
+</main>
+
+
+
+<!-- =========================================
+     FOOTER
+========================================= -->
+
+<footer class="buyer-footer">
+
+    <p>
+        © 2026 NishandhiniMart | Online Shopping Website
+    </p>
+
+</footer>
+
+
+
+<script src="js/sales-dashboard.js"></script>
+
+</body>
+
+</html>

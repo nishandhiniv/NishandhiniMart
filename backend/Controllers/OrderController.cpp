@@ -345,3 +345,241 @@ void getUserOrders(
         userId
     );
 }
+// =========================================================
+// UPDATE ORDER STATUS
+// =========================================================
+
+void updateOrderStatus(
+    const HttpRequestPtr &req,
+    std::function<void(const HttpResponsePtr &)> &&callback)
+{
+    auto json = req->getJsonObject();
+
+    if (!json)
+    {
+        Json::Value responseJson;
+        responseJson["success"] = false;
+        responseJson["message"] = "Invalid JSON data";
+
+        callback(
+            HttpResponse::newHttpJsonResponse(responseJson)
+        );
+
+        return;
+    }
+
+    int orderId =
+        (*json)["order_id"].asInt();
+
+    std::string status =
+        (*json)["status"].asString();
+
+    if (orderId <= 0 || status.empty())
+    {
+        Json::Value responseJson;
+        responseJson["success"] = false;
+        responseJson["message"] =
+            "Invalid order ID or status";
+
+        callback(
+            HttpResponse::newHttpJsonResponse(responseJson)
+        );
+
+        return;
+    }
+
+    auto dbClient =
+        getDatabaseClient();
+
+    dbClient->execSqlAsync(
+        "UPDATE orders "
+        "SET status = $1 "
+        "WHERE id = $2 "
+        "RETURNING id, status",
+
+        [callback](const Result &result)
+        {
+            Json::Value responseJson;
+
+            if (result.empty())
+            {
+                responseJson["success"] = false;
+                responseJson["message"] =
+                    "Order not found";
+
+                callback(
+                    HttpResponse::newHttpJsonResponse(
+                        responseJson
+                    )
+                );
+
+                return;
+            }
+
+            responseJson["success"] = true;
+            responseJson["message"] =
+                "Order status updated successfully";
+
+            responseJson["order_id"] =
+                result[0]["id"].as<int>();
+
+            responseJson["status"] =
+                result[0]["status"].as<std::string>();
+
+            callback(
+                HttpResponse::newHttpJsonResponse(
+                    responseJson
+                )
+            );
+        },
+
+        [callback](const DrogonDbException &error)
+        {
+            Json::Value responseJson;
+
+            responseJson["success"] = false;
+            responseJson["message"] =
+                error.base().what();
+
+            auto response =
+                HttpResponse::newHttpJsonResponse(
+                    responseJson
+                );
+
+            response->setStatusCode(
+                k500InternalServerError
+            );
+
+            callback(response);
+        },
+
+        status,
+        orderId
+    );
+}
+// =========================================================
+// GET SELLER ORDERS
+// =========================================================
+
+void getSellerOrders(
+    const HttpRequestPtr &req,
+    std::function<void(const HttpResponsePtr &)> &&callback)
+{
+    auto sellerIdParam =
+        req->getParameter("seller_id");
+
+    if (sellerIdParam.empty())
+    {
+        Json::Value responseJson;
+        responseJson["success"] = false;
+        responseJson["message"] =
+            "Seller ID is required";
+
+        callback(
+            HttpResponse::newHttpJsonResponse(
+                responseJson
+            )
+        );
+
+        return;
+    }
+
+    int sellerId =
+        std::stoi(sellerIdParam);
+
+    auto dbClient =
+        getDatabaseClient();
+
+    dbClient->execSqlAsync(
+        "SELECT "
+        "o.id AS order_id, "
+        "o.total_amount, "
+        "o.status, "
+        "o.created_at, "
+        "oi.product_id, "
+        "oi.quantity, "
+        "oi.price, "
+        "p.product_name "
+
+        "FROM orders o "
+
+        "JOIN order_items oi "
+        "ON o.id = oi.order_id "
+
+        "JOIN products p "
+        "ON oi.product_id = p.id "
+
+        "WHERE p.seller_id = $1 "
+
+        "ORDER BY o.id DESC",
+
+        [callback](const Result &result)
+        {
+            Json::Value orders(
+                Json::arrayValue
+            );
+
+            for (const auto &row : result)
+            {
+                Json::Value order;
+
+                order["order_id"] =
+                    row["order_id"].as<int>();
+
+                order["total_amount"] =
+                    row["total_amount"].as<double>();
+
+                order["status"] =
+                    row["status"].as<std::string>();
+
+                order["product_id"] =
+                    row["product_id"].as<int>();
+
+                order["product_name"] =
+                    row["product_name"].as<std::string>();
+
+                order["quantity"] =
+                    row["quantity"].as<int>();
+
+                order["price"] =
+                    row["price"].as<double>();
+
+                if (!row["created_at"].isNull())
+                {
+                    order["created_at"] =
+                        row["created_at"].as<std::string>();
+                }
+
+                orders.append(order);
+            }
+
+            callback(
+                HttpResponse::newHttpJsonResponse(
+                    orders
+                )
+            );
+        },
+
+        [callback](const DrogonDbException &error)
+        {
+            Json::Value responseJson;
+
+            responseJson["success"] = false;
+            responseJson["message"] =
+                error.base().what();
+
+            auto response =
+                HttpResponse::newHttpJsonResponse(
+                    responseJson
+                );
+
+            response->setStatusCode(
+                k500InternalServerError
+            );
+
+            callback(response);
+        },
+
+        sellerId
+    );
+}

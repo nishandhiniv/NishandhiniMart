@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>NishandhiniMart - Buyer Profile</title>
+
+    <!-- BUYER DASHBOARD CSS -->
+    <link
+        rel="stylesheet"
+        href="css/buyer-dashboard.css"
+    >
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     HEADER
+========================================================= -->
+
+<header class="buyer-header">
+
+    <div class="buyer-logo">
+
+        <div class="logo-text">
+
+            <span>NishandhiniMart</span>
+
+            <small>
+                Buyer Management System
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <div class="buyer-header-right">
+
+        <div class="buyer-welcome">
+            Welcome to NishandhiniMart
+        </div>
+
+
+        <button
+            class="cart-btn"
+            onclick="openCart()"
+        >
+            🛒 Cart
+            (
+            <span id="cartCount">0</span>
+            )
+        </button>
+
+
+        <button
+            class="logout-btn"
+            onclick="logout()"
+        >
+            Logout
+        </button>
+
+    </div>
+
+</header>
+
+
+
+<!-- =========================================================
+     BUYER NAVIGATION
+========================================================= -->
+
+<nav class="buyer-navigation">
+
+    <div class="shopping-hub-title">
+        🛍️ Shopping Hub
+    </div>
+
+
+    <a
+        href="buyer_dashboard.html"
+        class="nav-item"
+    >
+        <span class="nav-icon">🏠</span>
+        <span>Dashboard</span>
+    </a>
+
+
+    <a
+        href="profile.html"
+        class="nav-item active"
+    >
+        <span class="nav-icon">👤</span>
+        <span>Profile</span>
+    </a>
+
+
+    <a
+        href="order-history.html"
+        class="nav-item"
+    >
+        <span class="nav-icon">📦</span>
+        <span>Order History</span>
+    </a>
+
+
+    <a
+        href="wishlist.html"
+        class="nav-item"
+    >
+        <span class="nav-icon">❤️</span>
+        <span>Wishlist</span>
+    </a>
+
+
+    <a
+        href="order-tracking.html"
+        class="nav-item"
+    >
+        <span class="nav-icon">🚚</span>
+        <span>Order Tracking</span>
+    </a>
+
+
+    <a
+        href="sales-dashboard.html"
+        class="nav-item"
+    >
+        <span class="nav-icon">📊</span>
+        <span>Sales Dashboard</span>
+    </a>
+
+
+    <a
+        href="checkout.html"
+        class="nav-item"
+    >
+        <span class="nav-icon">💳</span>
+        <span>Checkout</span>
+    </a>
+
+
+    <a
+        href="settings.html"
+        class="nav-item"
+    >
+        <span class="nav-icon">⚙️</span>
+        <span>Settings</span>
+    </a>
+
+</nav>
+
+
+
+<!-- =========================================================
+     PROFILE PAGE
+========================================================= -->
+
+<main class="profile-page">
+
+
+    <!-- PROFILE HEADING -->
+
+    <section class="profile-heading">
+
+        <div>
+
+            <span class="profile-heading-icon">
+                👤
+            </span>
+
+
+            <div>
+
+                <h1>
+                    My Profile
+                </h1>
+
+                <p>
+                    View and manage your personal account information.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- PROFILE OVERVIEW -->
+
+    <section class="profile-overview">
+
+        <div class="profile-avatar">
+
+            <span id="profileInitial">
+                U
+            </span>
+
+        </div>
+
+
+        <div class="profile-basic-info">
+
+            <h2 id="profileDisplayName">
+                Buyer
+            </h2>
+
+            <p id="profileUsername">
+                @username
+            </p>
+
+            <span class="profile-role-badge">
+                Buyer Account
+            </span>
+
+        </div>
+
+
+        <div class="profile-status">
+
+            <span class="status-dot"></span>
+
+            <span>
+                Active Account
+            </span>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         PERSONAL INFORMATION
+    ====================================================== -->
+
+    <section class="profile-card">
+
+        <div class="profile-card-header">
+
+            <div>
+
+                <h2>
+                    Personal Information
+                </h2>
+
+                <p>
+                    Your registered account details.
+                </p>
+
+            </div>
+
+
+            <span class="card-icon">
+                👤
+            </span>
+
+        </div>
+
+
+        <div class="profile-grid">
+
+
+            <div class="profile-field">
+
+                <label>
+                    Full Name
+                </label>
+
+                <div class="profile-value">
+
+                    <span id="profileName">
+                        Not available
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="profile-field">
+
+                <label>
+                    Username
+                </label>
+
+                <div class="profile-value">
+
+                    <span id="profileUsernameValue">
+                        Not available
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="profile-field">
+
+                <label>
+                    Email Address
+                </label>
+
+                <div class="profile-value">
+
+                    <span id="profileEmail">
+                        Not available
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="profile-field">
+
+                <label>
+                    Phone Number
+                </label>
+
+                <div class="profile-value">
+
+                    <span id="profilePhone">
+                        Not available
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="profile-field profile-full-width">
+
+                <label>
+                    Address
+                </label>
+
+                <div class="profile-value">
+
+                    <span id="profileAddress">
+                        Not available
+                    </span>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         ACCOUNT INFORMATION
+    ====================================================== -->
+
+    <section class="profile-card">
+
+        <div class="profile-card-header">
+
+            <div>
+
+                <h2>
+                    Account Information
+                </h2>
+
+                <p>
+                    Information related to your NishandhiniMart account.
+                </p>
+
+            </div>
+
+
+            <span class="card-icon">
+                🔐
+            </span>
+
+        </div>
+
+
+        <div class="profile-grid">
+
+
+            <div class="profile-field">
+
+                <label>
+                    Account Role
+                </label>
+
+                <div class="profile-value">
+
+                    <span id="profileRole">
+                        Buyer
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="profile-field">
+
+                <label>
+                    Account Status
+                </label>
+
+                <div class="profile-value status-value">
+
+                    <span class="small-status-dot"></span>
+
+                    <span id="profileAccountStatus">
+                        Active
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="profile-field">
+
+                <label>
+                    User ID
+                </label>
+
+                <div class="profile-value">
+
+                    <span id="profileUserId">
+                        Not available
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="profile-field">
+
+                <label>
+                    Verification Status
+                </label>
+
+                <div class="profile-value">
+
+                    <span class="verification-badge">
+                        Verified
+                    </span>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         PROFILE ACTIONS
+    ====================================================== -->
+
+    <section class="profile-actions">
+
+
+        <a
+            href="edit-profile.html"
+            class="profile-action-btn primary"
+        >
+            ✏️ Edit Profile
+        </a>
+
+
+        <a
+            href="settings.html"
+            class="profile-action-btn secondary"
+        >
+            ⚙️ Account Settings
+        </a>
+
+
+        <a
+            href="buyer_dashboard.html"
+            class="profile-action-btn secondary"
+        >
+            ← Back to Dashboard
+        </a>
+
+
+    </section>
+
+
+</main>
+
+
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
+
+<footer class="buyer-footer">
+
+    <p>
+        © 2026 NishandhiniMart | Online Shopping Website
+    </p>
+
+</footer>
+
+
+
+<!-- =========================================================
+     PROFILE JAVASCRIPT
+========================================================= -->
+
+<script
+    src="js/profile.js"
+></script>
+
+
+</body>
+
+</html>

@@ -229,3 +229,151 @@ void updateVerificationStatus(
         verificationStatus,
         userId);
 }
+// =========================================================
+// GET ALL ORDERS FOR ADMIN
+// =========================================================
+
+void getAllOrders(
+    const HttpRequestPtr &req,
+    std::function<void(const HttpResponsePtr &)> &&callback)
+{
+    auto dbClient = getDatabaseClient();
+
+    dbClient->execSqlAsync(
+        "SELECT "
+        "o.id, "
+        "o.user_id, "
+        "o.total_amount, "
+        "o.status, "
+        "o.created_at, "
+
+        "u.name AS buyer_name, "
+        "u.username AS buyer_username, "
+        "u.email AS buyer_email, "
+
+        "s.id AS seller_id, "
+        "s.name AS seller_name, "
+        "s.store_name AS store_name "
+
+        "FROM orders o "
+
+        "LEFT JOIN users u "
+        "ON o.user_id = u.id "
+
+        "LEFT JOIN LATERAL ( "
+            "SELECT DISTINCT "
+            "su.id, "
+            "su.name, "
+            "su.store_name "
+            "FROM order_items oi "
+            "JOIN products p "
+            "ON oi.product_id = p.id "
+            "JOIN users su "
+            "ON p.seller_id = su.id "
+            "WHERE oi.order_id = o.id "
+            "AND su.role = 'seller' "
+            "LIMIT 1 "
+        ") s ON true "
+
+        "ORDER BY o.id DESC",
+
+        [callback](const Result &result)
+        {
+            Json::Value orders(Json::arrayValue);
+
+            for (const auto &row : result)
+            {
+                Json::Value order;
+
+                order["id"] =
+                    row["id"].as<int>();
+
+                order["user_id"] =
+                    row["user_id"].as<int>();
+
+                order["total_amount"] =
+                    row["total_amount"].as<double>();
+
+                order["status"] =
+                    row["status"].as<std::string>();
+
+                if (!row["created_at"].isNull())
+                {
+                    order["created_at"] =
+                        row["created_at"].as<std::string>();
+                }
+
+                // Buyer details
+                if (!row["buyer_name"].isNull())
+                {
+                    order["buyer_name"] =
+                        row["buyer_name"].as<std::string>();
+                }
+
+                if (!row["buyer_username"].isNull())
+                {
+                    order["buyer_username"] =
+                        row["buyer_username"].as<std::string>();
+                }
+
+                if (!row["buyer_email"].isNull())
+                {
+                    order["buyer_email"] =
+                        row["buyer_email"].as<std::string>();
+                }
+
+                // Seller details
+                if (!row["seller_id"].isNull())
+                {
+                    order["seller_id"] =
+                        row["seller_id"].as<int>();
+                }
+
+                if (!row["seller_name"].isNull())
+                {
+                    order["seller_name"] =
+                        row["seller_name"].as<std::string>();
+                }
+
+                if (!row["store_name"].isNull())
+                {
+                    order["store_name"] =
+                        row["store_name"].as<std::string>();
+                }
+
+                orders.append(order);
+            }
+
+            Json::Value responseJson;
+
+            responseJson["success"] = true;
+            responseJson["orders"] = orders;
+
+            callback(
+                HttpResponse::newHttpJsonResponse(
+                    responseJson
+                )
+            );
+        },
+
+        [callback](const DrogonDbException &error)
+        {
+            Json::Value responseJson;
+
+            responseJson["success"] = false;
+            responseJson["message"] =
+                error.base().what();
+
+            auto response =
+                HttpResponse::newHttpJsonResponse(
+                    responseJson
+                );
+
+            response->setStatusCode(
+                k500InternalServerError
+            );
+
+            callback(response);
+        }
+    );
+}

@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>NishandhiniMart - Settings</title>
+
+    <link
+        rel="stylesheet"
+        href="css/buyer-dashboard.css"
+    >
+</head>
+
+<body>
+
+<header class="buyer-header">
+
+    <div class="buyer-logo">
+        <div class="logo-text">
+            <span>NishandhiniMart</span>
+            <small>Buyer Management System</small>
+        </div>
+    </div>
+
+    <div class="buyer-header-right">
+
+        <div class="buyer-welcome">
+            Welcome to NishandhiniMart
+        </div>
+
+        <button
+            class="cart-btn"
+            onclick="openCart()"
+        >
+            🛒 Cart
+            (
+            <span id="cartCount">0</span>
+            )
+        </button>
+
+        <button
+            class="logout-btn"
+            onclick="logout()"
+        >
+            Logout
+        </button>
+
+    </div>
+
+</header>
+
+
+<nav class="buyer-navigation">
+
+    <div class="shopping-hub-title">
+        🛍️ Shopping Hub
+    </div>
+
+    <a
+        href="buyer_dashboard.html"
+        class="nav-item"
+    >
+        <span class="nav-icon">🏠</span>
+        <span>Dashboard</span>
+    </a>
+
+    <a
+        href="profile.html"
+        class="nav-item"
+    >
+        <span class="nav-icon">👤</span>
+        <span>Profile</span>
+    </a>
+
+    <a
+        href="order-history.html"
+        class="nav-item"
+    >
+        <span class="nav-icon">📦</span>
+        <span>Order History</span>
+    </a>
+
+    <a
+        href="wishlist.html"
+        class="nav-item"
+    >
+        <span class="nav-icon">❤️</span>
+        <span>Wishlist</span>
+    </a>
+
+    <a
+        href="order-tracking.html"
+        class="nav-item"
+    >
+        <span class="nav-icon">🚚</span>
+        <span>Order Tracking</span>
+    </a>
+
+    <a
+        href="sales-dashboard.html"
+        class="nav-item"
+    >
+        <span class="nav-icon">📊</span>
+        <span>Sales Dashboard</span>
+    </a>
+
+    <a
+        href="checkout.html"
+        class="nav-item"
+    >
+        <span class="nav-icon">💳</span>
+        <span>Checkout</span>
+    </a>
+
+    <a
+        href="settings.html"
+        class="nav-item active"
+    >
+        <span class="nav-icon">⚙️</span>
+        <span>Settings</span>
+    </a>
+
+</nav>
+
+
+<main class="settings-page">
+
+    <section class="settings-heading">
+
+        <h1>
+            ⚙️ Settings
+        </h1>
+
+        <p>
+            Manage your account preferences and settings.
+        </p>
+
+    </section>
+
+
+    <section class="settings-container">
+
+
+        <!-- Account Settings -->
+
+        <div class="settings-card">
+
+            <div class="settings-card-header">
+
+                <div class="settings-card-icon">
+                    👤
+                </div>
+
+                <div>
+                    <h2>
+                        Account Settings
+                    </h2>
+
+                    <p>
+                        Manage your basic account information.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="settings-form-grid">
+
+                <div class="settings-field">
+
+                    <label for="settingsName">
+                        Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="settingsName"
+                        placeholder="Enter your name"
+                    >
+
+                </div>
+
+
+                <div class="settings-field">
+
+                    <label for="settingsUsername">
+                        Username
+                    </label>
+
+                    <input
+                        type="text"
+                        id="settingsUsername"
+                        placeholder="Username"
+                        readonly
+                    >
+
+                </div>
+
+
+                <div class="settings-field">
+
+                    <label for="settingsEmail">
+                        Email
+                    </label>
+
+                    <input
+                        type="email"
+                        id="settingsEmail"
+                        placeholder="Enter your email"
+                    >
+
+                </div>
+
+
+                <div class="settings-field">
+
+                    <label for="settingsPhone">
+                        Phone
+                    </label>
+
+                    <input
+                        type="tel"
+                        id="settingsPhone"
+                        placeholder="Enter your phone number"
+                    >
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Notification Settings -->
+
+        <div class="settings-card">
+
+            <div class="settings-card-header">
+
+                <div class="settings-card-icon">
+                    🔔
+                </div>
+
+                <div>
+                    <h2>
+                        Notification Settings
+                    </h2>
+
+                    <p>
+                        Choose how you want to receive notifications.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="settings-options">
+
+                <label class="settings-option">
+
+                    <div class="settings-option-text">
+
+                        <strong>
+                            Order Updates
+                        </strong>
+
+                        <span>
+                            Receive notifications about your orders.
+                        </span>
+
+                    </div>
+
+                    <input
+                        type="checkbox"
+                        id="orderNotifications"
+                        checked
+                    >
+
+                </label>
+
+
+                <label class="settings-option">
+
+                    <div class="settings-option-text">
+
+                        <strong>
+                            Delivery Updates
+                        </strong>
+
+                        <span>
+                            Get updates about your delivery status.
+                        </span>
+
+                    </div>
+
+                    <input
+                        type="checkbox"
+                        id="deliveryNotifications"
+                        checked
+                    >
+
+                </label>
+
+
+                <label class="settings-option">
+
+                    <div class="settings-option-text">
+
+                        <strong>
+                            Promotional Notifications
+                        </strong>
+
+                        <span>
+                            Receive offers and promotional updates.
+                        </span>
+
+                    </div>
+
+                    <input
+                        type="checkbox"
+                        id="promotionNotifications"
+                    >
+
+                </label>
+
+            </div>
+
+        </div>
+
+
+        <!-- Security Settings -->
+
+        <div class="settings-card">
+
+            <div class="settings-card-header">
+
+                <div class="settings-card-icon">
+                    🔐
+                </div>
+
+                <div>
+                    <h2>
+                        Security
+                    </h2>
+
+                    <p>
+                        Manage your account security.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="settings-security-row">
+
+                <div>
+
+                    <strong>
+                        Password
+                    </strong>
+
+                    <p>
+                        Update your account password from your profile.
+                    </p>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="settings-secondary-btn"
+                    onclick="changePassword()"
+                >
+                    🔑 Change Password
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- Address Settings -->
+
+        <div class="settings-card">
+
+            <div class="settings-card-header">
+
+                <div class="settings-card-icon">
+                    📍
+                </div>
+
+                <div>
+                    <h2>
+                        Delivery Address
+                    </h2>
+
+                    <p>
+                        Manage your default delivery address.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="settings-field">
+
+                <label for="settingsAddress">
+                    Address
+                </label>
+
+                <textarea
+                    id="settingsAddress"
+                    rows="4"
+                    placeholder="Enter your delivery address"
+                ></textarea>
+
+            </div>
+
+        </div>
+
+
+        <!-- Save Settings -->
+
+        <div class="settings-save-section">
+
+            <p
+                id="settingsMessage"
+                class="settings-message"
+            ></p>
+
+            <button
+                type="button"
+                class="settings-save-btn"
+                onclick="saveSettings()"
+            >
+                💾 Save Changes
+            </button>
+
+        </div>
+
+
+        <!-- Account Information -->
+
+        <div class="settings-card account-info-card">
+
+            <div class="settings-card-header">
+
+                <div class="settings-card-icon">
+                    ℹ️
+                </div>
+
+                <div>
+                    <h2>
+                        Account Information
+                    </h2>
+
+                    <p>
+                        Current account details.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="account-info-grid">
+
+                <div class="account-info-item">
+
+                    <span>
+                        Account Status
+                    </span>
+
+                    <strong
+                        id="accountStatus"
+                        class="account-status active"
+                    >
+                        Active
+                    </strong>
+
+                </div>
+
+
+                <div class="account-info-item">
+
+                    <span>
+                        Account Type
+                    </span>
+
+                    <strong id="accountRole">
+                        Buyer
+                    </strong>
+
+                </div>
+
+
+                <div class="account-info-item">
+
+                    <span>
+                        Verification Status
+                    </span>
+
+                    <strong
+                        id="verificationStatus"
+                        class="verification-status"
+                    >
+                        Verified
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<footer class="buyer-footer">
+
+    <p>
+        © 2026 NishandhiniMart | Online Shopping Website
+    </p>
+
+</footer>
+
+
+<script src="js/settings.js"></script>
+
+</body>
+</html>

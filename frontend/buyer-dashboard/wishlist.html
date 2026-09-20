@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NishandhiniMart - Wishlist</title>
+
+    <link rel="stylesheet" href="css/buyer-dashboard.css">
+</head>
+
+<body>
+
+<header class="buyer-header">
+
+    <div class="buyer-logo">
+        <div class="logo-text">
+            <span>NishandhiniMart</span>
+            <small>Buyer Management System</small>
+        </div>
+    </div>
+
+    <div class="buyer-header-right">
+
+        <div class="buyer-welcome">
+            Welcome to NishandhiniMart
+        </div>
+
+        <button
+            class="cart-btn"
+            onclick="openCart()"
+        >
+            🛒 Cart
+            (
+            <span id="cartCount">0</span>
+            )
+        </button>
+
+        <button
+            class="logout-btn"
+            onclick="logout()"
+        >
+            Logout
+        </button>
+
+    </div>
+
+</header>
+
+
+<!-- =========================
+     LEFT NAVIGATION
+========================= -->
+
+<nav class="buyer-navigation">
+
+    <div class="shopping-hub-title">
+        🛍️ Shopping Hub
+    </div>
+
+    <a
+        href="buyer_dashboard.html"
+        class="nav-item"
+    >
+        <span class="nav-icon">🏠</span>
+        <span>Dashboard</span>
+    </a>
+
+    <a
+        href="profile.html"
+        class="nav-item"
+    >
+        <span class="nav-icon">👤</span>
+        <span>Profile</span>
+    </a>
+
+    <a
+        href="order-history.html"
+        class="nav-item"
+    >
+        <span class="nav-icon">📦</span>
+        <span>Order History</span>
+    </a>
+
+    <a
+        href="wishlist.html"
+        class="nav-item active"
+    >
+        <span class="nav-icon">❤️</span>
+        <span>Wishlist</span>
+    </a>
+
+    <a
+        href="order-tracking.html"
+        class="nav-item"
+    >
+        <span class="nav-icon">🚚</span>
+        <span>Order Tracking</span>
+    </a>
+
+    <a
+        href="sales-dashboard.html"
+        class="nav-item"
+    >
+        <span class="nav-icon">📊</span>
+        <span>Sales Dashboard</span>
+    </a>
+
+    <a
+        href="checkout.html"
+        class="nav-item"
+    >
+        <span class="nav-icon">💳</span>
+        <span>Checkout</span>
+    </a>
+
+    <a
+        href="settings.html"
+        class="nav-item"
+    >
+        <span class="nav-icon">⚙️</span>
+        <span>Settings</span>
+    </a>
+
+</nav>
+
+
+<!-- =========================
+     WISHLIST PAGE
+========================= -->
+
+<main class="wishlist-page">
+
+    <section class="wishlist-heading">
+
+        <h1>
+            ❤️ My Wishlist
+        </h1>
+
+        <p>
+            Your favourite products saved for later.
+        </p>
+
+    </section>
+
+
+    <section class="wishlist-card">
+
+        <div
+            id="wishlistLoading"
+            class="wishlist-loading"
+        >
+
+            <div class="loading-spinner"></div>
+
+            <p>
+                Loading wishlist...
+            </p>
+
+        </div>
+
+
+        <div
+            id="wishlistContainer"
+            class="wishlist-container"
+        >
+        </div>
+
+
+        <div
+            id="noWishlist"
+            class="no-wishlist"
+            style="display: none;"
+        >
+
+            <div class="no-wishlist-icon">
+                ❤️
+            </div>
+
+            <h2>
+                Your Wishlist is Empty
+            </h2>
+
+            <p>
+                Save products you love and find them here later.
+            </p>
+
+            <a
+                href="buyer_dashboard.html"
+                class="shop-now-btn"
+            >
+                🛍️ Start Shopping
+            </a>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- =========================
+     FOOTER
+========================= -->
+
+<footer class="buyer-footer">
+
+    <p>
+        © 2026 NishandhiniMart | Online Shopping Website
+    </p>
+
+</footer>
+
+
+<script src="js/wishlist.js"></script>
+
+</body>
+
+</html>

@@ -115,7 +115,7 @@ async function loadOrders() {
     try {
 
         const response = await fetch(
-            `${BASE_URL}/orders`,
+            `${BASE_URL}/admin-orders`,
             {
                 method: "GET",
                 headers: {

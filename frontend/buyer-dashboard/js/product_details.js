@@ -1235,8 +1235,7 @@ function buyNow() {
     );
 
 
-    window.location.href =
-        "order.html";
+    window.location.href = "checkout.html";
 }
 
 
@@ -1255,25 +1254,37 @@ function goBack() {
    QUANTITY CHANGE
 ========================================================= */
 
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
+document.addEventListener("DOMContentLoaded", function () {
 
-        const quantitySelect =
-            document.getElementById(
-                "quantitySelect"
-            );
+    const quantitySelect =
+        document.getElementById("quantitySelect");
 
+    const addToCartBtn =
+        document.getElementById("addToCartBtn");
 
-        if (quantitySelect) {
+    const buyNowBtn =
+        document.getElementById("buyNowBtn");
 
-            quantitySelect.addEventListener(
-                "change",
-                updateTotal
-            );
-        }
-
-
-        loadProduct();
+    if (quantitySelect) {
+        quantitySelect.addEventListener(
+            "change",
+            updateTotal
+        );
     }
-);
+
+    if (addToCartBtn) {
+        addToCartBtn.addEventListener(
+            "click",
+            addToCart
+        );
+    }
+
+    if (buyNowBtn) {
+        buyNowBtn.addEventListener(
+            "click",
+            buyNow
+        );
+    }
+
+    loadProduct();
+});

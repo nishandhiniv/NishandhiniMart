@@ -1,432 +1,556 @@
 #include <drogon/drogon.h>
-#include "../database/Database.h"
-
 #include <json/json.h>
-#include <sstream>
+
+#include <fstream>
 #include <string>
 #include <functional>
 
 using namespace drogon;
-using namespace drogon::orm;
 
 
-/* =========================================================
-   PARSE ADDITIONAL DETAILS JSON
-========================================================= */
-
-Json::Value parseAdditionalDetails(
-    const std::string &jsonText)
-{
-    Json::Value details(Json::arrayValue);
-
-    if (jsonText.empty())
-    {
-        return details;
-    }
-
-    Json::CharReaderBuilder builder;
-    std::string errors;
-
-    std::istringstream stream(jsonText);
-
-    bool parsed =
-        Json::parseFromStream(
-            builder,
-            stream,
-            &details,
-            &errors
-        );
-
-    if (!parsed || !details.isArray())
-    {
-        return Json::Value(Json::arrayValue);
-    }
-
-    return details;
-}
-
-
-/* =========================================================
-   GET ALL PRODUCTS
-========================================================= */
+// =========================================================
+// PRODUCT SERVICE DECLARATIONS
+// =========================================================
 
 void fetchAllProducts(
-    std::function<void(const Json::Value &)> callback)
-{
-    auto dbClient =
-        app().getDbClient("default");
-
-
-    dbClient->execSqlAsync(
-
-        "SELECT "
-        "p.id, "
-        "p.product_name, "
-        "p.description, "
-        "p.price, "
-        "p.image, "
-        "p.category, "
-        "p.quantity, "
-        "p.seller_id, "
-        "u.name AS seller_name, "
-        "u.store_name AS store_name, "
-
-        "COALESCE("
-            "("
-                "SELECT json_agg("
-                    "json_build_object("
-                        "'name', d.detail_name, "
-                        "'value', d.detail_value"
-                    ") "
-                    "ORDER BY d.id"
-                ") "
-                "FROM product_additional_details d "
-                "WHERE d.product_id = p.id"
-            "), "
-            "'[]'::json"
-        ")::text AS additional_details "
-
-        "FROM products p "
-
-        "LEFT JOIN users u "
-        "ON u.id = p.seller_id "
-
-        "ORDER BY p.id DESC",
-
-
-        /* =================================================
-           SUCCESS
-        ================================================= */
-
-        [callback](const Result &result)
-        {
-            Json::Value products(
-                Json::arrayValue
-            );
-
-
-            for (const auto &row : result)
-            {
-                Json::Value product;
-
-
-                /* -----------------------------------------
-                   BASIC PRODUCT INFORMATION
-                ----------------------------------------- */
-
-                product["id"] =
-                    row["id"].as<int>();
-
-
-                product["product_name"] =
-                    row["product_name"]
-                        .as<std::string>();
-
-
-                product["description"] =
-                    row["description"]
-                        .as<std::string>();
-
-
-                product["price"] =
-                    row["price"].as<double>();
-
-
-                product["image"] =
-                    row["image"]
-                        .as<std::string>();
-
-
-                product["category"] =
-                    row["category"]
-                        .as<std::string>();
-
-
-                /* -----------------------------------------
-                   QUANTITY
-                ----------------------------------------- */
-
-                product["quantity"] =
-                    row["quantity"].as<int>();
-
-
-                /* -----------------------------------------
-                   SELLER ID
-                ----------------------------------------- */
-
-                product["seller_id"] =
-                    row["seller_id"].as<int>();
-
-
-                /* -----------------------------------------
-                   SELLER NAME
-                ----------------------------------------- */
-
-                if (!row["seller_name"].isNull())
-                {
-                    product["seller_name"] =
-                        row["seller_name"]
-                            .as<std::string>();
-                }
-                else
-                {
-                    product["seller_name"] = "";
-                }
-
-
-                /* -----------------------------------------
-                   STORE NAME
-                ----------------------------------------- */
-
-                if (!row["store_name"].isNull())
-                {
-                    product["store_name"] =
-                        row["store_name"]
-                            .as<std::string>();
-                }
-                else
-                {
-                    product["store_name"] = "";
-                }
-
-
-                /* -----------------------------------------
-                   ADDITIONAL DETAILS
-                ----------------------------------------- */
-
-                std::string detailsJson =
-                    row["additional_details"]
-                        .as<std::string>();
-
-
-                product["additional_details"] =
-                    parseAdditionalDetails(
-                        detailsJson
-                    );
-
-
-                products.append(product);
-            }
-
-
-            callback(products);
-        },
-
-
-        /* =================================================
-           ERROR
-        ================================================= */
-
-        [callback](const DrogonDbException &error)
-        {
-            Json::Value errorResponse;
-
-            errorResponse["success"] =
-                false;
-
-            errorResponse["message"] =
-                error.base().what();
-
-            callback(errorResponse);
-        }
-    );
-}
-
-
-/* =========================================================
-   FIND PRODUCT BY ID
-========================================================= */
+    std::function<void(const Json::Value &)> callback);
 
 void fetchProductById(
     int productId,
-    std::function<void(const Json::Value &)> callback)
+    std::function<void(const Json::Value &)> callback);
+
+void createProductService(
+    const std::string &productName,
+    const std::string &description,
+    double price,
+    const std::string &image,
+    const std::string &category,
+    int quantity,
+    int sellerId,
+    std::function<void(const Json::Value &)> callback);
+
+void updateProductService(
+    int productId,
+    const std::string &productName,
+    const std::string &description,
+    double price,
+    const std::string &image,
+    const std::string &category,
+    int quantity,
+    int sellerId,
+    std::function<void(const Json::Value &)> callback);
+
+void removeProductService(
+    int productId,
+    int sellerId,
+    std::function<void(const Json::Value &)> callback);
+
+
+// =========================================================
+// GET PRODUCTS
+// GET /api/products
+// =========================================================
+
+void getProducts(
+    const HttpRequestPtr &req,
+    std::function<void(const HttpResponsePtr &)> &&callback)
 {
-    auto dbClient =
-        getDatabaseClient();
-
-
-    dbClient->execSqlAsync(
-
-        "SELECT "
-        "p.id, "
-        "p.product_name, "
-        "p.description, "
-        "p.price, "
-        "p.image, "
-        "p.category, "
-        "p.quantity, "
-        "p.seller_id, "
-        "u.name AS seller_name, "
-        "u.store_name AS store_name, "
-
-        "COALESCE("
-            "("
-                "SELECT json_agg("
-                    "json_build_object("
-                        "'name', d.detail_name, "
-                        "'value', d.detail_value"
-                    ") "
-                    "ORDER BY d.id"
-                ") "
-                "FROM product_additional_details d "
-                "WHERE d.product_id = p.id"
-            "), "
-            "'[]'::json"
-        ")::text AS additional_details "
-
-        "FROM products p "
-
-        "LEFT JOIN users u "
-        "ON u.id = p.seller_id "
-
-        "WHERE p.id = $1",
-
-
-        /* =================================================
-           SUCCESS
-        ================================================= */
-
-        [callback](const Result &result)
+    fetchAllProducts(
+        [callback](const Json::Value &result)
         {
-            Json::Value product;
+            auto response =
+                HttpResponse::newHttpJsonResponse(result);
+
+            response->addHeader(
+                "Access-Control-Allow-Origin",
+                "*");
+
+            callback(response);
+        });
+}
 
 
-            if (result.empty())
-            {
-                product["success"] =
-                    false;
+// =========================================================
+// CREATE PRODUCT
+// POST /api/create-product
+// =========================================================
 
-                product["message"] =
-                    "Product not found";
-            }
-            else
-            {
-                const auto &row =
-                    result[0];
+void createProduct(
+    const HttpRequestPtr &req,
+    std::function<void(const HttpResponsePtr &)> &&callback)
+{
+    auto json = req->getJsonObject();
 
+    if (!json)
+    {
+        Json::Value response;
 
-                product["success"] =
-                    true;
+        response["success"] = false;
+        response["message"] =
+            "Invalid JSON data";
 
+        auto httpResponse =
+            HttpResponse::newHttpJsonResponse(response);
 
-                /* -----------------------------------------
-                   BASIC PRODUCT INFORMATION
-                ----------------------------------------- */
+        httpResponse->setStatusCode(
+            k400BadRequest);
 
-                product["id"] =
-                    row["id"].as<int>();
+        callback(httpResponse);
+        return;
+    }
 
+    std::string productName =
+        (*json)["product_name"].asString();
 
-                product["product_name"] =
-                    row["product_name"]
-                        .as<std::string>();
+    std::string description =
+        (*json)["description"].asString();
 
+    double price =
+        (*json)["price"].asDouble();
 
-                product["description"] =
-                    row["description"]
-                        .as<std::string>();
+    std::string image =
+        (*json)["image"].asString();
 
+    std::string category =
+        (*json)["category"].asString();
 
-                product["price"] =
-                    row["price"].as<double>();
+    int quantity =
+        (*json)["quantity"].asInt();
 
-
-                product["image"] =
-                    row["image"]
-                        .as<std::string>();
-
-
-                product["category"] =
-                    row["category"]
-                        .as<std::string>();
-
-
-                /* -----------------------------------------
-                   QUANTITY
-                ----------------------------------------- */
-
-                product["quantity"] =
-                    row["quantity"].as<int>();
+    int sellerId =
+        (*json)["seller_id"].asInt();
 
 
-                /* -----------------------------------------
-                   SELLER ID
-                ----------------------------------------- */
+    if (productName.empty())
+    {
+        Json::Value response;
 
-                product["seller_id"] =
-                    row["seller_id"].as<int>();
+        response["success"] = false;
+        response["message"] =
+            "Product name is required";
 
+        auto httpResponse =
+            HttpResponse::newHttpJsonResponse(response);
 
-                /* -----------------------------------------
-                   SELLER NAME
-                ----------------------------------------- */
+        httpResponse->setStatusCode(
+            k400BadRequest);
 
-                if (!row["seller_name"].isNull())
-                {
-                    product["seller_name"] =
-                        row["seller_name"]
-                            .as<std::string>();
-                }
-                else
-                {
-                    product["seller_name"] = "";
-                }
+        callback(httpResponse);
+        return;
+    }
 
 
-                /* -----------------------------------------
-                   STORE NAME
-                ----------------------------------------- */
+    if (price <= 0)
+    {
+        Json::Value response;
 
-                if (!row["store_name"].isNull())
-                {
-                    product["store_name"] =
-                        row["store_name"]
-                            .as<std::string>();
-                }
-                else
-                {
-                    product["store_name"] = "";
-                }
+        response["success"] = false;
+        response["message"] =
+            "Price must be greater than 0";
 
+        auto httpResponse =
+            HttpResponse::newHttpJsonResponse(response);
 
-                /* -----------------------------------------
-                   ADDITIONAL DETAILS
-                ----------------------------------------- */
+        httpResponse->setStatusCode(
+            k400BadRequest);
 
-                std::string detailsJson =
-                    row["additional_details"]
-                        .as<std::string>();
+        callback(httpResponse);
+        return;
+    }
 
 
-                product["additional_details"] =
-                    parseAdditionalDetails(
-                        detailsJson
-                    );
-            }
+    if (quantity < 0)
+    {
+        Json::Value response;
+
+        response["success"] = false;
+        response["message"] =
+            "Quantity cannot be negative";
+
+        auto httpResponse =
+            HttpResponse::newHttpJsonResponse(response);
+
+        httpResponse->setStatusCode(
+            k400BadRequest);
+
+        callback(httpResponse);
+        return;
+    }
 
 
-            callback(product);
-        },
+    if (sellerId <= 0)
+    {
+        Json::Value response;
+
+        response["success"] = false;
+        response["message"] =
+            "Invalid seller ID";
+
+        auto httpResponse =
+            HttpResponse::newHttpJsonResponse(response);
+
+        httpResponse->setStatusCode(
+            k400BadRequest);
+
+        callback(httpResponse);
+        return;
+    }
 
 
-        /* =================================================
-           ERROR
-        ================================================= */
+    createProductService(
+        productName,
+        description,
+        price,
+        image,
+        category,
+        quantity,
+        sellerId,
 
-        [callback](const DrogonDbException &error)
+        [callback](const Json::Value &result)
         {
-            Json::Value errorResponse;
+            auto response =
+                HttpResponse::newHttpJsonResponse(result);
 
-            errorResponse["success"] =
-                false;
+            response->addHeader(
+                "Access-Control-Allow-Origin",
+                "*");
 
-            errorResponse["message"] =
-                error.base().what();
-
-            callback(errorResponse);
-        },
+            callback(response);
+        });
+}
 
 
-        productId
-    );
+// =========================================================
+// UPDATE PRODUCT
+// PUT /api/update-product/{id}
+// =========================================================
+
+void updateProduct(
+    const HttpRequestPtr &req,
+    std::function<void(const HttpResponsePtr &)> &&callback,
+    int productId)
+{
+    auto json = req->getJsonObject();
+
+    if (!json)
+    {
+        Json::Value response;
+
+        response["success"] = false;
+        response["message"] =
+            "Invalid JSON data";
+
+        auto httpResponse =
+            HttpResponse::newHttpJsonResponse(response);
+
+        httpResponse->setStatusCode(
+            k400BadRequest);
+
+        callback(httpResponse);
+        return;
+    }
+
+
+    std::string productName =
+        (*json)["product_name"].asString();
+
+    std::string description =
+        (*json)["description"].asString();
+
+    double price =
+        (*json)["price"].asDouble();
+
+    std::string image =
+        (*json)["image"].asString();
+
+    std::string category =
+        (*json)["category"].asString();
+
+    int quantity =
+        (*json)["quantity"].asInt();
+
+    int sellerId =
+        (*json)["seller_id"].asInt();
+
+
+    if (productId <= 0)
+    {
+        Json::Value response;
+
+        response["success"] = false;
+        response["message"] =
+            "Invalid product ID";
+
+        auto httpResponse =
+            HttpResponse::newHttpJsonResponse(response);
+
+        httpResponse->setStatusCode(
+            k400BadRequest);
+
+        callback(httpResponse);
+        return;
+    }
+
+
+    if (productName.empty())
+    {
+        Json::Value response;
+
+        response["success"] = false;
+        response["message"] =
+            "Product name is required";
+
+        auto httpResponse =
+            HttpResponse::newHttpJsonResponse(response);
+
+        httpResponse->setStatusCode(
+            k400BadRequest);
+
+        callback(httpResponse);
+        return;
+    }
+
+
+    if (price <= 0)
+    {
+        Json::Value response;
+
+        response["success"] = false;
+        response["message"] =
+            "Price must be greater than 0";
+
+        auto httpResponse =
+            HttpResponse::newHttpJsonResponse(response);
+
+        httpResponse->setStatusCode(
+            k400BadRequest);
+
+        callback(httpResponse);
+        return;
+    }
+
+
+    updateProductService(
+        productId,
+        productName,
+        description,
+        price,
+        image,
+        category,
+        quantity,
+        sellerId,
+
+        [callback](const Json::Value &result)
+        {
+            auto response =
+                HttpResponse::newHttpJsonResponse(result);
+
+            response->addHeader(
+                "Access-Control-Allow-Origin",
+                "*");
+
+            callback(response);
+        });
+}
+
+
+// =========================================================
+// DELETE PRODUCT
+// DELETE /api/delete-product/{id}
+// =========================================================
+
+void removeProduct(
+    const HttpRequestPtr &req,
+    std::function<void(const HttpResponsePtr &)> &&callback,
+    int productId)
+{
+    auto json = req->getJsonObject();
+
+    int sellerId = 0;
+
+    if (json)
+    {
+        sellerId =
+            (*json)["seller_id"].asInt();
+    }
+
+    if (sellerId <= 0)
+    {
+        sellerId =
+            req->getParameter("seller_id").empty()
+                ? 0
+                : std::stoi(
+                    req->getParameter("seller_id"));
+    }
+
+
+    if (sellerId <= 0)
+    {
+        Json::Value response;
+
+        response["success"] = false;
+        response["message"] =
+            "Seller ID is required";
+
+        auto httpResponse =
+            HttpResponse::newHttpJsonResponse(response);
+
+        httpResponse->setStatusCode(
+            k400BadRequest);
+
+        callback(httpResponse);
+        return;
+    }
+
+
+    removeProductService(
+        productId,
+        sellerId,
+
+        [callback](const Json::Value &result)
+        {
+            auto response =
+                HttpResponse::newHttpJsonResponse(result);
+
+            response->addHeader(
+                "Access-Control-Allow-Origin",
+                "*");
+
+            callback(response);
+        });
+}
+
+
+// =========================================================
+// UPLOAD PRODUCT IMAGE
+// POST /api/upload-product-image
+// =========================================================
+
+void uploadProductImage(
+    const HttpRequestPtr &req,
+    std::function<void(const HttpResponsePtr &)> &&callback)
+{
+    MultiPartParser parser;
+
+    if (parser.parse(req) != 0)
+    {
+        Json::Value response;
+
+        response["success"] = false;
+        response["message"] =
+            "Failed to parse uploaded image";
+
+        auto httpResponse =
+            HttpResponse::newHttpJsonResponse(response);
+
+        httpResponse->setStatusCode(
+            k400BadRequest);
+
+        callback(httpResponse);
+        return;
+    }
+
+
+    const auto &files =
+        parser.getFiles();
+
+    if (files.empty())
+    {
+        Json::Value response;
+
+        response["success"] = false;
+        response["message"] =
+            "No image uploaded";
+
+        auto httpResponse =
+            HttpResponse::newHttpJsonResponse(response);
+
+        httpResponse->setStatusCode(
+            k400BadRequest);
+
+        callback(httpResponse);
+        return;
+    }
+
+
+    const auto &file =
+        files[0];
+
+
+    std::string originalName =
+        file.getFileName();
+
+    std::string extension;
+
+    size_t dot =
+        originalName.find_last_of('.');
+
+    if (dot != std::string::npos)
+    {
+        extension =
+            originalName.substr(dot);
+    }
+
+    if (extension.empty())
+    {
+        extension = ".jpg";
+    }
+
+
+    std::string fileName =
+        "product_" +
+        std::to_string(
+            std::chrono::high_resolution_clock::now()
+                .time_since_epoch()
+                .count()) +
+        extension;
+
+
+    std::string savePath =
+        "C:/Users/Dell/Desktop/capstone/"
+        "NishandhiniMart/frontend/"
+        "seller-dashboard/images/" +
+        fileName;
+
+
+    try
+    {
+        file.saveAs(savePath);
+
+        Json::Value response;
+
+        response["success"] = true;
+        response["message"] =
+            "Image uploaded successfully";
+
+        response["filename"] =
+            fileName;
+
+        auto httpResponse =
+            HttpResponse::newHttpJsonResponse(response);
+
+        httpResponse->addHeader(
+            "Access-Control-Allow-Origin",
+            "*");
+
+        callback(httpResponse);
+    }
+    catch (const std::exception &e)
+    {
+        Json::Value response;
+
+        response["success"] = false;
+        response["message"] =
+            std::string(
+                "Image upload failed: ") +
+            e.what();
+
+        auto httpResponse =
+            HttpResponse::newHttpJsonResponse(response);
+
+        httpResponse->setStatusCode(
+            k500InternalServerError);
+
+        callback(httpResponse);
+    }
 }

@@ -29,12 +29,13 @@
 ========================================================= -->
 
 <header class="buyer-header">
-
     <div class="buyer-logo">
-        <span>Nishandhini</span>Mart
+    <div class="logo-text">
+        <span>NishandhiniMart</span>
+        <small>Buyer Management System</small>
     </div>
 
-
+</div>
     <div class="buyer-header-right">
 
         <div class="buyer-welcome">
@@ -67,8 +68,55 @@
 
 
 <!-- =========================================================
-     HERO SECTION
+     BUYER NAVIGATION
 ========================================================= -->
+
+<nav class="buyer-navigation">
+     <div class="shopping-hub-title">
+        🛍️ Shopping Hub
+    </div>
+    <a href="buyer_dashboard.html" class="nav-item active">
+        <span class="nav-icon">🏠</span>
+        <span>Dashboard</span>
+    </a>
+     
+    <a href="profile.html" class="nav-item">
+        <span class="nav-icon">👤</span>
+        <span>Profile</span>
+    </a>
+
+    <a href="order-history.html" class="nav-item">
+        <span class="nav-icon">📦</span>
+        <span>Order History</span>
+    </a>
+
+    <a href="wishlist.html" class="nav-item">
+        <span class="nav-icon">❤️</span>
+        <span>Wishlist</span>
+    </a>
+
+    <a href="order-tracking.html" class="nav-item">
+        <span class="nav-icon">🚚</span>
+        <span>Order Tracking</span>
+    </a>
+
+    <a href="sales-dashboard.html" class="nav-item">
+        <span class="nav-icon">📊</span>
+        <span>Sales Dashboard</span>
+    </a>
+
+    <a href="checkout.html" class="nav-item">
+        <span class="nav-icon">💳</span>
+        <span>Checkout</span>
+    </a>
+
+    <a href="settings.html" class="nav-item">
+        <span class="nav-icon">⚙️</span>
+        <span>Settings</span>
+    </a>
+
+</nav>
+
 
 <section class="buyer-hero">
 
@@ -278,7 +326,17 @@
 
 </footer>
 
+<!-- =========================================================
+     CHATBOT
+========================================================= -->
 
+<button
+    class="chatbot-floating-btn"
+    onclick="openChatbot()"
+    aria-label="Open NishandhiniMart chatbot"
+>
+    🤖
+</button>
 
 <!-- =========================================================
      BUYER DASHBOARD JAVASCRIPT

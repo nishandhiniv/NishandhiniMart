@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>NishandhiniMart - Shopping Cart</title>
+
+    <link
+        rel="stylesheet"
+        href="css/buyer-dashboard.css"
+    >
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<header class="buyer-header">
+
+    <div class="buyer-logo">
+
+        <div class="logo-text">
+
+            <span>
+                NishandhiniMart
+            </span>
+
+            <small>
+                Buyer Management System
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <div class="buyer-header-right">
+
+        <div class="buyer-welcome">
+            Welcome to NishandhiniMart
+        </div>
+
+
+        <button
+            class="cart-btn"
+            onclick="openCart()"
+        >
+
+            🛒 Cart
+            (
+            <span id="cartCount">0</span>
+            )
+
+        </button>
+
+
+        <button
+            class="logout-btn"
+            onclick="logout()"
+        >
+
+            Logout
+
+        </button>
+
+    </div>
+
+</header>
+
+
+
+<!-- =====================================================
+     SIDEBAR
+===================================================== -->
+
+<nav class="buyer-navigation">
+
+
+    <div class="shopping-hub-title">
+
+        🛍️ Shopping Hub
+
+    </div>
+
+
+    <a
+        href="buyer_dashboard.html"
+        class="nav-item"
+    >
+
+        <span class="nav-icon">
+            🏠
+        </span>
+
+        <span>
+            Dashboard
+        </span>
+
+    </a>
+
+
+    <a
+        href="profile.html"
+        class="nav-item"
+    >
+
+        <span class="nav-icon">
+            👤
+        </span>
+
+        <span>
+            Profile
+        </span>
+
+    </a>
+
+
+    <a
+        href="order-history.html"
+        class="nav-item"
+    >
+
+        <span class="nav-icon">
+            📦
+        </span>
+
+        <span>
+            Order History
+        </span>
+
+    </a>
+
+
+    <a
+        href="wishlist.html"
+        class="nav-item"
+    >
+
+        <span class="nav-icon">
+            ❤️
+        </span>
+
+        <span>
+            Wishlist
+        </span>
+
+    </a>
+
+
+    <a
+        href="order-tracking.html"
+        class="nav-item"
+    >
+
+        <span class="nav-icon">
+            🚚
+        </span>
+
+        <span>
+            Order Tracking
+        </span>
+
+    </a>
+
+
+    <a
+        href="sales-dashboard.html"
+        class="nav-item"
+    >
+
+        <span class="nav-icon">
+            📊
+        </span>
+
+        <span>
+            Sales Dashboard
+        </span>
+
+    </a>
+
+
+    <a
+        href="checkout.html"
+        class="nav-item"
+    >
+
+        <span class="nav-icon">
+            💳
+        </span>
+
+        <span>
+            Checkout
+        </span>
+
+    </a>
+
+
+    <a
+        href="settings.html"
+        class="nav-item"
+    >
+
+        <span class="nav-icon">
+            ⚙️
+        </span>
+
+        <span>
+            Settings
+        </span>
+
+    </a>
+
+
+</nav>
+
+
+
+<!-- =====================================================
+     CART PAGE
+===================================================== -->
+
+<main class="cart-page">
+
+
+    <!-- PAGE HEADING -->
+
+    <section class="cart-page-heading">
+
+        <h1>
+            🛒 Shopping Cart
+        </h1>
+
+        <p>
+            Review the products you added before proceeding to checkout.
+        </p>
+
+    </section>
+
+
+
+    <!-- CART LAYOUT -->
+
+    <section class="cart-layout">
+
+
+        <!-- =================================================
+             CART ITEMS
+        ================================================== -->
+
+        <div class="cart-items-card">
+
+
+            <div class="cart-card-header">
+
+                <div>
+
+                    <h2>
+                        Your Cart
+                    </h2>
+
+                    <p>
+
+                        <span id="cartItemCount">
+                            0
+                        </span>
+
+                        item(s) in your cart
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- CART PRODUCTS -->
+
+            <div
+                id="cartItemsContainer"
+                class="cart-items-container"
+            >
+
+            </div>
+
+
+
+            <!-- =================================================
+                 EMPTY CART
+            ================================================== -->
+
+            <div
+                id="emptyCart"
+                class="cart-empty"
+                style="display: none;"
+            >
+
+
+                <div class="cart-empty-icon">
+
+                    🛒
+
+                </div>
+
+
+                <h2>
+
+                    Your Cart is Empty
+
+                </h2>
+
+
+                <p>
+
+                    Add some products to your cart
+                    and they will appear here.
+
+                </p>
+
+
+                <button
+                    type="button"
+                    class="continue-shopping-btn"
+                    onclick="continueShopping()"
+                >
+
+                    🛍️ Continue Shopping
+
+                </button>
+
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =================================================
+             ORDER SUMMARY
+        ================================================== -->
+
+        <aside class="cart-summary-card">
+
+
+            <h2>
+
+                Order Summary
+
+            </h2>
+
+
+
+            <!-- ITEM COUNT -->
+
+            <div class="cart-summary-row">
+
+                <span>
+                    Items
+                </span>
+
+
+                <strong id="summaryItemCount">
+
+                    0
+
+                </strong>
+
+            </div>
+
+
+
+            <!-- SUBTOTAL -->
+
+            <div class="cart-summary-row">
+
+                <span>
+                    Subtotal
+                </span>
+
+
+                <strong>
+
+                    ₹<span id="cartSubtotal">
+                        0.00
+                    </span>
+
+                </strong>
+
+            </div>
+
+
+
+            <!-- DELIVERY -->
+
+            <div class="cart-summary-row">
+
+                <span>
+                    Delivery
+                </span>
+
+
+                <strong class="free-delivery">
+
+                    FREE
+
+                </strong>
+
+            </div>
+
+
+
+            <!-- DIVIDER -->
+
+            <div class="cart-summary-divider"></div>
+
+
+
+            <!-- TOTAL -->
+
+            <div class="cart-summary-total">
+
+                <span>
+                    Total
+                </span>
+
+
+                <strong>
+
+                    ₹<span id="cartTotal">
+                        0.00
+                    </span>
+
+                </strong>
+
+            </div>
+
+
+
+            <!-- CHECKOUT -->
+
+            <button
+                type="button"
+                id="checkoutButton"
+                class="proceed-checkout-btn"
+                onclick="proceedToCheckout()"
+            >
+
+                💳 Proceed to Checkout
+
+            </button>
+
+
+
+            <!-- CONTINUE SHOPPING -->
+
+            <button
+                type="button"
+                class="continue-shopping-btn"
+                onclick="continueShopping()"
+            >
+
+                🛍️ Continue Shopping
+
+            </button>
+
+
+        </aside>
+
+
+    </section>
+
+
+</main>
+
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer class="buyer-footer">
+
+    <p>
+
+        © 2026 NishandhiniMart |
+        Online Shopping Website
+
+    </p>
+
+</footer>
+
+
+
+<!-- =====================================================
+     CART JAVASCRIPT
+===================================================== -->
+
+<script src="js/cart.js"></script>
+
+
+</body>
+
+</html>

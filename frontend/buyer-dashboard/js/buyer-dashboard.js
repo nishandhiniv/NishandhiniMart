@@ -364,6 +364,15 @@ function displayProducts(list) {
                     >
                         + Add
                     </button>
+                    <button
+                        class="wishlist-btn"
+                        onclick="
+                            event.stopPropagation();
+                            toggleWishlist(${product.id});
+                        "
+                    >
+                        ❤️ Wishlist
+                </button>
 
                 </div>
 
@@ -502,7 +511,8 @@ function addToCart(productId) {
         });
 
     }
-
+    
+    localStorage.setItem("cart", JSON.stringify(cart));
 
     updateCart();
 
@@ -518,6 +528,10 @@ function addToCart(productId) {
 // =========================================================
 
 function updateCart() {
+    cart =
+        JSON.parse(
+            localStorage.getItem("cart")
+        ) || [];
 
     const cartItems =
         document.getElementById("cartItems");
@@ -529,13 +543,9 @@ function updateCart() {
         document.getElementById("cartCount");
 
 
-    if (
-        !cartItems ||
-        !cartTotal ||
-        !cartCount
-    ) {
-        return;
-    }
+    if (!cartCount) {
+    return;
+}
 
 
     const totalQuantity =
@@ -691,24 +701,8 @@ function removeFromCart(productId) {
 // =========================================================
 
 function openCart() {
-
-    const cartPanel =
-        document.getElementById("cartPanel");
-
-    const overlay =
-        document.getElementById("overlay");
-
-
-    if (cartPanel) {
-        cartPanel.classList.add("active");
-    }
-
-
-    if (overlay) {
-        overlay.classList.add("active");
-    }
+    window.location.href = "cart.html";
 }
-
 
 // =========================================================
 // CLOSE CART
@@ -1107,3 +1101,77 @@ document.addEventListener(
 
     }
 );
+// =========================================================
+// WISHLIST
+// =========================================================
+
+function getWishlist() {
+
+    try {
+        return JSON.parse(
+            localStorage.getItem("wishlist")
+        ) || [];
+    } catch (error) {
+        console.error(
+            "Unable to read wishlist:",
+            error
+        );
+
+        return [];
+    }
+}
+
+
+function toggleWishlist(productId) {
+
+    const product = products.find(
+        item =>
+            Number(item.id) === Number(productId)
+    );
+
+    if (!product) {
+        return;
+    }
+
+    let wishlist = getWishlist();
+
+    const existingIndex = wishlist.findIndex(
+        item =>
+            Number(item.id) === Number(productId)
+    );
+
+
+    if (existingIndex !== -1) {
+
+        wishlist.splice(existingIndex, 1);
+
+        localStorage.setItem(
+            "wishlist",
+            JSON.stringify(wishlist)
+        );
+
+        alert(
+            `${product.product_name} removed from wishlist`
+        );
+
+    } else {
+
+        wishlist.push({
+            ...product
+        });
+
+        localStorage.setItem(
+            "wishlist",
+            JSON.stringify(wishlist)
+        );
+
+        alert(
+            `${product.product_name} added to wishlist ❤️`
+        );
+    }
+
+}
+function openChatbot() {
+    window.location.href =
+        "../chatbot/chatbot.html";
+}

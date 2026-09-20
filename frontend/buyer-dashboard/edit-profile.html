@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NishandhiniMart - Edit Profile</title>
+
+    <link rel="stylesheet" href="css/buyer-dashboard.css">
+</head>
+<body>
+
+<header class="buyer-header">
+    <div class="buyer-header-right">
+        <div class="buyer-welcome">Welcome to NishandhiniMart</div>
+
+        <button class="cart-btn" onclick="openCart()">
+            🛒 Cart (<span id="cartCount">0</span>)
+        </button>
+
+        <button class="logout-btn" onclick="logout()">
+            Logout
+        </button>
+    </div>
+</header>
+
+<nav class="buyer-navigation">
+
+    <a href="buyer_dashboard.html" class="nav-item">
+        <span class="nav-icon">🏠</span>
+        <span>Dashboard</span>
+    </a>
+
+    <a href="profile.html" class="nav-item active">
+        <span class="nav-icon">👤</span>
+        <span>Profile</span>
+    </a>
+
+    <a href="order-history.html" class="nav-item">
+        <span class="nav-icon">📦</span>
+        <span>Order History</span>
+    </a>
+
+    <a href="wishlist.html" class="nav-item">
+        <span class="nav-icon">❤️</span>
+        <span>Wishlist</span>
+    </a>
+
+    <a href="order-tracking.html" class="nav-item">
+        <span class="nav-icon">🚚</span>
+        <span>Order Tracking</span>
+    </a>
+
+    <a href="sales-dashboard.html" class="nav-item">
+        <span class="nav-icon">📊</span>
+        <span>Sales Dashboard</span>
+    </a>
+
+    <a href="checkout.html" class="nav-item">
+        <span class="nav-icon">💳</span>
+        <span>Checkout</span>
+    </a>
+
+    <a href="settings.html" class="nav-item">
+        <span class="nav-icon">⚙️</span>
+        <span>Settings</span>
+    </a>
+
+</nav>
+
+<main class="edit-profile-page">
+
+    <section class="edit-profile-heading">
+        <div class="edit-title-area">
+            <span class="edit-heading-icon">✏️</span>
+
+            <div>
+                <h1>Edit Profile</h1>
+                <p>Update your personal account information.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="edit-profile-card">
+
+        <div class="edit-card-header">
+            <div>
+                <h2>Personal Information</h2>
+                <p>Update the information associated with your account.</p>
+            </div>
+
+            <span class="edit-card-icon">👤</span>
+        </div>
+
+        <form id="editProfileForm">
+
+            <div class="edit-profile-grid">
+
+                <div class="edit-field">
+                    <label for="editName">Full Name</label>
+
+                    <input
+                        type="text"
+                        id="editName"
+                        placeholder="Enter your full name"
+                        required
+                    >
+                </div>
+
+                <div class="edit-field">
+                    <label for="editUsername">Username</label>
+
+                    <input
+                        type="text"
+                        id="editUsername"
+                        placeholder="Username"
+                        readonly
+                    >
+                </div>
+
+                <div class="edit-field">
+                    <label for="editEmail">Email Address</label>
+
+                    <input
+                        type="email"
+                        id="editEmail"
+                        placeholder="Enter your email"
+                        required
+                    >
+                </div>
+
+                <div class="edit-field">
+                    <label for="editPhone">Phone Number</label>
+
+                    <input
+                        type="text"
+                        id="editPhone"
+                        placeholder="Enter your phone number"
+                    >
+                </div>
+
+                <div class="edit-field edit-full-width">
+                    <label for="editAddress">Address</label>
+
+                    <textarea
+                        id="editAddress"
+                        rows="4"
+                        placeholder="Enter your address"
+                    ></textarea>
+                </div>
+
+            </div>
+
+            <div id="editProfileMessage" class="edit-profile-message"></div>
+
+            <div class="edit-profile-actions">
+
+                <button
+                    type="submit"
+                    class="save-profile-btn"
+                >
+                    💾 Save Changes
+                </button>
+
+                <a
+                    href="profile.html"
+                    class="cancel-profile-btn"
+                >
+                    Cancel
+                </a>
+
+            </div>
+
+        </form>
+
+    </section>
+
+</main>
+
+<footer class="buyer-footer">
+    <p>© 2026 NishandhiniMart | Online Shopping Website</p>
+</footer>
+
+<script src="js/edit-profile.js"></script>
+
+</body>
+</html>

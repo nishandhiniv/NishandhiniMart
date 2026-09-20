@@ -30,6 +30,13 @@ find_package(PostgreSQL REQUIRED)
 # Backend executable
 add_executable(NishandhiniMart
     backend/test_main.cpp
+    backend/Chatbot/ChatbotController.cpp
+    backend/Chatbot/ChatbotService.cpp
+
+    backend/AI/Providers/GeminiAIProvider.cpp
+    backend/AI/Providers/MockAIProvider.cpp
+
+    backend/AI/Factory/AIProviderFactory.cpp
 
     backend/Controllers/AuthController.cpp
     backend/Controllers/ProductController.cpp

@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
     loadSellerInfo();
 
     loadProducts();
-q
+
     setupSearch();
 
     setupFilters();
@@ -844,9 +844,12 @@ function createProductCard(product) {
 
 if (image) {
 
-    const imageUrl =
-        `images/${encodeURIComponent(image)}`;
+    const cleanImage =
+    image.replace(/^images[\\/]+/i, "");
 
+const imageUrl =
+    `http://127.0.0.1:5500/frontend/seller-dashboard/images/${encodeURIComponent(cleanImage)}`;
+    
     imageHTML = `
         <img
             src="${imageUrl}"

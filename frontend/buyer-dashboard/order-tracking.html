@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>NishandhiniMart - Order Tracking</title>
+
+    <link
+        rel="stylesheet"
+        href="css/buyer-dashboard.css"
+    >
+</head>
+
+<body>
+
+<header class="buyer-header">
+
+    <div class="buyer-logo">
+
+        <div class="logo-text">
+            <span>NishandhiniMart</span>
+            <small>Buyer Management System</small>
+        </div>
+
+    </div>
+
+    <div class="buyer-header-right">
+
+        <div class="buyer-welcome">
+            Welcome to NishandhiniMart
+        </div>
+
+        <button
+            class="cart-btn"
+            onclick="openCart()"
+        >
+            🛒 Cart
+            (
+            <span id="cartCount">0</span>
+            )
+        </button>
+
+        <button
+            class="logout-btn"
+            onclick="logout()"
+        >
+            Logout
+        </button>
+
+    </div>
+
+</header>
+
+
+<!-- =========================
+     LEFT NAVIGATION
+========================= -->
+
+<nav class="buyer-navigation">
+
+    <div class="shopping-hub-title">
+        🛍️ Shopping Hub
+    </div>
+
+    <a
+        href="buyer_dashboard.html"
+        class="nav-item"
+    >
+        <span class="nav-icon">🏠</span>
+        <span>Dashboard</span>
+    </a>
+
+    <a
+        href="profile.html"
+        class="nav-item"
+    >
+        <span class="nav-icon">👤</span>
+        <span>Profile</span>
+    </a>
+
+    <a
+        href="order-history.html"
+        class="nav-item"
+    >
+        <span class="nav-icon">📦</span>
+        <span>Order History</span>
+    </a>
+
+    <a
+        href="wishlist.html"
+        class="nav-item"
+    >
+        <span class="nav-icon">❤️</span>
+        <span>Wishlist</span>
+    </a>
+
+    <a
+        href="order-tracking.html"
+        class="nav-item active"
+    >
+        <span class="nav-icon">🚚</span>
+        <span>Order Tracking</span>
+    </a>
+
+    <a
+        href="sales-dashboard.html"
+        class="nav-item"
+    >
+        <span class="nav-icon">📊</span>
+        <span>Sales Dashboard</span>
+    </a>
+
+    <a
+        href="checkout.html"
+        class="nav-item"
+    >
+        <span class="nav-icon">💳</span>
+        <span>Checkout</span>
+    </a>
+
+    <a
+        href="settings.html"
+        class="nav-item"
+    >
+        <span class="nav-icon">⚙️</span>
+        <span>Settings</span>
+    </a>
+
+</nav>
+
+
+<!-- =========================
+     ORDER TRACKING PAGE
+========================= -->
+
+<main class="order-tracking-page">
+
+    <section class="order-tracking-heading">
+
+        <h1>
+            🚚 Order Tracking
+        </h1>
+
+        <p>
+            Track the status of your orders and delivery.
+        </p>
+
+    </section>
+
+
+    <!-- SEARCH ORDER -->
+
+    <section class="tracking-search-card">
+
+        <div class="tracking-search-heading">
+
+            <h2>
+                Track Your Order
+            </h2>
+
+            <p>
+                Enter your order ID to check the current status.
+            </p>
+
+        </div>
+
+        <div class="tracking-search-box">
+
+            <input
+                type="text"
+                id="orderIdInput"
+                placeholder="Enter Order ID"
+            >
+
+            <button
+                type="button"
+                class="track-order-btn"
+                onclick="trackOrder()"
+            >
+                🔍 Track Order
+            </button>
+
+        </div>
+
+        <p
+            id="trackingMessage"
+            class="tracking-message"
+        ></p>
+
+    </section>
+
+
+    <!-- LOADING -->
+
+    <div
+        id="trackingLoading"
+        class="tracking-loading"
+        style="display: none;"
+    >
+
+        <div class="loading-spinner"></div>
+
+        <p>
+            Loading order details...
+        </p>
+
+    </div>
+
+
+    <!-- ORDER DETAILS -->
+
+    <section
+        id="trackingResult"
+        class="tracking-result"
+        style="display: none;"
+    >
+
+        <div class="tracking-order-header">
+
+            <div>
+
+                <span class="tracking-label">
+                    Order ID
+                </span>
+
+                <h2 id="trackingOrderId">
+                    -
+                </h2>
+
+            </div>
+
+            <span
+                id="trackingStatus"
+                class="tracking-status"
+            >
+                Processing
+            </span>
+
+        </div>
+
+
+        <!-- ORDER INFORMATION -->
+
+        <div class="tracking-info-grid">
+
+            <div class="tracking-info-box">
+
+                <span>
+                    Product
+                </span>
+
+                <strong id="trackingProductName">
+                    -
+                </strong>
+
+            </div>
+
+            <div class="tracking-info-box">
+
+                <span>
+                    Quantity
+                </span>
+
+                <strong id="trackingQuantity">
+                    -
+                </strong>
+
+            </div>
+
+            <div class="tracking-info-box">
+
+                <span>
+                    Order Date
+                </span>
+
+                <strong id="trackingOrderDate">
+                    -
+                </strong>
+
+            </div>
+
+            <div class="tracking-info-box">
+
+                <span>
+                    Total Amount
+                </span>
+
+                <strong id="trackingAmount">
+                    ₹0.00
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <!-- TRACKING TIMELINE -->
+
+        <div class="tracking-timeline-section">
+
+            <h2>
+                Delivery Progress
+            </h2>
+
+            <div class="tracking-timeline">
+
+                <div
+                    id="stepPlaced"
+                    class="tracking-step completed"
+                >
+
+                    <div class="tracking-step-icon">
+                        ✓
+                    </div>
+
+                    <div class="tracking-step-content">
+
+                        <h3>
+                            Order Placed
+                        </h3>
+
+                        <p>
+                            Your order has been placed successfully.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="stepProcessing"
+                    class="tracking-step"
+                >
+
+                    <div class="tracking-step-icon">
+                        2
+                    </div>
+
+                    <div class="tracking-step-content">
+
+                        <h3>
+                            Processing
+                        </h3>
+
+                        <p>
+                            Your order is being prepared.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="stepShipped"
+                    class="tracking-step"
+                >
+
+                    <div class="tracking-step-icon">
+                        3
+                    </div>
+
+                    <div class="tracking-step-content">
+
+                        <h3>
+                            Shipped
+                        </h3>
+
+                        <p>
+                            Your order is on the way.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="stepOutForDelivery"
+                    class="tracking-step"
+                >
+
+                    <div class="tracking-step-icon">
+                        4
+                    </div>
+
+                    <div class="tracking-step-content">
+
+                        <h3>
+                            Out for Delivery
+                        </h3>
+
+                        <p>
+                            Your order is out for delivery.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="stepDelivered"
+                    class="tracking-step"
+                >
+
+                    <div class="tracking-step-icon">
+                        5
+                    </div>
+
+                    <div class="tracking-step-content">
+
+                        <h3>
+                            Delivered
+                        </h3>
+
+                        <p>
+                            Your order has been delivered.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- DELIVERY INFORMATION -->
+
+        <div class="delivery-information">
+
+            <div class="delivery-info-card">
+
+                <span>
+                    🚚 Delivery Status
+                </span>
+
+                <strong id="deliveryStatus">
+                    Processing
+                </strong>
+
+            </div>
+
+            <div class="delivery-info-card">
+
+                <span>
+                    📅 Estimated Delivery
+                </span>
+
+                <strong id="estimatedDelivery">
+                    -
+                </strong>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- NO ORDER -->
+
+    <section
+        id="noTrackingOrder"
+        class="no-tracking-order"
+    >
+
+        <div class="no-tracking-icon">
+            🚚
+        </div>
+
+        <h2>
+            Track Your Order
+        </h2>
+
+        <p>
+            Enter an order ID above to view your delivery status.
+        </p>
+
+    </section>
+
+</main>
+
+
+<!-- =========================
+     FOOTER
+========================= -->
+
+<footer class="buyer-footer">
+
+    <p>
+        © 2026 NishandhiniMart | Online Shopping Website
+    </p>
+
+</footer>
+
+
+<script src="js/order-tracking.js"></script>
+
+</body>
+
+</html>

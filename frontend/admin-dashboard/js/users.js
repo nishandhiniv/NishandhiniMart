@@ -115,7 +115,7 @@ async function loadUsers() {
     try {
 
         const response = await fetch(
-            `${BASE_URL}/users`,
+            `${BASE_URL}/admin-users`,
             {
                 method: "GET",
                 headers: {

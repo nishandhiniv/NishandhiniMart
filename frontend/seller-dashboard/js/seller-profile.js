@@ -316,55 +316,259 @@ function loadProfileInformation() {
 // PAYMENT INFORMATION
 // =========================================================
 
-function loadPaymentInformation() {
+/* =========================================================
+   LOAD PAYMENT INFORMATION
+========================================================= */
 
-    const totalPayment =
-        Number(
-            localStorage.getItem(
-                "sellerTotalPayment"
-            ) || "0"
+async function loadPaymentInformation() {
+
+    const totalPaymentElement =
+        document.getElementById("totalPayment");
+
+    const pendingPaymentElement =
+        document.getElementById("pendingPayment");
+
+    const availablePayoutElement =
+        document.getElementById("availablePayout");
+
+
+    // Get logged-in seller ID
+    const sellerId =
+        parseInt(
+            localStorage.getItem("userId") || "0"
         );
 
 
-    const pendingPayment =
-        Number(
-            localStorage.getItem(
-                "sellerPendingPayment"
-            ) || "0"
+    // Invalid seller
+    if (!sellerId) {
+
+        setText(
+            "totalPayment",
+            formatCurrency(0)
+        );
+
+        setText(
+            "pendingPayment",
+            formatCurrency(0)
+        );
+
+        setText(
+            "availablePayout",
+            formatCurrency(0)
+        );
+
+        return;
+    }
+
+
+    try {
+
+        /* -------------------------------------------------
+           Get seller orders
+        ------------------------------------------------- */
+
+        const response =
+            await fetch(
+                "http://127.0.0.1:8090/api/seller/orders?seller_id=" +
+                encodeURIComponent(sellerId)
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Unable to load seller payment data"
+            );
+
+        }
+
+
+        const result =
+            await response.json();
+
+
+        /*
+            API normally returns an array.
+            This also safely handles an object containing
+            an orders array.
+        */
+
+        const orders =
+            Array.isArray(result)
+                ? result
+                : (
+                    Array.isArray(result.orders)
+                        ? result.orders
+                        : []
+                );
+
+
+        /* -------------------------------------------------
+           Calculate payment values
+        ------------------------------------------------- */
+
+        let totalPayment = 0;
+
+        let pendingPayment = 0;
+
+
+        orders.forEach(function(order) {
+
+            const status =
+                String(
+                    order.status ||
+                    order.order_status ||
+                    "pending"
+                )
+                .toLowerCase()
+                .trim();
+
+
+            const amount =
+                Number(
+                    order.total_amount ??
+                    order.total ??
+                    order.amount ??
+                    order.grand_total ??
+                    (
+                        Number(order.price || 0) *
+                        Number(order.quantity || 0)
+                    )
+                );
+
+
+            /*
+                Cancelled orders are not counted.
+            */
+
+            if (
+                status === "cancelled" ||
+                status === "canceled"
+            ) {
+
+                return;
+
+            }
+
+
+            /*
+                Delivered / completed orders
+                are treated as received payment.
+            */
+
+            if (
+                status === "delivered" ||
+                status === "completed"
+            ) {
+
+                totalPayment += amount;
+
+            }
+
+            /*
+                Other active orders are pending.
+            */
+
+            else {
+
+                pendingPayment += amount;
+
+            }
+
+        });
+
+
+        /*
+            There is currently no separate payout-processing
+            system in the project.
+
+            Therefore available payout is based on the
+            payment already received.
+        */
+
+        const availablePayout =
+            totalPayment;
+
+
+        /* -------------------------------------------------
+           Display values
+        ------------------------------------------------- */
+
+        setText(
+            "totalPayment",
+            formatCurrency(totalPayment)
         );
 
 
-    const savedAvailablePayout =
-        localStorage.getItem(
-            "sellerAvailablePayout"
+        setText(
+            "pendingPayment",
+            formatCurrency(pendingPayment)
         );
 
 
-    const availablePayout =
-        savedAvailablePayout !== null
-            ? Number(savedAvailablePayout)
-            : totalPayment;
+        setText(
+            "availablePayout",
+            formatCurrency(availablePayout)
+        );
 
 
-    setText(
-        "totalPayment",
-        formatCurrency(totalPayment)
-    );
+        /* -------------------------------------------------
+           Save current values locally
+           for other pages if needed.
+        ------------------------------------------------- */
+
+        localStorage.setItem(
+            "sellerTotalPayment",
+            String(totalPayment)
+        );
 
 
-    setText(
-        "pendingPayment",
-        formatCurrency(pendingPayment)
-    );
+        localStorage.setItem(
+            "sellerPendingPayment",
+            String(pendingPayment)
+        );
 
 
-    setText(
-        "availablePayout",
-        formatCurrency(availablePayout)
-    );
+        localStorage.setItem(
+            "sellerAvailablePayout",
+            String(availablePayout)
+        );
+
+
+    }
+    catch (error) {
+
+        console.error(
+            "Payment information error:",
+            error
+        );
+
+
+        /*
+            Do not show fake payment values.
+            If the API fails, show zero.
+        */
+
+        setText(
+            "totalPayment",
+            formatCurrency(0)
+        );
+
+
+        setText(
+            "pendingPayment",
+            formatCurrency(0)
+        );
+
+
+        setText(
+            "availablePayout",
+            formatCurrency(0)
+        );
+
+    }
 
 }
-
 
 // =========================================================
 // CURRENCY FORMAT

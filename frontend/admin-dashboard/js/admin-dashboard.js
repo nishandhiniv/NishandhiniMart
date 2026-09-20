@@ -110,7 +110,7 @@ async function loadUsers() {
     try {
 
         const response =
-            await fetch(`${BASE_URL}/users`);
+            await fetch(`${BASE_URL}/admin-users`);
 
         if (!response.ok) {
             throw new Error("Users API failed");
@@ -270,7 +270,7 @@ async function loadOrders() {
     try {
 
         const response =
-            await fetch(`${BASE_URL}/orders`);
+            await fetch(`${BASE_URL}/admin-orders`);
 
         if (!response.ok) {
             throw new Error("Orders API failed");
