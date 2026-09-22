@@ -3,13 +3,13 @@
 // =========================================
 
 const ORDERS_API =
-    "http://127.0.0.1:8090/api/user-orders/";
+    "http://127.0.0.1:10000/api/user-orders/";
 
 const CREATE_ORDER_API =
-    "http://127.0.0.1:8090/api/create-order";
+    "http://127.0.0.1:10000/api/create-order";
 
 const ORDER_ITEM_API =
-    "http://127.0.0.1:8090/api/order-item";
+    "http://127.0.0.1:10000/api/order-item";
 
 
 // =========================================

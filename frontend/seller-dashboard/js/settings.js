@@ -480,7 +480,7 @@ function changePassword() {
 
     // Backend request
     fetch(
-        "http://127.0.0.1:8090/api/change-password",
+        "http://127.0.0.1:10000/api/change-password",
         {
             method: "POST",
 

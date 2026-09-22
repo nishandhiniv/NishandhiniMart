@@ -3,13 +3,13 @@
 ========================================================= */
 
 const PRODUCTS_API =
-    "http://127.0.0.1:8090/api/products";
+    "http://127.0.0.1:10000/api/products";
 
 const CREATE_PRODUCT_API =
-    "http://127.0.0.1:8090/api/create-product";
+    "http://127.0.0.1:10000/api/create-product";
 
 const UPDATE_PRODUCT_API =
-    "http://127.0.0.1:8090/api/update-product";
+    "http://127.0.0.1:10000/api/update-product";
 
 let selectedImages = [];
 let additionalDetailCount = 0;
@@ -243,7 +243,7 @@ if (selectedImages.length > 0) {
 
     const uploadResponse =
         await fetch(
-            "http://127.0.0.1:8090/api/upload-product-image",
+            "http://127.0.0.1:10000/api/upload-product-image",
             {
                 method: "POST",
                 body: formData

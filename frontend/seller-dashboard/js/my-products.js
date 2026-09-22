@@ -2,7 +2,7 @@
    NISHANDHINIMART - MY PRODUCTS
 ========================================================= */
 
-const PRODUCTS_API = "http://127.0.0.1:8090/api/products";
+const PRODUCTS_API = "http://127.0.0.1:10000/api/products";
 
 let allProducts = [];
 let filteredProducts = [];
@@ -1339,7 +1339,7 @@ async function deleteProduct(productId) {
 
     const response =
         await fetch(
-            `http://127.0.0.1:8090/api/delete-product/${productId}`,
+            `http://127.0.0.1:10000/api/delete-product/${productId}`,
             {
                 method: "DELETE",
 

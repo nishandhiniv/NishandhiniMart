@@ -2,7 +2,7 @@
    NISHANDHINIMART ADMIN - PRODUCTS PAGE
    ========================================================= */
 
-const BASE_URL = "http://127.0.0.1:8090/api";
+const BASE_URL = "http://127.0.0.1:10000/api";
 
 let allProducts = [];
 let filteredProducts = [];

@@ -24,7 +24,6 @@ RUN apt-get update && apt-get install -y \
     libboost-filesystem-dev \
     libboost-regex-dev \
     libboost-thread-dev \
-    libjsoncpp-dev \
     && rm -rf /var/lib/apt/lists/*
 
 
@@ -32,7 +31,7 @@ RUN apt-get update && apt-get install -y \
 # Build Drogon
 # =========================================================
 
-RUN git clone --depth 1 \
+RUN git clone --depth 1 --recurse-submodules \
     https://github.com/drogonframework/drogon.git \
     /opt/drogon
 
@@ -64,9 +63,9 @@ COPY . .
 
 
 # =========================================================
-# Configure project
+# Configure NishandhiniMart
 # =========================================================
-
+RUN rm -rf build
 RUN cmake \
     -S . \
     -B build \
@@ -74,7 +73,7 @@ RUN cmake \
 
 
 # =========================================================
-# Build project
+# Build NishandhiniMart
 # =========================================================
 
 RUN cmake \
@@ -83,14 +82,14 @@ RUN cmake \
 
 
 # =========================================================
-# Render port
+# Render
 # =========================================================
 
 EXPOSE 10000
 
 
 # =========================================================
-# Start backend
+# Start NishandhiniMart
 # =========================================================
 
 CMD ["./build/NishandhiniMart"]

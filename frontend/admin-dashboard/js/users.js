@@ -2,7 +2,7 @@
    NISHANDHINIMART ADMIN - USERS PAGE
    ========================================================= */
 
-const BASE_URL = "http://127.0.0.1:8090/api";
+const BASE_URL = "http://127.0.0.1:10000/api";
 
 let allUsers = [];
 let filteredUsers = [];
@@ -582,96 +582,373 @@ function searchUsers() {
 /* =========================================================
    VIEW USER DETAILS
    ========================================================= */
+/* =========================================================
+   VIEW USER DETAILS
+   ========================================================= */
 
-function viewUserDetails(userId) {
+async function viewUserDetails(userId) {
 
-    const user =
-        allUsers.find(
-            item => Number(item.id) === Number(userId)
+    try {
+
+        const response = await fetch(
+            `${BASE_URL}/admin-users/${userId}`,
+            {
+                method: "GET",
+                headers: {
+                    "Accept": "application/json"
+                }
+            }
         );
 
 
-    if (!user) {
+        const data = await response.json();
 
-        alert("User details not found.");
 
-        return;
+        if (!response.ok || !data.success) {
+
+            alert(
+                data.message ||
+                "Unable to load user details."
+            );
+
+            return;
+        }
+
+
+        const profile =
+            data.profile || {};
+
+        const account =
+            data.account || {};
+
+        const purchaseHistory =
+            Array.isArray(data.purchase_history)
+                ? data.purchase_history
+                : [];
+
+        const orders =
+            Array.isArray(data.orders)
+                ? data.orders
+                : [];
+
+        const reviews =
+            Array.isArray(data.reviews_given)
+                ? data.reviews_given
+                : [];
+
+
+        const name =
+            profile.name ||
+            profile.username ||
+            "Unknown";
+
+
+        const username =
+            profile.username ||
+            "-";
+
+
+        const email =
+            profile.email ||
+            "-";
+
+
+        const role =
+            String(
+                profile.role || "-"
+            ).toLowerCase();
+
+
+        const phone =
+            profile.phone ||
+            "N/A";
+
+
+        const address =
+            account.address ||
+            "N/A";
+
+
+        /* =====================================================
+           PERSONAL DETAILS
+        ====================================================== */
+
+        let message =
+            "USER ACTIVITY\n\n" +
+
+            `${name}\n\n` +
+
+            "PERSONAL DETAILS\n" +
+            "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
+
+            `User ID       : ${profile.user_id || "-"}\n` +
+            `Name          : ${name}\n` +
+            `Username      : ${username}\n` +
+            `Email         : ${email}\n` +
+            `Role          : ${profile.role || "-"}\n` +
+            `Phone         : ${phone}\n\n`;
+
+
+        /* =====================================================
+           ACCOUNT DETAILS
+        ====================================================== */
+
+        message +=
+            "ACCOUNT DETAILS\n" +
+            "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
+
+            `Address       : ${address}\n`;
+
+
+        /* =====================================================
+           SELLER ONLY DETAILS
+        ====================================================== */
+
+        if (role === "seller") {
+
+            message +=
+
+                `Store Name    : ${
+                    account.store_name || "N/A"
+                }\n` +
+
+                `GST Number    : ${
+                    account.gst_number || "N/A"
+                }\n` +
+
+                `Business License : ${
+                    account.business_license || "N/A"
+                }\n` +
+
+                `Verification  : ${
+                    account.verification_status || "N/A"
+                }\n`;
+        }
+
+
+        message += "\n";
+
+
+        /* =====================================================
+           BUYER PURCHASE HISTORY
+        ====================================================== */
+
+        if (role === "buyer") {
+
+            message +=
+                "PURCHASE HISTORY\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+
+
+            if (!purchaseHistory.length) {
+
+                message +=
+                    "No products purchased yet.\n";
+
+            } else {
+
+                purchaseHistory.forEach(
+                    (item, index) => {
+
+                        const price =
+                            Number(
+                                item.price || 0
+                            );
+
+                        const total =
+                            Number(
+                                item.total || 0
+                            );
+
+
+                        message +=
+
+                            `\nPurchase ${index + 1}\n` +
+
+                            `Order ID      : ${
+                                item.order_id || "-"
+                            }\n` +
+
+                            `Product       : ${
+                                item.product || "-"
+                            }\n` +
+
+                            `Quantity      : ${
+                                item.quantity || 0
+                            }\n` +
+
+                            `Price         : ₹${
+                                price.toLocaleString("en-IN")
+                            }\n` +
+
+                            `Total         : ₹${
+                                total.toLocaleString("en-IN")
+                            }\n` +
+
+                            `Status        : ${
+                                item.status || "-"
+                            }\n` +
+
+                            `Order Date    : ${
+                                formatActivityDate(
+                                    item.date
+                                )
+                            }\n`;
+                    }
+                );
+            }
+
+
+            /* =================================================
+               ORDERS
+            ================================================== */
+
+            message +=
+                "\nORDERS\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+
+
+            if (!orders.length) {
+
+                message +=
+                    "No orders found.\n";
+
+            } else {
+
+                orders.forEach(
+                    (order, index) => {
+
+                        const amount =
+                            Number(
+                                order.total_amount || 0
+                            );
+
+
+                        message +=
+
+                            `\nOrder ${index + 1}\n` +
+
+                            `Order ID      : ${
+                                order.order_id || "-"
+                            }\n` +
+
+                            `Total Amount  : ₹${
+                                amount.toLocaleString("en-IN")
+                            }\n` +
+
+                            `Status        : ${
+                                order.status || "-"
+                            }\n` +
+
+                            `Order Date    : ${
+                                formatActivityDate(
+                                    order.order_date
+                                )
+                            }\n`;
+                    }
+                );
+            }
+
+
+            /* =================================================
+               REVIEWS
+            ================================================== */
+
+            message +=
+                "\nREVIEWS GIVEN\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+
+
+            if (!reviews.length) {
+
+                message +=
+                    "No reviews given yet.\n";
+
+            } else {
+
+                reviews.forEach(
+                    (review, index) => {
+
+                        message +=
+
+                            `\nReview ${index + 1}\n` +
+
+                            `Product       : ${
+                                review.product || "-"
+                            }\n` +
+
+                            `Rating        : ${
+                                review.rating || 0
+                            } / 5\n` +
+
+                            `Review        : ${
+                                review.review || "N/A"
+                            }\n` +
+
+                            `Date          : ${
+                                formatActivityDate(
+                                    review.date
+                                )
+                            }\n`;
+                    }
+                );
+            }
+        }
+
+
+        /* =====================================================
+           SHOW DETAILS
+        ====================================================== */
+
+        alert(message);
+
+
+    } catch (error) {
+
+        console.error(
+            "Error loading user details:",
+            error
+        );
+
+
+        alert(
+            "Unable to connect to the backend."
+        );
     }
-
-
-    const name =
-        user.name ||
-        user.username ||
-        "Unknown";
-
-
-    const username =
-        user.username ||
-        "-";
-
-
-    const email =
-        user.email ||
-        "-";
-
-
-    const role =
-        user.role ||
-        "-";
-
-
-    const storeName =
-        user.store_name ||
-        user.storeName ||
-        "-";
-
-
-    const phone =
-        user.phone ||
-        "-";
-
-
-    const address =
-        user.address ||
-        "-";
-
-
-    const verification =
-        user.verification_status ||
-        user.verificationStatus ||
-        "-";
-
-
-    alert(
-        "USER DETAILS\n\n" +
-
-        "Name: " +
-        name +
-
-        "\nUsername: " +
-        username +
-
-        "\nEmail: " +
-        email +
-
-        "\nRole: " +
-        role +
-
-        "\nStore: " +
-        storeName +
-
-        "\nPhone: " +
-        phone +
-
-        "\nAddress: " +
-        address +
-
-        "\nVerification: " +
-        verification
-    );
 }
 
 
+/* =========================================================
+   FORMAT ACTIVITY DATE
+   ========================================================= */
+
+function formatActivityDate(value) {
+
+    if (!value) {
+        return "N/A";
+    }
+
+
+    const date =
+        new Date(value);
+
+
+    if (Number.isNaN(date.getTime())) {
+        return String(value);
+    }
+
+
+    return date.toLocaleString(
+        "en-IN",
+        {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+        }
+    );
+}
 /* =========================================================
    ESCAPE HTML
    ========================================================= */

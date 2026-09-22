@@ -369,7 +369,7 @@ async function loadPaymentInformation() {
 
         const response =
             await fetch(
-                "http://127.0.0.1:8090/api/seller/orders?seller_id=" +
+                "http://127.0.0.1:10000/api/seller/orders?seller_id=" +
                 encodeURIComponent(sellerId)
             );
 
@@ -896,7 +896,7 @@ async function saveVerification() {
     try {
 
         const response = await fetch(
-            "http://127.0.0.1:8090/api/update-seller-verification",
+            "http://127.0.0.1:10000/api/update-seller-verification",
             {
                 method: "POST",
 

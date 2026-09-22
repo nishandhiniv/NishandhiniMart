@@ -50,7 +50,404 @@ void getAllUsers(
             callback(resp);
         });
 }
+// =========================================================
+// GET ADMIN USER DETAILS
+// =========================================================
+// =========================================================
+// GET ADMIN USER DETAILS
+// =========================================================
 
+void getAdminUserDetails(
+    const HttpRequestPtr &req,
+    std::function<void(const HttpResponsePtr &)> &&callback,
+    int userId)
+{
+    auto dbClient = getDatabaseClient();
+
+    // -----------------------------------------------------
+    // 1. PROFILE + ACCOUNT DETAILS
+    // -----------------------------------------------------
+
+    dbClient->execSqlAsync(
+        "SELECT "
+        "u.id, "
+        "u.name, "
+        "u.username, "
+        "u.email, "
+        "u.role, "
+        "u.phone, "
+        "u.address, "
+        "u.store_name, "
+        "u.gst_number, "
+        "u.business_license, "
+        "u.verification_status "
+        "FROM users u "
+        "WHERE u.id = $1",
+
+        [callback, dbClient, userId]
+        (const Result &result)
+        {
+            if (result.empty())
+            {
+                Json::Value error;
+                error["success"] = false;
+                error["message"] = "User not found";
+
+                auto response =
+                    HttpResponse::newHttpJsonResponse(error);
+
+                response->setStatusCode(k404NotFound);
+                callback(response);
+                return;
+            }
+
+            const auto &row = result[0];
+
+            Json::Value response;
+
+            response["success"] = true;
+
+            // -------------------------------------------------
+            // PROFILE DETAILS
+            // -------------------------------------------------
+
+            Json::Value profile;
+
+            profile["user_id"] =
+                row["id"].as<int>();
+
+            profile["name"] =
+                row["name"].as<std::string>();
+
+            profile["username"] =
+                row["username"].as<std::string>();
+
+            profile["email"] =
+                row["email"].as<std::string>();
+
+            profile["role"] =
+                row["role"].as<std::string>();
+
+            profile["phone"] =
+                row["phone"].isNull()
+                    ? ""
+                    : row["phone"].as<std::string>();
+
+            // -------------------------------------------------
+            // ACCOUNT DETAILS
+            // -------------------------------------------------
+
+            Json::Value account;
+
+            account["address"] =
+                row["address"].isNull()
+                    ? ""
+                    : row["address"].as<std::string>();
+
+            account["store_name"] =
+                row["store_name"].isNull()
+                    ? ""
+                    : row["store_name"].as<std::string>();
+
+            account["gst_number"] =
+                row["gst_number"].isNull()
+                    ? ""
+                    : row["gst_number"].as<std::string>();
+
+            account["business_license"] =
+                row["business_license"].isNull()
+                    ? ""
+                    : row["business_license"].as<std::string>();
+
+            account["verification_status"] =
+                row["verification_status"].isNull()
+                    ? ""
+                    : row["verification_status"].as<std::string>();
+
+            response["profile"] = profile;
+            response["account"] = account;
+
+            // -------------------------------------------------
+            // 2. PURCHASE HISTORY
+            // -------------------------------------------------
+
+            dbClient->execSqlAsync(
+                "SELECT "
+                "o.id AS order_id, "
+                "p.product_name, "
+                "oi.quantity, "
+                "oi.price AS purchase_price, "
+                "(oi.quantity * oi.price) AS item_total, "
+                "o.status AS order_status, "
+                "o.created_at AS order_date "
+                "FROM orders o "
+                "JOIN order_items oi "
+                "ON oi.order_id = o.id "
+                "JOIN products p "
+                "ON p.id = oi.product_id "
+                "WHERE o.user_id = $1 "
+                "ORDER BY o.created_at DESC",
+
+                [callback, dbClient, userId, response]
+                (const Result &purchaseResult)
+                {
+                    Json::Value purchases(
+                        Json::arrayValue
+                    );
+
+                    for (const auto &purchaseRow :
+                         purchaseResult)
+                    {
+                        Json::Value purchase;
+
+                        purchase["order_id"] =
+                            purchaseRow["order_id"].as<int>();
+
+                        purchase["product"] =
+                            purchaseRow["product_name"]
+                                .as<std::string>();
+
+                        purchase["quantity"] =
+                            purchaseRow["quantity"].as<int>();
+
+                        purchase["price"] =
+                            purchaseRow["purchase_price"]
+                                .as<double>();
+
+                        purchase["total"] =
+                            purchaseRow["item_total"]
+                                .as<double>();
+
+                        purchase["status"] =
+                            purchaseRow["order_status"]
+                                .as<std::string>();
+
+                        purchase["date"] =
+                            purchaseRow["order_date"]
+                                .as<std::string>();
+
+                        purchases.append(purchase);
+                    }
+
+                    Json::Value updatedResponse = response;
+
+                    updatedResponse["purchase_history"] =
+                        purchases;
+
+                    // -----------------------------------------
+                    // 3. ORDERS
+                    // -----------------------------------------
+
+                    dbClient->execSqlAsync(
+                        "SELECT "
+                        "id AS order_id, "
+                        "total_amount, "
+                        "status, "
+                        "created_at AS order_date "
+                        "FROM orders "
+                        "WHERE user_id = $1 "
+                        "ORDER BY created_at DESC",
+
+                        [callback, dbClient, userId,
+                         updatedResponse]
+                        (const Result &orderResult)
+                        {
+                            Json::Value orders(
+                                Json::arrayValue
+                            );
+
+                            for (const auto &orderRow :
+                                 orderResult)
+                            {
+                                Json::Value order;
+
+                                order["order_id"] =
+                                    orderRow["order_id"]
+                                        .as<int>();
+
+                                order["total_amount"] =
+                                    orderRow["total_amount"]
+                                        .as<double>();
+
+                                order["status"] =
+                                    orderRow["status"]
+                                        .as<std::string>();
+
+                                order["order_date"] =
+                                    orderRow["order_date"]
+                                        .as<std::string>();
+
+                                orders.append(order);
+                            }
+
+                            Json::Value finalResponse =
+                                updatedResponse;
+
+                            finalResponse["orders"] =
+                                orders;
+
+                            // ---------------------------------
+                            // 4. REVIEWS GIVEN
+                            // ---------------------------------
+
+                            dbClient->execSqlAsync(
+                                "SELECT "
+                                "p.product_name, "
+                                "r.rating, "
+                                "r.comment, "
+                                "r.created_at AS review_date "
+                                "FROM reviews r "
+                                "JOIN products p "
+                                "ON p.id = r.product_id "
+                                "WHERE r.user_id = $1 "
+                                "ORDER BY r.created_at DESC",
+
+                                [callback, finalResponse]
+                                (const Result &reviewResult)
+                                {
+                                    Json::Value reviews(
+                                        Json::arrayValue
+                                    );
+
+                                    for (const auto &reviewRow :
+                                         reviewResult)
+                                    {
+                                        Json::Value review;
+
+                                        review["product"] =
+                                            reviewRow[
+                                                "product_name"
+                                            ].as<std::string>();
+
+                                        review["rating"] =
+                                            reviewRow[
+                                                "rating"
+                                            ].as<int>();
+
+                                        review["review"] =
+                                            reviewRow[
+                                                "comment"
+                                            ].as<std::string>();
+
+                                        review["date"] =
+                                            reviewRow[
+                                                "review_date"
+                                            ].as<std::string>();
+
+                                        reviews.append(review);
+                                    }
+
+                                    Json::Value result =
+                                        finalResponse;
+
+                                    result["reviews_given"] =
+                                        reviews;
+
+                                    callback(
+                                        HttpResponse::
+                                            newHttpJsonResponse(
+                                                result
+                                            )
+                                    );
+                                },
+
+                                [callback](
+                                    const DrogonDbException &e)
+                                {
+                                    Json::Value error;
+
+                                    error["success"] =
+                                        false;
+
+                                    error["message"] =
+                                        e.base().what();
+
+                                    auto response =
+                                        HttpResponse::
+                                            newHttpJsonResponse(
+                                                error
+                                            );
+
+                                    response->setStatusCode(
+                                        k500InternalServerError
+                                    );
+
+                                    callback(response);
+                                },
+
+                                userId
+                            );
+                        },
+
+                        [callback](
+                            const DrogonDbException &e)
+                        {
+                            Json::Value error;
+
+                            error["success"] =
+                                false;
+
+                            error["message"] =
+                                e.base().what();
+
+                            auto response =
+                                HttpResponse::
+                                    newHttpJsonResponse(error);
+
+                            response->setStatusCode(
+                                k500InternalServerError
+                            );
+
+                            callback(response);
+                        },
+
+                        userId
+                    );
+                },
+
+                [callback](
+                    const DrogonDbException &e)
+                {
+                    Json::Value error;
+
+                    error["success"] = false;
+                    error["message"] = e.base().what();
+
+                    auto response =
+                        HttpResponse::
+                            newHttpJsonResponse(error);
+
+                    response->setStatusCode(
+                        k500InternalServerError
+                    );
+
+                    callback(response);
+                },
+
+                userId
+            );
+        },
+
+        [callback](const DrogonDbException &e)
+        {
+            Json::Value error;
+
+            error["success"] = false;
+            error["message"] = e.base().what();
+
+            auto response =
+                HttpResponse::newHttpJsonResponse(error);
+
+            response->setStatusCode(
+                k500InternalServerError
+            );
+
+            callback(response);
+        },
+
+        userId
+    );
+}
 
 // Delete user
 void deleteUser(

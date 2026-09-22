@@ -1,4 +1,4 @@
-const API_URL = "http://127.0.0.1:8090/api/products";
+const API_URL = "http://127.0.0.1:10000/api/products";
 
 let products = [];
 let cart = [];
@@ -779,7 +779,7 @@ async function checkout() {
 
         const orderResponse =
             await fetch(
-                "http://127.0.0.1:8090/api/create-order",
+                "http://127.0.0.1:10000/api/create-order",
                 {
                     method: "POST",
 
@@ -829,7 +829,7 @@ async function checkout() {
 
             const itemResponse =
                 await fetch(
-                    "http://127.0.0.1:8090/api/order-item",
+                    "http://127.0.0.1:10000/api/order-item",
                     {
                         method: "POST",
 
@@ -924,7 +924,7 @@ async function loadMyOrders() {
 
         const response =
             await fetch(
-                "http://127.0.0.1:8090/api/user-orders/" +
+                "http://127.0.0.1:10000/api/user-orders/" +
                 userId
             );
 

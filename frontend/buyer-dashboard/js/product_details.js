@@ -1,4 +1,4 @@
-const API_URL = "http://127.0.0.1:8090/api/products";
+const API_URL = "http://127.0.0.1:10000/api/products";
 
 let product = null;
 let selectedQuantity = 1;

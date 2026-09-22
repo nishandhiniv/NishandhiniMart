@@ -86,6 +86,11 @@ void getAllUsers(
     const HttpRequestPtr &req,
     std::function<void(const HttpResponsePtr &)> &&callback
 );
+void getAdminUserDetails(
+    const HttpRequestPtr &req,
+    std::function<void(const HttpResponsePtr &)> &&callback,
+    int userId
+);
 void getAllOrders(
     const drogon::HttpRequestPtr &req,
     std::function<void(const drogon::HttpResponsePtr &)> &&callback
@@ -360,6 +365,20 @@ app().registerHandler(
         },
         {Get}
     );
+    app().registerHandler(
+    "/api/admin-users/{1}",
+    [](const HttpRequestPtr &req,
+       std::function<void(const HttpResponsePtr &)> &&callback,
+       int userId)
+    {
+        getAdminUserDetails(
+            req,
+            std::move(callback),
+            userId
+        );
+    },
+    {Get}
+);
   // =========================================================
 // ADMIN - GET ALL ORDERS
 // =========================================================

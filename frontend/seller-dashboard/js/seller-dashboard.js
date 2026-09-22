@@ -3,10 +3,10 @@
    ========================================================= */
 
 const PRODUCTS_API =
-    "http://127.0.0.1:8090/api/products";
+    "http://127.0.0.1:10000/api/products";
 
 const SELLER_ORDERS_API =
-    "http://127.0.0.1:8090/api/seller/orders";
+    "http://127.0.0.1:10000/api/seller/orders";
 
 
 /* =========================================================
