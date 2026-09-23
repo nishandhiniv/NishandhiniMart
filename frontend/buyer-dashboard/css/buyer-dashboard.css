@@ -954,6 +954,11 @@ body {
     gap: 6px;
     padding: 100px 15px 20px;
 
+    box-sizing: border-box;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
     background: #ffffff;
     border-right: 1px solid #eeeaf7;
 
@@ -961,7 +966,6 @@ body {
 
     z-index: 1000;
 }
-
 .nav-item {
     display: flex;
     align-items: center;
