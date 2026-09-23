@@ -848,7 +848,7 @@ if (image) {
     image.replace(/^images[\\/]+/i, "");
 
 const imageUrl =
-    `http://127.0.0.1:5500/frontend/seller-dashboard/images/${encodeURIComponent(cleanImage)}`;
+    `https://nishandhiniv.github.io/NishandhiniMart/seller-dashboard/images/${encodeURIComponent(cleanImage)}`;
     
     imageHTML = `
         <img
@@ -1557,4 +1557,5 @@ function escapeAttribute(value) {
         .replace(/>/g, "&gt;");
 
 }
+
 

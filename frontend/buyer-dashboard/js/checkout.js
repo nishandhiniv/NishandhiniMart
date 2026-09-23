@@ -1209,7 +1209,7 @@ function getProductImagePath(
 
 
     return (
-        "http://127.0.0.1:5500/" +
+        "https://nishandhiniv.github.io/NishandhiniMart/" +
         "frontend/seller-dashboard/images/" +
         encodeURIComponent(
             cleanImage
@@ -1409,4 +1409,5 @@ function escapeHtml(
         );
 
 }
+
 

@@ -48,7 +48,7 @@ function getImagePath(image) {
     );
 
     return (
-        "http://127.0.0.1:5500/frontend/" +
+        "https://nishandhiniv.github.io/NishandhiniMart/" +
         "seller-dashboard/images/" +
         encodeURIComponent(cleanImage)
     );
@@ -1288,4 +1288,5 @@ document.addEventListener("DOMContentLoaded", function () {
 
     loadProduct();
 });
+
 

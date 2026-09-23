@@ -85,7 +85,7 @@ function getWishlistImagePath(image) {
         ""
     );
 
-    return `http://127.0.0.1:5500/frontend/seller-dashboard/images/${encodeURIComponent(cleanImage)}`;
+    return `https://nishandhiniv.github.io/NishandhiniMart/seller-dashboard/images/${encodeURIComponent(cleanImage)}`;
 }
 
 /* =========================
@@ -482,4 +482,5 @@ function escapeHtml(value) {
         );
 
 }
+
 

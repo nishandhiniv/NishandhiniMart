@@ -382,3 +382,4 @@ function showSettingsMessage(
 
 loadNotificationSettings();
 
+

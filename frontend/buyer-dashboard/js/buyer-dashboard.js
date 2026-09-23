@@ -205,7 +205,7 @@ function getImagePath(image) {
     cleanImage = cleanImage.replace(/^images\//i, "");
 
     // All product images are served from seller-dashboard/images
-    return `http://127.0.0.1:5500/frontend/seller-dashboard/images/${encodeURIComponent(cleanImage)}`;
+    return `https://nishandhiniv.github.io/NishandhiniMart/seller-dashboard/images/${encodeURIComponent(cleanImage)}`;
 }
 
 // =========================================================
@@ -1175,4 +1175,5 @@ function openChatbot() {
     window.location.href =
         "../chatbot/chatbot.html";
 }
+
 
