@@ -6,3 +6,5 @@ out/
 *.pdb
 
 database/database_backup.sql
+
+nishandhinimart_backup.dump
