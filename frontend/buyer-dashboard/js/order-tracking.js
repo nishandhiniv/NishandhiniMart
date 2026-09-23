@@ -3,7 +3,7 @@
 // =========================================
 
 const ORDERS_API =
-    "http://127.0.0.1:10000/api/user-orders/";
+    "https://nishandhinimart.onrender.com/api/user-orders/";
 
 
 // =========================================
@@ -981,3 +981,4 @@ function logout() {
         "../login.html";
 
 }
+

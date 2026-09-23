@@ -1,4 +1,4 @@
-const API_URL = "http://127.0.0.1:10000/api/products";
+const API_URL = "https://nishandhinimart.onrender.com/api/products";
 
 let products = [];
 let cart = [];
@@ -779,7 +779,7 @@ async function checkout() {
 
         const orderResponse =
             await fetch(
-                "http://127.0.0.1:10000/api/create-order",
+                "https://nishandhinimart.onrender.com/api/create-order",
                 {
                     method: "POST",
 
@@ -829,7 +829,7 @@ async function checkout() {
 
             const itemResponse =
                 await fetch(
-                    "http://127.0.0.1:10000/api/order-item",
+                    "https://nishandhinimart.onrender.com/api/order-item",
                     {
                         method: "POST",
 
@@ -924,7 +924,7 @@ async function loadMyOrders() {
 
         const response =
             await fetch(
-                "http://127.0.0.1:10000/api/user-orders/" +
+                "https://nishandhinimart.onrender.com/api/user-orders/" +
                 userId
             );
 
@@ -1175,3 +1175,4 @@ function openChatbot() {
     window.location.href =
         "../chatbot/chatbot.html";
 }
+

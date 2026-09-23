@@ -1,4 +1,4 @@
-const API_URL = "http://127.0.0.1:10000/api/products";
+const API_URL = "https://nishandhinimart.onrender.com/api/products";
 
 let product = null;
 let selectedQuantity = 1;
@@ -1288,3 +1288,4 @@ document.addEventListener("DOMContentLoaded", function () {
 
     loadProduct();
 });
+

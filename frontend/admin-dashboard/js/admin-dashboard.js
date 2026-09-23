@@ -1,4 +1,4 @@
-const BASE_URL = "http://127.0.0.1:10000/api";
+const BASE_URL = "https://nishandhinimart.onrender.com/api";
 
 let allUsers = [];
 let allProducts = [];
@@ -1267,3 +1267,4 @@ document.addEventListener(
 
     }
 );
+

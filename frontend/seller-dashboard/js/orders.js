@@ -9,10 +9,10 @@
 ========================================================= */
 
 const ORDERS_API =
-    "http://127.0.0.1:10000/api/seller/orders";
+    "https://nishandhinimart.onrender.com/api/seller/orders";
 
 const UPDATE_ORDER_STATUS_API =
-    "http://127.0.0.1:10000/api/update-order-status";
+    "https://nishandhinimart.onrender.com/api/update-order-status";
 
 
 /* =========================================================
@@ -1187,3 +1187,4 @@ function escapeHtml(
         );
 
 }
+

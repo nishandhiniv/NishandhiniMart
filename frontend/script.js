@@ -112,7 +112,7 @@ if (registrationForm) {
 
 
                 const response = await fetch(
-                    "http://127.0.0.1:10000/api/register",
+                    "https://nishandhinimart.onrender.com/api/register",
                     {
                         method: "POST",
 
@@ -263,7 +263,7 @@ if (loginForm) {
 
 
                 const response = await fetch(
-                    "http://127.0.0.1:10000/api/login",
+                    "https://nishandhinimart.onrender.com/api/login",
                     {
                         method: "POST",
 
@@ -457,3 +457,4 @@ if (loginForm) {
     );
 
 }
+

@@ -3,7 +3,7 @@ const messageInput = document.getElementById("messageInput");
 const sendButton = document.getElementById("sendButton");
 const chatMessages = document.getElementById("chatMessages");
 
-const API_URL = "http://127.0.0.1:10000/api/chat";
+const API_URL = "https://nishandhinimart.onrender.com/api/chat";
 
 
 function addMessage(message, type) {
@@ -233,3 +233,4 @@ document
 
 
 messageInput.focus();
+

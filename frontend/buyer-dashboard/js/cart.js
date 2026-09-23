@@ -600,3 +600,4 @@ function escapeHtml(value) {
         .replace(/'/g, "&#039;");
 
 }
+

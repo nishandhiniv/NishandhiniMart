@@ -480,7 +480,7 @@ function changePassword() {
 
     // Backend request
     fetch(
-        "http://127.0.0.1:10000/api/change-password",
+        "https://nishandhinimart.onrender.com/api/change-password",
         {
             method: "POST",
 
@@ -710,3 +710,4 @@ function showMessage(
     );
 
 }
+

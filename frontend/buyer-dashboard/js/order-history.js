@@ -41,7 +41,7 @@ async function loadOrderHistory() {
     try {
 
         const response = await fetch(
-            `http://127.0.0.1:10000/api/user-orders/${userId}`
+            `https://nishandhinimart.onrender.com/api/user-orders/${userId}`
         );
 
         if (!response.ok) {
@@ -469,3 +469,4 @@ function escapeHtml(value) {
         .replace(/'/g, "&#039;");
 
 }
+

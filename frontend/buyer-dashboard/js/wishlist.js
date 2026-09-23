@@ -482,3 +482,4 @@ function escapeHtml(value) {
         );
 
 }
+

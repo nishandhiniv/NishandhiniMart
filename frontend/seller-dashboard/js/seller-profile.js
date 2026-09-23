@@ -369,7 +369,7 @@ async function loadPaymentInformation() {
 
         const response =
             await fetch(
-                "http://127.0.0.1:10000/api/seller/orders?seller_id=" +
+                "https://nishandhinimart.onrender.com/api/seller/orders?seller_id=" +
                 encodeURIComponent(sellerId)
             );
 
@@ -896,7 +896,7 @@ async function saveVerification() {
     try {
 
         const response = await fetch(
-            "http://127.0.0.1:10000/api/update-seller-verification",
+            "https://nishandhinimart.onrender.com/api/update-seller-verification",
             {
                 method: "POST",
 
@@ -984,3 +984,4 @@ async function saveVerification() {
         );
     }
 }
+

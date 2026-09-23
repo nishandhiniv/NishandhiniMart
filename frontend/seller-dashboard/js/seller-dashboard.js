@@ -3,10 +3,10 @@
    ========================================================= */
 
 const PRODUCTS_API =
-    "http://127.0.0.1:10000/api/products";
+    "https://nishandhinimart.onrender.com/api/products";
 
 const SELLER_ORDERS_API =
-    "http://127.0.0.1:10000/api/seller/orders";
+    "https://nishandhinimart.onrender.com/api/seller/orders";
 
 
 /* =========================================================
@@ -991,3 +991,4 @@ document.addEventListener(
     "DOMContentLoaded",
     initializeSellerDashboard
 );
+

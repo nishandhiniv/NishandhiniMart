@@ -3,13 +3,13 @@
 // =========================================
 
 const ORDERS_API =
-    "http://127.0.0.1:10000/api/user-orders/";
+    "https://nishandhinimart.onrender.com/api/user-orders/";
 
 const CREATE_ORDER_API =
-    "http://127.0.0.1:10000/api/create-order";
+    "https://nishandhinimart.onrender.com/api/create-order";
 
 const ORDER_ITEM_API =
-    "http://127.0.0.1:10000/api/order-item";
+    "https://nishandhinimart.onrender.com/api/order-item";
 
 
 // =========================================
@@ -1409,3 +1409,4 @@ function escapeHtml(
         );
 
 }
+
